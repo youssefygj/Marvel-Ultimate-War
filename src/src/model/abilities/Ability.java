@@ -8,6 +8,9 @@ public class Ability {
     int castRange;
     int requiredActionPoints;
 
-//    AreaOfEffect castArea
+    Ability(String name,int cost, int baseCoolDown, int castRange, AreaOfEffect area , int required) {
+
+
+    }
 
 }
