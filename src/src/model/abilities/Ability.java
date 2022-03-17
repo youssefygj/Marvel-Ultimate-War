@@ -8,6 +8,6 @@ public class Ability {
     int castRange;
     int requiredActionPoints;
 
-    AreaOfEffect castArea
+//    AreaOfEffect castArea
 
 }
