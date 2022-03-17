@@ -10,7 +10,7 @@ public class Ability {
 
     Ability(String name,int cost, int baseCoolDown, int castRange, AreaOfEffect area , int required) {
 
-
+this.name=name;
     }
 
 }
