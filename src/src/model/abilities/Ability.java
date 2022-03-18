@@ -20,4 +20,43 @@ public class Ability {
 
     }
 
+    public String getName() {
+        return this.name;
+
+    }
+
+    public int getManaCost() {
+        return this.manaCost;
+
+    }
+
+    public int getBaseCooldown() {
+        return this.baseCooldown;
+
+    }
+
+    public int getCurrentCooldown() {
+        return this.currentCooldown;
+
+    }
+
+    public void setCurrentCooldown(int currentCooldown) {
+        this.currentCooldown = currentCooldown;
+
+    }
+
+    public int getCastRange() {
+        return this.castRange;
+
+    }
+
+    public int getRequiredActionPoints() {
+        return this.requiredActionPoints;
+
+    }
+
+    public AreaOfEffect getCastArea() {
+        return this.castArea;
+
+    }
 }
