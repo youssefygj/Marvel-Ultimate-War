@@ -25,6 +25,7 @@ public class Effect {
         this.name = name;
         this.duration = duration;
         this.type = type;
+
     }
 
     public Effect() {
