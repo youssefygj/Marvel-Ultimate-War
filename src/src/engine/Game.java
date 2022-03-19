@@ -4,6 +4,8 @@ import model.abilities.Ability;
 import model.world.Champion;
 import model.world.Cover;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -25,6 +27,14 @@ public class Game {
         board = new Object[5][5];
         placeChampions();
         placeCovers();
+    }
+
+    public static void loadAbilities(String filePath) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+    }
+
+    public static void loadChampions(String filePath) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
     }
 
     private void placeChampions() {
