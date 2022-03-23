@@ -8,8 +8,7 @@ public class Cover {
 
     public Cover(int x, int y) {
         this.currentHP = (int) ((Math.random() * 900) + 100);
-        this.location.x = x;
-        this.location.y = y;
+      location=new Point (x,y);
 
     }
 

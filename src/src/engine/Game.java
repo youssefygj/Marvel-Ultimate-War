@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class Game {
     private static ArrayList<Champion> availableChampions;
     private static ArrayList<Ability> availableAbilities;
-    private static int BOARDHEIGHT;
-    private static int BOARDWIDTH;
+    private static final int BOARDHEIGHT=5;
+    private static final int BOARDWIDTH = 5;
     private Player firstPlayer;
     private Player secondPlayer;
     private boolean firstLeaderAbilityUsed;
@@ -24,7 +24,7 @@ public class Game {
     public Game(Player first, Player second) {
         this.firstPlayer = first;
         this.secondPlayer = second;
-        board = new Object[5][5];
+        board = new Object[BOARDWIDTH][BOARDHEIGHT];
         placeChampions();
         placeCovers();
     }

@@ -16,8 +16,8 @@ public class Champion {
     private int attackRange;
     private int attackDamage;
     private int speed;
-    private ArrayList<Ability> abilities;
-    private ArrayList<Effect> appliedEffects;
+    private ArrayList<Ability> abilities= new ArrayList<Ability>();
+    private ArrayList<Effect> appliedEffects=new ArrayList<Effect>();
     private Condition condition;
     private Point location;
 
@@ -29,7 +29,10 @@ public class Champion {
         //Condition must be set to ACTIVE still
         this.name = name;
         this.maxHP = maxHP;
+
+        this.currentHP=maxHP;
         this.mana = mana;
+        this.currentActionPoints=maxActionPointsPerTurn;
         this.maxActionPointsPerTurn = maxActionsPerTurn;
         this.speed = speed;
         this.attackRange = attackRange;
