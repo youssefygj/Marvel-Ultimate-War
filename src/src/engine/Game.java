@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.ArrayList;
 
 
-public class Game<c> {
+public class Game {
     private static final int BOARDHEIGHT = 5;
     private static final int BOARDWIDTH = 5;
     private static ArrayList<Champion> availableChampions;
@@ -68,6 +68,7 @@ public class Game<c> {
                 s = new CrowdControlAbility(e, r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
             }
             currentLine = br.readLine();
+            availableAbilities.add(s);
         }
         br.close();
     }
