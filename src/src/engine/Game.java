@@ -1,8 +1,8 @@
 package engine;
 
-import model.abilities.Ability;
-import model.world.Champion;
-import model.world.Cover;
+import model.abilities.*;
+import model.effects.*;
+import model.world.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
+
+import model.effects.Effect;
 
 
 public class Game {
@@ -66,6 +68,12 @@ public class Game {
                 }
 
                 s = new CrowdControlAbility(e, r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
+            }
+            if (r[0].equals("DMG")) {
+                s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
+            }
+            if (r[0].equals("HEL")) {
+                s = new HealingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
             }
             currentLine = br.readLine();
             availableAbilities.add(s);
