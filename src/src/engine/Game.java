@@ -6,10 +6,12 @@ import model.world.Cover;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
 import java.util.ArrayList;
 
-public class Game {
+
+public class Game<c> {
     private static ArrayList<Champion> availableChampions;
     private static ArrayList<Ability> availableAbilities;
     private static final int BOARDHEIGHT=5;
@@ -29,13 +31,7 @@ public class Game {
         placeCovers();
     }
 
-    public static void loadAbilities(String filePath) throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
-    }
 
-    public static void loadChampions(String filePath) throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
-    }
 
     private void placeChampions() {
         ArrayList<Champion> firstTeam = firstPlayer.getTeam();
@@ -46,7 +42,7 @@ public class Game {
         }
     }
 
-    //    random.nextInt(max - min + 1) + min
+
     private void placeCovers() {
         Random Rand = new Random();
         for (int i = 0; i < 5; i++) {
@@ -57,9 +53,32 @@ public class Game {
                 x = Rand.nextInt(5);
                 y = Rand.nextInt(5);
             }
+        }}
 
-            Cover coverToBePlaced = new Cover(x, y);
-            board[x][y] = coverToBePlaced;
-        }
-    }
-}
+//int c=0;
+//    do{
+//
+//        int x = (int) (Math.random() * 4 + 1);
+//        int y = (int) (Math.random() * 4 + 1);
+//        if ((board[x][y] == null) && (x != 0 && y != 0) && (x != 0 && y != 4) && (x != 4 && y != 4)) {
+//            c=c+1;
+//            board[x][y] = new Cover(x, y);
+//        }
+//    }while (c!=4);
+
+
+            public static void loadAbilities (String filePath) throws IOException{
+                BufferedReader br = new BufferedReader(new FileReader(filePath));
+                String currentLine = br.readLine();
+              while(currentLine!=null){
+
+                  String[] r=currentLine.split(",");
+                  availableAbilities.add(new Ability(r[1],r[2],r[4],r[3],r[5],r[6]));
+                  currentLine = br.readLine();
+                  br.close();
+              }}
+
+
+
+            }
+

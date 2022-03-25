@@ -1,5 +1,5 @@
 package model.abilities;
-
+import java.io.IOException;
 public class Ability {
     private String name;
     private int manaCost;
@@ -9,7 +9,7 @@ public class Ability {
     private int requiredActionPoints;
     private AreaOfEffect castArea;
 
-    Ability(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required) {
+    public Ability(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required) throws IOException {
 
         this.name = name;
         this.manaCost = cost;
