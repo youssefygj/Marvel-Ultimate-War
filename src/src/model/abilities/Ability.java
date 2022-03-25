@@ -1,5 +1,7 @@
 package model.abilities;
+
 import java.io.IOException;
+
 public class Ability {
     private String name;
     private int manaCost;
