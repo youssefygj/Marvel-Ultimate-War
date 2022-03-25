@@ -90,8 +90,8 @@ public class Game<c> {
                 newChamp = new Villain(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
-            for (int ability = 0; ability < availableAbilities.size(); ability++) {
-                if (availableAbilities.get(ability).getName().equals(r[8])) {
+            for (int ability = 0; ability < availableAbilities.size(); ability++) {      //Loads the abilities, creates the champions
+                if (availableAbilities.get(ability).getName().equals(r[8])) {            //inserts them in the availablechampion
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
                 if (availableAbilities.get(ability).getName().equals(r[9])) {
@@ -101,6 +101,7 @@ public class Game<c> {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
             }
+            availableChampions.add(newChamp);
             currentLine = br.readLine();
         }
         br.close();

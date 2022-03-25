@@ -16,8 +16,8 @@ public class Champion {
     private int attackRange;
     private int attackDamage;
     private int speed;
-    private ArrayList<Ability> abilities= new ArrayList<Ability>();
-    private ArrayList<Effect> appliedEffects=new ArrayList<Effect>();
+    private ArrayList<Ability> abilities = new ArrayList<Ability>();
+    private ArrayList<Effect> appliedEffects = new ArrayList<Effect>();
     private Condition condition;
     private Point location;
 
@@ -30,9 +30,9 @@ public class Champion {
         this.name = name;
         this.maxHP = maxHP;
 
-        this.currentHP=maxHP;
+        this.currentHP = maxHP;
         this.mana = mana;
-        this.currentActionPoints=maxActionPointsPerTurn;
+        this.currentActionPoints = maxActionPointsPerTurn;
         this.maxActionPointsPerTurn = maxActionsPerTurn;
         this.speed = speed;
         this.attackRange = attackRange;
@@ -60,6 +60,10 @@ public class Champion {
         return mana;
     }
 
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
     public int getMaxActionPointsPerTurn() {
         return maxActionPointsPerTurn;
     }
@@ -70,6 +74,10 @@ public class Champion {
 
     public int getCurrentActionPoints() {
         return currentActionPoints;
+    }
+
+    public void setCurrentActionPoints(int currentActionPoints) {
+        this.currentActionPoints = currentActionPoints;
     }
 
     public int getAttackRange() {
