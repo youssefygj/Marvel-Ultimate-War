@@ -19,6 +19,5 @@ public class test {
     }
 
     public static void main(String[] args) throws Exception {
-        loadAbilities("D:\\Marvel-Ultimate-War\\Abilities.csv");
-    }
-}
+        loadAbilities("Abilities.csv");
+    }}
