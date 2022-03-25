@@ -37,13 +37,35 @@ public class Game<c> {
         String currentLine = br.readLine();
         while (currentLine != null) {
             String[] r = currentLine.split(",");
-
-            availableAbilities.add(new Ability(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6])));
+            Effect e = null;
+            Ability s = null;
             if (r[0].equals("CC")) {
-                if (r[7].equals("Shield"))
-                    Shield e = new Shield(Integer.parseInt(r[8]));
+                if (r[7].equals("Dodge")) {
+                    e = new Dodge(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("PowerUp")) {
+                    e = new PowerUp(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("Stun")) {
+                    e = new Stun(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("Shock")) {
+                    e = new Shock(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("Disarm")) {
+                    e = new Disarm(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("Silence")) {
+                    e = new Silence(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("Root")) {
+                    e = new Root(Integer.parseInt(r[8]));
+                }
+                if (r[7].equals("SpeedUp")) {
+                    e = new SpeedUp(Integer.parseInt(r[8]));
+                }
 
-                s = new CrowdControlAbility(r[0], r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]));
+                s = new CrowdControlAbility(e, r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
             }
             currentLine = br.readLine();
         }
@@ -53,18 +75,31 @@ public class Game<c> {
     public static void loadChampions(String filePath) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         String currentLine = br.readLine();
+        loadAbilities("Abilities.csv");
+        Champion newChamp = null;
+
         while (currentLine != null) {
             String[] r = currentLine.split(",");
             if (r[0].equals("A")) {
-                AntiHero newChamp = new AntiHero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
+                newChamp = new AntiHero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
-                Ability newAbility = new Ability()
             } else if (r[0].equals("H")) {
-                Hero newChamp = new Hero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
+                newChamp = new Hero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             } else {
-                Villain newChamp = new Villain(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
+                newChamp = new Villain(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
+            }
+            for (int ability = 0; ability < availableAbilities.size(); ability++) {
+                if (availableAbilities.get(ability).getName().equals(r[8])) {
+                    newChamp.getAbilities().add(availableAbilities.get(ability));
+                }
+                if (availableAbilities.get(ability).getName().equals(r[9])) {
+                    newChamp.getAbilities().add(availableAbilities.get(ability));
+                }
+                if (availableAbilities.get(ability).getName().equals(r[10])) {
+                    newChamp.getAbilities().add(availableAbilities.get(ability));
+                }
             }
             currentLine = br.readLine();
         }
