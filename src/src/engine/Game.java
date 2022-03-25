@@ -4,6 +4,7 @@ import model.abilities.*;
 import model.effects.*;
 import model.world.*;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,8 +31,11 @@ public class Game {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
+        turnOrder=new PriorityQueue(6);
         placeCovers();
         placeChampions();
+        availableChampions = new ArrayList<Champion>();
+        availableAbilities = new ArrayList<Ability>();
     }
 
     public static ArrayList<Champion> getAvailableChampions() {
@@ -75,7 +79,7 @@ public class Game {
                     e = new SpeedUp(Integer.parseInt(r[8]));
                 }
 
-                s = new CrowdControlAbility(e, r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
+                s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]),e);
             }
             if (r[0].equals("DMG")) {
                 s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
@@ -157,9 +161,13 @@ public class Game {
     }
 
     private void placeChampions() {
-        for (int i = 1; i <= 3; i++) {                             //places the 3 champions of each player on the board
-            getBoard()[i][4] = firstPlayer.getTeam().get(i - 1);                        //player1 on the bottom, player2 on the top
-            getBoard()[i][0] = secondPlayer.getTeam().get(i - 1);                       //no champions on edges.
+        for (int i = 1; i <= 3; i++) {//places the 3 champions of each player on the board
+            getBoard()[0][i] = firstPlayer.getTeam().get(i - 1);//player1 on the bottom, player2 on the top
+            firstPlayer.getTeam().get(i-1).setLocation(new Point( 0,i));
+
+            getBoard()[4][i] = secondPlayer.getTeam().get(i - 1);//no champions on edges.
+            Point y = new Point(4,i);
+            secondPlayer.getTeam().get(i-1).setLocation(y);
         }
     }
 
@@ -169,10 +177,12 @@ public class Game {
             int x = Rand.nextInt(5);      //places 5 covers on the board at random cell
             int y = Rand.nextInt(5);      //excluding edges and already occupied cells
 
-            while (x == y || (x != 4 && y == 0) || (y != 0 && x == 4) || (board[x][y] != null)) {
+            while (x == y || (x == 4 && y == 0) || (y == 0 && x == 4) || (board[x][y] != null)) {
                 x = Rand.nextInt(5);
                 y = Rand.nextInt(5);
             }
+            Cover c1= new Cover(x,y);
+            board[x][y]=c1;
         }
     }
 

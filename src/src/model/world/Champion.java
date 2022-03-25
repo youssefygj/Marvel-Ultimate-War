@@ -53,6 +53,13 @@ public class Champion {
     }
 
     public void setCurrentHP(int currentHP) {
+        if (currentHP<0){
+            this.currentHP=0;
+        }
+        else if (currentHP>this.maxHP){
+            this.currentHP=maxHP;
+        }
+        else
         this.currentHP = currentHP;
     }
 

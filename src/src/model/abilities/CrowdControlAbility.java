@@ -8,7 +8,7 @@ public class CrowdControlAbility extends Ability {
 
     private Effect effect;
 
-    public CrowdControlAbility(Effect effect, String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required, int effectDuration) throws IOException {
+    public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required,Effect effect) throws IOException {
         super(name, cost, baseCoolDown, castRange, area, required);
         this.effect = effect;
     }
