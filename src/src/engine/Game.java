@@ -26,12 +26,20 @@ public class Game {
     private Object[][] board;
     private PriorityQueue turnOrder;
 
-    public Game(Player first, Player second) {
-        this.firstPlayer = first;
-        this.secondPlayer = second;
+    public Game(Player firstPlayer, Player secondPlayer) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
-        placeChampions();
         placeCovers();
+        placeChampions();
+    }
+
+    public static ArrayList<Champion> getAvailableChampions() {
+        return availableChampions;
+    }
+
+    public static ArrayList<Ability> getAvailableAbilities() {
+        return availableAbilities;
     }
 
     public static void loadAbilities(String filePath) throws IOException {
@@ -116,13 +124,42 @@ public class Game {
         br.close();
     }
 
+    public static int getBoardheight() {
+        return BOARDHEIGHT;
+    }
+
+    public static int getBoardwidth() {
+        return BOARDWIDTH;
+    }
+
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public Player getSecondPlayer() {
+        return secondPlayer;
+    }
+
+    public boolean isFirstLeaderAbilityUsed() {
+        return firstLeaderAbilityUsed;
+    }
+
+    public boolean isSecondLeaderAbilityUsed() {
+        return secondLeaderAbilityUsed;
+    }
+
+    public PriorityQueue getTurnOrder() {
+        return turnOrder;
+    }
+
+    public Object[][] getBoard() {
+        return board;
+    }
 
     private void placeChampions() {
-        ArrayList<Champion> firstTeam = firstPlayer.getTeam();
-        ArrayList<Champion> secondTeam = secondPlayer.getTeam();
         for (int i = 1; i <= 3; i++) {                             //places the 3 champions of each player on the board
-            board[4][i] = firstTeam.get(i);                        //player1 on the bottom, player2 on the top
-            board[0][i] = secondTeam.get(i);                       //no champions on edges.
+            getBoard()[i][4] = firstPlayer.getTeam().get(i - 1);                        //player1 on the bottom, player2 on the top
+            getBoard()[i][0] = secondPlayer.getTeam().get(i - 1);                       //no champions on edges.
         }
     }
 

@@ -11,7 +11,6 @@ public class CrowdControlAbility extends Ability {
     public CrowdControlAbility(Effect effect, String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required, int effectDuration) throws IOException {
         super(name, cost, baseCoolDown, castRange, area, required);
         this.effect = effect;
-
     }
 
     public Effect getEffect() {

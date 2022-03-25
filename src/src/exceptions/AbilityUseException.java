@@ -2,11 +2,11 @@ package exceptions;
 
 public class AbilityUseException extends GameActionException {
 
-    AbilityUseException() {
+    public AbilityUseException() {
         super();
     }
 
-    AbilityUseException(String s) {
+    public AbilityUseException(String s) {
         super(s);
     }
 }

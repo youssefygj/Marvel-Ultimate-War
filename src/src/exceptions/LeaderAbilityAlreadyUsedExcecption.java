@@ -1,11 +1,11 @@
 package exceptions;
 
 public class LeaderAbilityAlreadyUsedExcecption extends GameActionException {
-    LeaderAbilityAlreadyUsedExcecption() {
+    public LeaderAbilityAlreadyUsedExcecption() {
         super();
     }
 
-    LeaderAbilityAlreadyUsedExcecption(String s) {
+    public LeaderAbilityAlreadyUsedExcecption(String s) {
         super(s);
     }
 }
