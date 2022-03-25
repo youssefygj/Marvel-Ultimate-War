@@ -10,7 +10,7 @@ public class test {
 
     public static void loadAbilities(String filePath) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        while ((br.readLine()) != null) {
+        for (int i = 0; i < 45; i++) {
             String r = br.readLine();
             ArrayList<String> s = new ArrayList<>();
             String[] a = r.split(",");
