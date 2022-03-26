@@ -78,6 +78,9 @@ public class Game {
                 if (r[7].equals("SpeedUp")) {
                     e = new SpeedUp(Integer.parseInt(r[8]));
                 }
+                if(r[7].equals("Shield")){
+                    e=new Shield(Integer.parseInt(r[8]));
+                }
 
                 s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]),e);
             }
@@ -114,15 +117,12 @@ public class Game {
             for (int ability = 0; ability < availableAbilities.size() && newChamp.getAbilities().size()<3; ability++) {      //Loads the abilities, creates the champions
                 if (availableAbilities.get(ability).getName().equals(r[8])) {            //inserts them in the availablechampion
                     newChamp.getAbilities().add(availableAbilities.get(ability));
-                }
-                else if (availableAbilities.get(ability).getName().equals(r[9])) {
+                } else if (availableAbilities.get(ability).getName().equals(r[9])) {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
-                }
-                else if (availableAbilities.get(ability).getName().equals(r[10])) {
+                } else if (availableAbilities.get(ability).getName().equals(r[10])) {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
             }
-            System.out.print(newChamp.getAbilities());
             availableChampions.add(newChamp);
             currentLine = br.readLine();
         }
