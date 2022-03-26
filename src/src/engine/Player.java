@@ -7,10 +7,11 @@ import java.util.ArrayList;
 public class Player {
     private String name;
     private Champion leader;
-    private ArrayList<Champion> team = new ArrayList<Champion>();
+    private ArrayList<Champion> team;
 
     public Player(String name) {
         this.name = name;
+        team = new ArrayList<Champion>();
     }
 
     public String getName() {

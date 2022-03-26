@@ -32,7 +32,7 @@ public class Game {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
-        turnOrder=new PriorityQueue(6);
+        turnOrder = new PriorityQueue(6);
         placeCovers();
         placeChampions();
         availableChampions = new ArrayList<Champion>();
@@ -52,7 +52,7 @@ public class Game {
         String currentLine = br.readLine();
 
 
-        while (currentLine != null&&availableAbilities.size()<45) {
+        while (currentLine != null && availableAbilities.size() < 45) {
 
             String[] r = currentLine.split(",");
             Effect e = null;
@@ -60,38 +60,28 @@ public class Game {
             if (r[0].equals("CC")) {
                 if (r[7].equals("Dodge")) {
                     e = new Dodge(Integer.parseInt(r[8]));
-                }
-              else  if (r[7].equals("PowerUp")) {
+                } else if (r[7].equals("PowerUp")) {
                     e = new PowerUp(Integer.parseInt(r[8]));
-                }
-             else   if (r[7].equals("Stun")) {
+                } else if (r[7].equals("Stun")) {
                     e = new Stun(Integer.parseInt(r[8]));
-                }
-             else   if (r[7].equals("Shock")) {
+                } else if (r[7].equals("Shock")) {
                     e = new Shock(Integer.parseInt(r[8]));
-                }
-             else   if (r[7].equals("Disarm")) {
+                } else if (r[7].equals("Disarm")) {
                     e = new Disarm(Integer.parseInt(r[8]));
-                }
-             else   if (r[7].equals("Silence")) {
+                } else if (r[7].equals("Silence")) {
                     e = new Silence(Integer.parseInt(r[8]));
-                }
-            else    if (r[7].equals("Root")) {
+                } else if (r[7].equals("Root")) {
                     e = new Root(Integer.parseInt(r[8]));
-                }
-              else  if (r[7].equals("SpeedUp")) {
+                } else if (r[7].equals("SpeedUp")) {
                     e = new SpeedUp(Integer.parseInt(r[8]));
-                }
-              else  if(r[7].equals("Shield")){
-                    e=new Shield(Integer.parseInt(r[8]));
+                } else if (r[7].equals("Shield")) {
+                    e = new Shield(Integer.parseInt(r[8]));
                 }
 
-                s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]),e);
-            }
-           else if (r[0].equals("DMG")) {
+                s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), e);
+            } else if (r[0].equals("DMG")) {
                 s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
-            }
-           else if (r[0].equals("HEL")) {
+            } else if (r[0].equals("HEL")) {
                 s = new HealingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
 
@@ -188,12 +178,12 @@ public class Game {
             int x = Rand.nextInt(5);      //places 5 covers on the board at random cell
             int y = Rand.nextInt(5);      //excluding edges and already occupied cells
 
-            while ((x == 4 )|| (x==0 )||(board[x][y] != null)   ) {
+            while ((x == 4) || (x == 0) || (board[x][y] != null)) {
                 x = Rand.nextInt(5);
                 y = Rand.nextInt(5);
             }
-            Cover c1= new Cover(x,y);
-            board[x][y]=c1;
+            Cover c1 = new Cover(x, y);
+            board[x][y] = c1;
         }
     }
 

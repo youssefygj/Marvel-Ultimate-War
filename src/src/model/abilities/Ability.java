@@ -22,6 +22,10 @@ public class Ability {
 
     }
 
+    public Ability() {
+
+    }
+
     public String getName() {
         return this.name;
 
