@@ -20,6 +20,9 @@ public class Cover {
         if (currentHP >= 0) {
             this.currentHP = currentHP;
         }
+        else{
+            this.currentHP=0;
+        }
     }
 
     public Point getLocation() {

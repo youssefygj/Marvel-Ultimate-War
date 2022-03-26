@@ -27,6 +27,7 @@ public class Game {
     private Object[][] board;
     private PriorityQueue turnOrder;
 
+
     public Game(Player firstPlayer, Player secondPlayer) {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
@@ -49,7 +50,10 @@ public class Game {
     public static void loadAbilities(String filePath) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         String currentLine = br.readLine();
-        while (currentLine != null) {
+
+
+        while (currentLine != null&&availableAbilities.size()<45) {
+
             String[] r = currentLine.split(",");
             Effect e = null;
             Ability s = null;
@@ -57,41 +61,42 @@ public class Game {
                 if (r[7].equals("Dodge")) {
                     e = new Dodge(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("PowerUp")) {
+              else  if (r[7].equals("PowerUp")) {
                     e = new PowerUp(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("Stun")) {
+             else   if (r[7].equals("Stun")) {
                     e = new Stun(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("Shock")) {
+             else   if (r[7].equals("Shock")) {
                     e = new Shock(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("Disarm")) {
+             else   if (r[7].equals("Disarm")) {
                     e = new Disarm(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("Silence")) {
+             else   if (r[7].equals("Silence")) {
                     e = new Silence(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("Root")) {
+            else    if (r[7].equals("Root")) {
                     e = new Root(Integer.parseInt(r[8]));
                 }
-                if (r[7].equals("SpeedUp")) {
+              else  if (r[7].equals("SpeedUp")) {
                     e = new SpeedUp(Integer.parseInt(r[8]));
                 }
-                if(r[7].equals("Shield")){
+              else  if(r[7].equals("Shield")){
                     e=new Shield(Integer.parseInt(r[8]));
                 }
 
                 s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]),e);
             }
-            if (r[0].equals("DMG")) {
+           else if (r[0].equals("DMG")) {
                 s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
-            if (r[0].equals("HEL")) {
+           else if (r[0].equals("HEL")) {
                 s = new HealingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
-            currentLine = br.readLine();
+
             availableAbilities.add(s);
+            currentLine = br.readLine();
         }
         br.close();
     }
@@ -114,7 +119,8 @@ public class Game {
                 newChamp = new Villain(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
-            for (int ability = 0; ability < availableAbilities.size() && newChamp.getAbilities().size()<3; ability++) {      //Loads the abilities, creates the champions
+            for (int ability = 0; ability < availableAbilities.size(); ability++) {      //Loads the abilities, creates the champions
+
                 if (availableAbilities.get(ability).getName().equals(r[8])) {            //inserts them in the availablechampion
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 } else if (availableAbilities.get(ability).getName().equals(r[9])) {
@@ -123,9 +129,11 @@ public class Game {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
             }
+
             availableChampions.add(newChamp);
             currentLine = br.readLine();
         }
+
         br.close();
     }
 
