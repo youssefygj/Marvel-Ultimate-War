@@ -82,10 +82,10 @@ public class Game {
                 s = new CrowdControlAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]),e);
             }
             if (r[0].equals("DMG")) {
-                s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
+                s = new DamagingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
             if (r[0].equals("HEL")) {
-                s = new HealingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[8]));
+                s = new HealingAbility(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[4]), Integer.parseInt(r[3]), AreaOfEffect.valueOf(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
             currentLine = br.readLine();
             availableAbilities.add(s);
@@ -111,17 +111,18 @@ public class Game {
                 newChamp = new Villain(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
                         Integer.parseInt(r[5]), Integer.parseInt(r[6]), Integer.parseInt(r[7]));
             }
-            for (int ability = 0; ability < availableAbilities.size(); ability++) {      //Loads the abilities, creates the champions
+            for (int ability = 0; ability < availableAbilities.size() && newChamp.getAbilities().size()<3; ability++) {      //Loads the abilities, creates the champions
                 if (availableAbilities.get(ability).getName().equals(r[8])) {            //inserts them in the availablechampion
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
-                if (availableAbilities.get(ability).getName().equals(r[9])) {
+                else if (availableAbilities.get(ability).getName().equals(r[9])) {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
-                if (availableAbilities.get(ability).getName().equals(r[10])) {
+                else if (availableAbilities.get(ability).getName().equals(r[10])) {
                     newChamp.getAbilities().add(availableAbilities.get(ability));
                 }
             }
+            System.out.print(newChamp.getAbilities());
             availableChampions.add(newChamp);
             currentLine = br.readLine();
         }
@@ -161,13 +162,15 @@ public class Game {
     }
 
     private void placeChampions() {
-        for (int i = 1; i <= 3; i++) {//places the 3 champions of each player on the board
-            getBoard()[0][i] = firstPlayer.getTeam().get(i - 1);//player1 on the bottom, player2 on the top
-            firstPlayer.getTeam().get(i-1).setLocation(new Point( 0,i));
+        for (int i = 1; i <= firstPlayer.getTeam().size(); i++) {//places the 3 champions of each player on the board
 
+            getBoard()[0][i] = firstPlayer.getTeam().get(i - 1);//player1 on the bottom, player2 on the top
+            firstPlayer.getTeam().get(i - 1).setLocation(new Point(0, i));
+        }
+        for (int i = 1; i <= secondPlayer.getTeam().size(); i++) {
             getBoard()[4][i] = secondPlayer.getTeam().get(i - 1);//no champions on edges.
-            Point y = new Point(4,i);
-            secondPlayer.getTeam().get(i-1).setLocation(y);
+            Point y = new Point(4, i);
+            secondPlayer.getTeam().get(i - 1).setLocation(y);
         }
     }
 
@@ -177,7 +180,7 @@ public class Game {
             int x = Rand.nextInt(5);      //places 5 covers on the board at random cell
             int y = Rand.nextInt(5);      //excluding edges and already occupied cells
 
-            while (x == y || (x == 4 && y == 0) || (y == 0 && x == 4) || (board[x][y] != null)) {
+            while ((x == 4 )|| (x==0 )||(board[x][y] != null)   ) {
                 x = Rand.nextInt(5);
                 y = Rand.nextInt(5);
             }
