@@ -97,7 +97,7 @@ public class Game {
         loadAbilities("Abilities.csv");
         Champion newChamp = null;
 
-        while (currentLine != null) {
+        while (currentLine != null && availableChampions.size()<15) {
             String[] r = currentLine.split(",");
             if (r[0].equals("A")) {
                 newChamp = new AntiHero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),
