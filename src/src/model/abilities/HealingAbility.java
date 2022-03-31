@@ -1,4 +1,5 @@
 package model.abilities;
+
 import java.io.IOException;
 
 public class HealingAbility extends Ability {
@@ -16,6 +17,8 @@ public class HealingAbility extends Ability {
     }
 
     public void setHealAmount(int damageAmount) {
+        if (damageAmount < 0)
+            damageAmount = 0;
         this.healAmount = damageAmount;
 
     }

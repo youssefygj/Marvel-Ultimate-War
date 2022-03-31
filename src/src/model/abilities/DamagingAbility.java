@@ -1,5 +1,7 @@
 package model.abilities;
+
 import java.io.IOException;
+
 public class DamagingAbility extends Ability {
     private int damageAmount;
 
@@ -15,6 +17,8 @@ public class DamagingAbility extends Ability {
     }
 
     public void setDamageAmount(int damageAmount) {
+        if (damageAmount < 0)
+            damageAmount = 0;
         this.damageAmount = damageAmount;
 
     }

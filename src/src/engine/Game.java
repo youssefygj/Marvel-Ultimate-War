@@ -28,13 +28,13 @@ public class Game {
     private PriorityQueue turnOrder;
 
 
-    public Game(Player firstPlayer, Player secondPlayer) {
+    public Game(Player firstPlayer, Player secondPlayer) throws IOException {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
         turnOrder = new PriorityQueue(6);
-        placeCovers();
         placeChampions();
+        placeCovers();
         availableChampions = new ArrayList<Champion>();
         availableAbilities = new ArrayList<Ability>();
     }
@@ -97,7 +97,7 @@ public class Game {
         loadAbilities("Abilities.csv");
         Champion newChamp = null;
 
-        while (currentLine != null && availableChampions.size()<15) {
+        while (currentLine != null && availableChampions.size() < 15) {
             String[] r = currentLine.split(",");
             if (r[0].equals("A")) {
                 newChamp = new AntiHero(r[1], Integer.parseInt(r[2]), Integer.parseInt(r[3]), Integer.parseInt(r[4]),

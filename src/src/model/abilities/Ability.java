@@ -47,6 +47,8 @@ public class Ability {
     }
 
     public void setCurrentCooldown(int currentCooldown) {
+        if (currentCooldown < 0)
+            currentCooldown = 0;
         this.currentCooldown = currentCooldown;
 
     }

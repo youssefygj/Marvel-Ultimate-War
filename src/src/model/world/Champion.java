@@ -53,14 +53,12 @@ public class Champion {
     }
 
     public void setCurrentHP(int currentHP) {
-        if (currentHP<0){
-            this.currentHP=0;
-        }
-        else if (currentHP>this.maxHP){
-            this.currentHP=maxHP;
-        }
-        else
-        this.currentHP = currentHP;
+        if (currentHP < 0) {
+            this.currentHP = 0;
+        } else if (currentHP > this.maxHP) {
+            this.currentHP = maxHP;
+        } else
+            this.currentHP = currentHP;
     }
 
     public int getMana() {
@@ -68,6 +66,8 @@ public class Champion {
     }
 
     public void setMana(int mana) {
+        if (mana < 0)
+            mana = 0;
         this.mana = mana;
     }
 
@@ -76,6 +76,8 @@ public class Champion {
     }
 
     public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
+        if (maxActionPointsPerTurn < 0)
+            maxActionPointsPerTurn = 0;
         this.maxActionPointsPerTurn = maxActionPointsPerTurn;
     }
 
@@ -84,6 +86,8 @@ public class Champion {
     }
 
     public void setCurrentActionPoints(int currentActionPoints) {
+        if(currentActionPoints < 0)
+            currentActionPoints = 0;
         this.currentActionPoints = currentActionPoints;
     }
 
@@ -96,6 +100,8 @@ public class Champion {
     }
 
     public void setAttackDamage(int attackDamage) {
+        if(attackDamage < 0)
+            attackDamage = 0;
         this.attackDamage = attackDamage;
     }
 
@@ -104,6 +110,8 @@ public class Champion {
     }
 
     public void setSpeed(int speed) {
+        if(speed < 0)
+            speed = 0;
         this.speed = speed;
     }
 

@@ -5,22 +5,6 @@ public class Effect {
     private int duration;
     private EffectType type;
 
-    public String getName() {
-        return name;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int new_Duration) {
-        duration = new_Duration;
-    }
-
-    public EffectType getType() {
-        return type;
-    }
-
     public Effect(String name, int duration, EffectType type) {
         this.name = name;
         this.duration = duration;
@@ -30,5 +14,23 @@ public class Effect {
 
     public Effect() {
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int new_Duration) {
+        if (new_Duration < 0)
+            new_Duration = 0;
+        duration = new_Duration;
+    }
+
+    public EffectType getType() {
+        return type;
     }
 }
