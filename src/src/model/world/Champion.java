@@ -86,9 +86,12 @@ public class Champion {
     }
 
     public void setCurrentActionPoints(int currentActionPoints) {
-        if(currentActionPoints < 0)
-            currentActionPoints = 0;
-        this.currentActionPoints = currentActionPoints;
+        if (currentActionPoints > maxActionPointsPerTurn)
+            currentActionPoints = maxActionPointsPerTurn;
+        else if (currentActionPoints < 0)
+            this.currentActionPoints = 0;
+        else
+            this.currentActionPoints = currentActionPoints;
     }
 
     public int getAttackRange() {
@@ -100,7 +103,7 @@ public class Champion {
     }
 
     public void setAttackDamage(int attackDamage) {
-        if(attackDamage < 0)
+        if (attackDamage < 0)
             attackDamage = 0;
         this.attackDamage = attackDamage;
     }
@@ -110,7 +113,7 @@ public class Champion {
     }
 
     public void setSpeed(int speed) {
-        if(speed < 0)
+        if (speed < 0)
             speed = 0;
         this.speed = speed;
     }
