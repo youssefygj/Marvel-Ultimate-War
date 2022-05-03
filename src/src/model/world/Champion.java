@@ -1,13 +1,18 @@
 package model.world;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
+import engine.Player;
 import model.abilities.Ability;
 import model.effects.Effect;
+import model.effects.EffectType;
+import model.effects.Embrace;
+import model.effects.Stun;
 
-public class Champion {
+public abstract class Champion implements Damageable, Comparable {
     private String name;
     private int maxHP;
     private int currentHP;
@@ -34,7 +39,21 @@ public class Champion {
         this.condition = Condition.ACTIVE;
         this.abilities = new ArrayList<Ability>();
         this.appliedEffects = new ArrayList<Effect>();
-        this.currentActionPoints=maxActionPointsPerTurn;
+        this.currentActionPoints = maxActionPointsPerTurn;
+    }
+
+    public int compareTo(Champion c) {
+        if (this.getSpeed() > c.getSpeed()) {
+            return 1;
+        } else if (this.getSpeed() < c.getSpeed()) {
+            return -1;
+        } else {
+            if (this.getName().compareTo(c.getName()) > 1) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
     }
 
     public int getMaxHP() {
@@ -45,23 +64,21 @@ public class Champion {
         return name;
     }
 
+    public int getCurrentHP() {
+
+        return currentHP;
+    }
+
     public void setCurrentHP(int hp) {
 
         if (hp < 0) {
             currentHP = 0;
 
-        }
-        else if (hp > maxHP)
+        } else if (hp > maxHP)
             currentHP = maxHP;
         else
             currentHP = hp;
 
-    }
-
-
-    public int getCurrentHP() {
-
-        return currentHP;
     }
 
     public ArrayList<Effect> getAppliedEffects() {
@@ -124,11 +141,10 @@ public class Champion {
     }
 
     public void setCurrentActionPoints(int currentActionPoints) {
-        if(currentActionPoints>maxActionPointsPerTurn)
-            currentActionPoints=maxActionPointsPerTurn;
-        else
-        if(currentActionPoints<0)
-            currentActionPoints=0;
+        if (currentActionPoints > maxActionPointsPerTurn)
+            currentActionPoints = maxActionPointsPerTurn;
+        else if (currentActionPoints < 0)
+            currentActionPoints = 0;
         this.currentActionPoints = currentActionPoints;
     }
 
@@ -140,7 +156,33 @@ public class Champion {
         this.maxActionPointsPerTurn = maxActionPointsPerTurn;
     }
 
+    //Start of milestone 2
 
+    public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
+        if (this instanceof Hero) {
+            for (int i = 0; i < targets.size(); i++) {
+                for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
+                    if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) ;
+                    {
+                        targets.get(i).getAppliedEffects().remove(j);
+                    }
+                }
+                Embrace temp = new Embrace(2);
+                temp.apply(targets.get(i));
+            }
+        } else if (this instanceof Villain) {
+            for (int i = 0; i < targets.size(); i++) {
+                if (targets.get(i).getCurrentHP() < ((targets.get(i).getMaxHP() * 30) / 100))
+                    targets.get(i).setCondition(Condition.KNOCKEDOUT);
+            }
+
+        } else if (this instanceof AntiHero) {
+            Stun x = new Stun(2);
+            for (int i = 0; i < targets.size();i++){
+            x.apply(targets.get(i));
+            }
+        }
+    }
 
 
 }
