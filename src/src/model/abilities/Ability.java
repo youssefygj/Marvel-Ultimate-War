@@ -1,72 +1,58 @@
 package model.abilities;
 
-import java.io.IOException;
-
 public class Ability {
     private String name;
     private int manaCost;
     private int baseCooldown;
     private int currentCooldown;
     private int castRange;
-    private int requiredActionPoints;
     private AreaOfEffect castArea;
+    private int requiredActionPoints;
 
-    public Ability(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required) throws IOException {
-
+    public Ability(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required) {
         this.name = name;
         this.manaCost = cost;
         this.baseCooldown = baseCoolDown;
+        this.currentCooldown = 0;
         this.castRange = castRange;
         this.castArea = area;
         this.requiredActionPoints = required;
-
-    }
-
-    public Ability() {
-
-    }
-
-    public String getName() {
-        return this.name;
-
-    }
-
-    public int getManaCost() {
-        return this.manaCost;
-
-    }
-
-    public int getBaseCooldown() {
-        return this.baseCooldown;
-
     }
 
     public int getCurrentCooldown() {
-        return this.currentCooldown;
-
+        return currentCooldown;
     }
 
-    public void setCurrentCooldown(int currentCooldown) {
-        if (currentCooldown > baseCooldown)
-            currentCooldown = baseCooldown;
-        if (currentCooldown < 0)
-            currentCooldown = 0;
-        this.currentCooldown = currentCooldown;
+    public void setCurrentCooldown(int currentCoolDown) {
+        if (currentCoolDown < 0)
+            currentCoolDown = 0;
+        else if (currentCoolDown > baseCooldown)
+            currentCoolDown = baseCooldown;
+        this.currentCooldown = currentCoolDown;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getManaCost() {
+        return manaCost;
+    }
+
+    public int getBaseCooldown() {
+        return baseCooldown;
     }
 
     public int getCastRange() {
-        return this.castRange;
-
-    }
-
-    public int getRequiredActionPoints() {
-        return this.requiredActionPoints;
-
+        return castRange;
     }
 
     public AreaOfEffect getCastArea() {
-        return this.castArea;
-
+        return castArea;
     }
+
+    public int getRequiredActionPoints() {
+        return requiredActionPoints;
+    }
+
 }

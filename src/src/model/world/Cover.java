@@ -1,32 +1,35 @@
 package model.world;
 
-import java.awt.*;
+import java.awt.Point;
 
-public class Cover {
+public class Cover  {
     private int currentHP;
+
     private Point location;
 
     public Cover(int x, int y) {
-        this.currentHP = (int) ((Math.random() * 900) + 100);
+        this.currentHP = (int)(( Math.random() * 900) + 100);
         location = new Point(x, y);
-
     }
 
     public int getCurrentHP() {
         return this.currentHP;
     }
 
-    public void setCurrentHP(int currentHP) {
-        if (currentHP >= 0) {
-            this.currentHP = currentHP;
-        }
-        else{
-            this.currentHP=0;
-        }
+    public void setCurrentHP(int newHp) {
+        if (newHp < 0) {
+            currentHP = 0;
+
+        } else
+            currentHP = newHp;
     }
 
     public Point getLocation() {
-        return this.location;
+        return location;
     }
+
+
+
+
 
 }

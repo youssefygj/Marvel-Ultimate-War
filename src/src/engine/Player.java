@@ -1,26 +1,23 @@
 package engine;
 
-import model.world.Champion;
-
 import java.util.ArrayList;
+
+import model.world.Champion;
 
 public class Player {
     private String name;
-    private Champion leader;
     private ArrayList<Champion> team;
+    private Champion leader;
+
 
     public Player(String name) {
         this.name = name;
         team = new ArrayList<Champion>();
+
     }
 
-    public String getName() {
-
-        return name;
-    }
 
     public Champion getLeader() {
-
         return leader;
     }
 
@@ -28,7 +25,13 @@ public class Player {
         this.leader = leader;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public ArrayList<Champion> getTeam() {
         return team;
     }
+
+
 }
