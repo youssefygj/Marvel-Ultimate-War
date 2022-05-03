@@ -7,4 +7,8 @@ public class AntiHero extends Champion {
 
     }
 
+    @Override
+    public int compareTo(Object o) {
+        return 0;
+    }
 }

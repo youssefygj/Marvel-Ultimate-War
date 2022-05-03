@@ -6,4 +6,8 @@ public class Villain extends Champion {
         super(name, maxHP, mana, maxActionsPerTurn, speed, attackRange, attackDamage);
     }
 
+    @Override
+    public int compareTo(Object o) {
+        return 0;
+    }
 }
