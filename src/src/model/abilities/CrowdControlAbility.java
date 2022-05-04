@@ -1,8 +1,11 @@
 package model.abilities;
 
 import model.effects.Effect;
+import model.world.Champion;
+import model.world.Damageable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CrowdControlAbility extends Ability {
 
@@ -18,4 +21,17 @@ public class CrowdControlAbility extends Ability {
         return this.effect;
 
     }
+    public void execute(ArrayList<Damageable> targets) throws IOException {
+
+     for(int i=0;i<targets.size();i++){
+         if(targets.get(i) instanceof Champion){
+             getEffect().apply((Champion) targets.get(i));
+
+
+         }
+     }
 }
+
+
+
+    }
