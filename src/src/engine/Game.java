@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
+import exceptions.AbilityUseException;
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughResourcesException;
+import exceptions.UnallowedMovementException;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
@@ -20,7 +24,7 @@ public class Game {
     private final static int BOARDHEIGHT = 5;
     private static ArrayList<Champion> availableChampions;
     private static ArrayList<Ability> availableAbilities;
-    int i = r.y;
+
     private Player firstPlayer;
     private Player secondPlayer;
     private Object[][] board;
@@ -28,16 +32,6 @@ public class Game {
     private boolean firstLeaderAbilityUsed;
     private boolean secondLeaderAbilityUsed;
 
-    {
-        int z = r.y + ar
-    }
-
-    {
-        Object c = board[i][r.y];
-        if (board[r.x][i] != null) {
-            check(c, o);
-        }
-    }
 
     public Game() {
 
@@ -51,6 +45,7 @@ public class Game {
         availableAbilities = new ArrayList<Ability>();
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
         turnOrder = new PriorityQueue(6);
+
         placeChampions();
         placeCovers();
     }
@@ -320,12 +315,12 @@ public class Game {
 
     public boolean isFirstLeaderAbilityUsed() {
         return firstLeaderAbilityUsed;
-    } else if(d ==Direction.RIGHT)
+    }
 
     public boolean isSecondLeaderAbilityUsed() {
         return secondLeaderAbilityUsed;
     }
-            for(
+
 
     public void check(Object c, int o) {
         if (c instanceof Champion) {
@@ -340,13 +335,50 @@ public class Game {
         }
     }
 
-    public static boolean check2(Champion c,Champion k ) {
-        if (c instanceof Hero && k instanceof Villain || (c instanceof Villain && k instanceof Hero))
-        {return true;}
-        if (c instanceof Hero && k instanceof Villain)
-        {return true;}
+    public static boolean check2(Champion c, Champion k) {
+
+        if (c instanceof Hero && k instanceof Hero || (c instanceof Villain && k instanceof Villain)) {
+            return false;
+        } else if ((c instanceof Hero) || (c instanceof Villain)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
-d attack(Direction d) {
+
+    public void extra(Object c, int o) {
+        if (((Champion) c).getCurrentHP() - o > 0) {
+            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - o);
+        } else {
+            ((Champion) c).setCondition(Condition.KNOCKEDOUT);
+
+        }
+    }
+
+    public boolean checke(Champion c, Champion p) {
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            Effect g = c.getAppliedEffects().get(i);
+            if (g instanceof Disarm || g instanceof Stun) {
+                return true;
+            }
+        }
+
+        for (int i = 0; i < p.getAppliedEffects().size(); i++) {
+            Effect r = p.getAppliedEffects().get(i);
+            if (r instanceof Shield) {
+                return true;
+            } else if (r instanceof Dodge) {
+                int z = (int) (Math.random() * 2);
+                if (z == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void attack(Direction d) throws AbilityUseException {
         Point r = getCurrentChampion().getLocation();
         int ar = getCurrentChampion().getAttackRange();
         int o = getCurrentChampion().getAttackDamage();
@@ -356,25 +388,64 @@ d attack(Direction d) {
             int z = r.x + ar;
             for (int i = r.x; i <= z; i++) {
                 Object c = board[i][r.y];
-                if (board[i][r.y] != null) {
-                    check(c, o);
+
+                if (c != null) {
+                    if (c instanceof Champion) {
+
+                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                            extra(c, o);
+                        } else {
+                            check(c, o);
+                        }
+                        if (checke(getCurrentChampion(), (Champion) c)) {
+                            throw new AbilityUseException("can't use normal attack ");
+                        }
+                    } else {
+                        check(c, o);
+                    }
                 }
 
             }
         } else if (d == Direction.DOWN) {
             int z = r.x - ar;
             for (int i = r.x; i >= z; i--) {
-                Object c =
-                        board[i][r.y];
-                check(c, o);
+                Object c = board[i][r.y];
+                if (c != null) {
+
+                    if (c instanceof Champion) {
+
+                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                            extra(c, o);
+                        } else {
+                            check(c, o);
+                        }
+                        if (checke(getCurrentChampion(), (Champion) c)) {
+                            throw new AbilityUseException("can't use normal attack ");
+                        }
+                    } else {
+                        check(c, o);
+                    }
+                }
             }
         } else if (d == Direction.LEFT) {
             int z = r.y - ar;
 
             for (int i = r.y; i >= z; i--) {
                 Object c = board[r.x][i];
-                if (board[r.x][i] != null) {
-                    check(c, o);
+                if (c != null) {
+                    if (c instanceof Champion) {
+
+                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                            extra(c, o);
+                        } else {
+                            check(c, o);
+                        }
+                        if (checke(getCurrentChampion(), (Champion) c)) {
+                            throw new AbilityUseException("can't use normal attack ");
+                        }
+                    } else {
+                        check(c, o);
+                    }
                 }
             }
         } else if (d == Direction.RIGHT) {
@@ -382,13 +453,25 @@ d attack(Direction d) {
 
             for (int i = r.y; i >= z; i--) {
                 Object c = board[r.x][i];
-                if (board[r.x][i] != null) {
-                    check(c, o);
+                if (c != null) {
+
+                    if (c instanceof Champion){
+
+                        if(check2(getCurrentChampion(),(Champion)(c)))
+                        {extra(c,o);}
+                        else{check(c, o);}
+                        if (checke(getCurrentChampion(), (Champion) c))
+                        {throw new AbilityUseException("can't use normal attack ");
+                        }
+                    }
+                    else{ check(c, o);}
+                }
                 }
             }
-        }
 
-getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints()-2);
+
+
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
     }
 
     public void castAbility(Ability a) throws NotEnoughResourcesException, InvalidTargetException, IOException {
@@ -416,28 +499,25 @@ getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActio
             }
             if (a.getCastArea() == AreaOfEffect.SURROUND) {
                 Point z = getCurrentChampion().getLocation();
-                for (int i = z.y - 1; i <= z.y+1;i++){
-                    for(int j=z.x-1;j<=z.x+1;j++){
-                        if(!z.equals(new Point(j,i))){
-                            if (board[j][i] instanceof Champion){
-                                if(firstPlayer.getTeam().contains(getCurrentChampion())&&firstPlayer.getTeam().contains(board[j][i])){
-                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP()+((HealingAbility) a).getHealAmount());
-                                }
-                                else if (secondPlayer.getTeam().contains(getCurrentChampion())&&secondPlayer.getTeam().contains(board[j][i])){
-                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP()+((HealingAbility) a).getHealAmount());
-                                }
-                                else {
+                for (int i = z.y - 1; i <= z.y + 1; i++) {
+                    for (int j = z.x - 1; j <= z.x + 1; j++) {
+                        if (!z.equals(new Point(j, i))) {
+                            if (board[j][i] instanceof Champion) {
+                                if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
+                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                                } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
+                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                                } else {
                                     throw new InvalidTargetException("NO");
 
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new InvalidTargetException(("NO"));
                             }
                         }
-                        }
                     }
                 }
+            }
 
         }
         if (a instanceof DamagingAbility) {
@@ -454,7 +534,7 @@ getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActio
         }
     }
 
-    public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException {
+    public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException {
         if (a instanceof DamagingAbility) {
             if (getCurrentChampion().getMana() < a.getManaCost())
                 throw new NotEnoughResourcesException("NO MANA!");
