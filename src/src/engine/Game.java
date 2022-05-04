@@ -322,16 +322,23 @@ public class Game {
     }
 
 
-    public void check(Object c, int o) {
+    public boolean check(Object c, int o) {
         if (c instanceof Champion) {
             if (((Champion) c).getCurrentHP() - o > 0) {
                 ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - o);
+                return true;
             } else {
                 ((Champion) c).setCondition(Condition.KNOCKEDOUT);
 
             }
         } else if (c instanceof Cover) {
-            ((Cover) c).setCurrentHP(((Cover) c).getCurrentHP() - o);
+            if (((Cover) c).getCurrentHP() - o > 0) {
+                ((Cover) c).setCurrentHP(((Cover) c).getCurrentHP() - o);
+            }
+            return true;
+
+        } else {
+            return false;
         }
     }
 
@@ -347,12 +354,13 @@ public class Game {
 
     }
 
-    public void extra(Object c, int o) {
+    public boolean extra(Object c, int o) {
         if (((Champion) c).getCurrentHP() - o > 0) {
-            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - o);
+            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (1.5 * o));
+            return true;
         } else {
             ((Champion) c).setCondition(Condition.KNOCKEDOUT);
-
+            return false;
         }
     }
 
@@ -388,87 +396,109 @@ public class Game {
             int z = r.x + ar;
             for (int i = r.x; i <= z; i++) {
                 Object c = board[i][r.y];
-
+                if (checke(getCurrentChampion(), (Champion) c)) {
+                    throw new AbilityUseException("can't use normal attack ");
+                }
                 if (c != null) {
                     if (c instanceof Champion) {
 
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-                            extra(c, o);
-                        } else {
-                            check(c, o);
-                        }
-                        if (checke(getCurrentChampion(), (Champion) c)) {
-                            throw new AbilityUseException("can't use normal attack ");
+
+                            if (!extra(c, o)) {
+                                c = null;
+                            }
                         }
                     } else {
-                        check(c, o);
+                        if (!check(c, o)) ;
+                        {
+                            c = null;
+                        }
                     }
-                }
 
+                }
             }
+
         } else if (d == Direction.DOWN) {
             int z = r.x - ar;
             for (int i = r.x; i >= z; i--) {
                 Object c = board[i][r.y];
+                if (checke(getCurrentChampion(), (Champion) c)) {
+                    throw new AbilityUseException("can't use normal attack ");
+                }
                 if (c != null) {
-
                     if (c instanceof Champion) {
 
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-                            extra(c, o);
-                        } else {
-                            check(c, o);
-                        }
-                        if (checke(getCurrentChampion(), (Champion) c)) {
-                            throw new AbilityUseException("can't use normal attack ");
+
+                            if (!extra(c, o)) {
+                                c = null;
+                            }
                         }
                     } else {
-                        check(c, o);
+                        if (!check(c, o)) ;
+                        {
+                            c = null;
+                        }
                     }
+
                 }
             }
+
         } else if (d == Direction.LEFT) {
             int z = r.y - ar;
 
             for (int i = r.y; i >= z; i--) {
                 Object c = board[r.x][i];
+                if (checke(getCurrentChampion(), (Champion) c)) {
+                    throw new AbilityUseException("can't use normal attack ");
+                }
                 if (c != null) {
                     if (c instanceof Champion) {
 
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-                            extra(c, o);
-                        } else {
-                            check(c, o);
-                        }
-                        if (checke(getCurrentChampion(), (Champion) c)) {
-                            throw new AbilityUseException("can't use normal attack ");
+
+                            if (!extra(c, o)) {
+                                c = null;
+                            }
                         }
                     } else {
-                        check(c, o);
+                        if (!check(c, o)) ;
+                        {
+                            c = null;
+                        }
                     }
+
                 }
             }
+
         } else if (d == Direction.RIGHT) {
             int z = r.y + ar;
 
             for (int i = r.y; i >= z; i--) {
                 Object c = board[r.x][i];
+                if (checke(getCurrentChampion(), (Champion) c)) {
+                    throw new AbilityUseException("can't use normal attack ");
+                }
                 if (c != null) {
+                    if (c instanceof Champion) {
 
-                    if (c instanceof Champion){
+                        if (check2(getCurrentChampion(), (Champion) (c))) {
 
-                        if(check2(getCurrentChampion(),(Champion)(c)))
-                        {extra(c,o);}
-                        else{check(c, o);}
-                        if (checke(getCurrentChampion(), (Champion) c))
-                        {throw new AbilityUseException("can't use normal attack ");
+                            if (!extra(c, o)) {
+                                c = null;
+                            }
+                        }
+                    } else {
+                        if (!check(c, o)) ;
+                        {
+                            c = null;
                         }
                     }
-                    else{ check(c, o);}
-                }
+
                 }
             }
 
+        }
 
 
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
