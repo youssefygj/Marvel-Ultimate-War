@@ -92,6 +92,8 @@ public abstract class Effect implements Cloneable {
     }
 
     public void remove(Champion c) throws IOException {
+        if (c.getAppliedEffects().size() == 0)
+            return;
         if (this.name == "Disarm") {
             c.getAppliedEffects().remove(this);
             DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
