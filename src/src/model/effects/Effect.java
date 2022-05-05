@@ -67,6 +67,9 @@ public abstract class Effect implements Cloneable {
             }
         } else if (this.name == "Root") {
             c.getAppliedEffects().add(this);
+            if (c.getCondition()==Condition.ACTIVE) {
+                c.setCondition(Condition.ROOTED);
+            }
         } else if (this.name == "Shield") {
             c.getAppliedEffects().add(this);
             c.setSpeed((int) (c.getSpeed() * 1.02));
