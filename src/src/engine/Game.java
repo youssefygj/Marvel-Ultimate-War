@@ -30,9 +30,7 @@ public class Game {
     private boolean secondLeaderAbilityUsed;
 
 
-    public Game() {
 
-    }
 
     public Game(Player first, Player second) {
         firstPlayer = first;
@@ -41,8 +39,7 @@ public class Game {
         availableChampions = new ArrayList<Champion>();
         availableAbilities = new ArrayList<Ability>();
         board = new Object[BOARDWIDTH][BOARDHEIGHT];
-        turnOrder = new PriorityQueue(6);
-
+        prepareChampionTurns();
         placeChampions();
         placeCovers();
     }
