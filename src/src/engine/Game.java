@@ -30,9 +30,6 @@ public class Game {
     private boolean secondLeaderAbilityUsed;
 
 
-
-
-
     public Game(Player first, Player second) {
         firstPlayer = first;
 
@@ -183,17 +180,6 @@ public class Game {
         return BOARDHEIGHT;
     }
 
-    public static boolean check2(Champion c, Champion k) {
-
-        if (c instanceof Hero && k instanceof Hero || (c instanceof Villain && k instanceof Villain)) {
-            return false;
-        } else if ((c instanceof Hero) || (c instanceof Villain)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 
     public PriorityQueue InvalidTargetException() {
         PriorityQueue pq = new PriorityQueue(6);
@@ -263,6 +249,9 @@ public class Game {
             throw new NotEnoughResourcesException("NO!");
         } else
             getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 1);
+        if (getCurrentChampion().getCondition() == Condition.ROOTED) {
+            throw new NotEnoughResourcesException("NO!");
+        }
         if (d == Direction.UP) {
             if (getCurrentChampion().getLocation().x == 4)
                 throw new UnallowedMovementException("NO!");
@@ -347,6 +336,19 @@ public class Game {
         return false;
     }
 
+    public static boolean check2(Champion c, Champion k) {
+
+        if (c instanceof Hero && k instanceof Hero || (c instanceof Villain && k instanceof Villain)) {
+            return false;
+        } else if ((c instanceof Hero) || (c instanceof Villain)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
     public boolean extra(Object c, int o) {
         if (((Champion) c).getCurrentHP() - o > 0) {
             ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (1.5 * o));
@@ -358,56 +360,74 @@ public class Game {
     }
 ////////////////END
 
-    public boolean checke(Champion c, Champion p) {
-        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
-            Effect g = c.getAppliedEffects().get(i);
-            if (g instanceof Disarm || g instanceof Stun) {
-                return true;
-            }
-        }
 
-        for (int i = 0; i < p.getAppliedEffects().size(); i++) {
-            Effect r = p.getAppliedEffects().get(i);
-            if (r instanceof Shield) {
-                return true;
-            } else if (r instanceof Dodge) {
-                int z = (int) (Math.random() * 2);
-                if (z == 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-    public void attack(Direction d) throws AbilityUseException {
+    public void attack(Direction d) throws AbilityUseException, ChampionDisarmedException, IOException {
         Point r = getCurrentChampion().getLocation();
         int ar = getCurrentChampion().getAttackRange();
         int o = getCurrentChampion().getAttackDamage();
 
+        for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
+            Effect g = getCurrentChampion().getAppliedEffects().get(i);
+            if (g instanceof Disarm) {
+                throw new ChampionDisarmedException("Champion is diarmed");
+            }
+            if (g instanceof Stun) {
+                throw new AbilityUseException("Champion is Inactive rn");
+            }
+        }
         if (d == Direction.UP) {
-
             int z = r.x + ar;
             for (int i = r.x; i <= z; i++) {
                 Object c = board[i][r.y];
-                if (checke(getCurrentChampion(), (Champion) c)) {
-                    throw new AbilityUseException("can't use normal attack ");
-                }
+
                 if (c != null) {
-                    if (c instanceof Champion) {
-
+                    if (c instanceof Champion) {//check cases of shield or dodge
+                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
+                            Effect e = ((Champion) c).getAppliedEffects().get(i);
+                            if (e instanceof Shield) {
+                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
+                                break;
+                            } else if (e instanceof Dodge) {
+                                int q = (int) (Math.random() * 2);
+                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                    if (check2(getCurrentChampion(), (Champion) (c))) {
+                                        if (!extra(c, o)) {
+                                            c = null;
+                                        }
+                                    } else {
+                                        if (!check(c, o)) {
+                                            c = null;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                        //special attack
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-
                             if (!extra(c, o)) {
                                 c = null;
                             }
+                            //normal attack
+                        } else {
+                            if (!check(c, o)) {
+                                c = null;
+                            }
+
+
                         }
-                    } else {
+                    }
+
+                    //cover apply normal attack
+                    else {
                         if (!check(c, o)) ;
                         {
                             c = null;
                         }
                     }
+
 
                 }
             }
@@ -416,78 +436,169 @@ public class Game {
             int z = r.x - ar;
             for (int i = r.x; i >= z; i--) {
                 Object c = board[i][r.y];
-                if (checke(getCurrentChampion(), (Champion) c)) {
-                    throw new AbilityUseException("can't use normal attack ");
-                }
+
                 if (c != null) {
-                    if (c instanceof Champion) {
-
+                    if (c instanceof Champion) {//check cases of shield or dodge
+                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
+                            Effect e = ((Champion) c).getAppliedEffects().get(i);
+                            if (e instanceof Shield) {
+                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
+                                break;
+                            } else if (e instanceof Dodge) {
+                                int q = (int) (Math.random() * 2);
+                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                    if (check2(getCurrentChampion(), (Champion) (c))) {
+                                        if (!extra(c, o)) {
+                                            c = null;
+                                        }
+                                    } else {
+                                        if (!check(c, o)) {
+                                            c = null;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                        //special attack
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-
                             if (!extra(c, o)) {
                                 c = null;
                             }
+                            //normal attack
+                        } else {
+                            if (!check(c, o)) {
+                                c = null;
+                            }
+
+
                         }
-                    } else {
+                    }
+
+                    //cover apply normal attack
+                    else {
                         if (!check(c, o)) ;
                         {
                             c = null;
                         }
                     }
 
-                }
-            }
-
-        } else if (d == Direction.LEFT) {
-            int z = r.y - ar;
-
-            for (int i = r.y; i >= z; i--) {
-                Object c = board[r.x][i];
-                if (checke(getCurrentChampion(), (Champion) c)) {
-                    throw new AbilityUseException("can't use normal attack ");
-                }
-                if (c != null) {
-                    if (c instanceof Champion) {
-
-                        if (check2(getCurrentChampion(), (Champion) (c))) {
-
-                            if (!extra(c, o)) {
-                                c = null;
-                            }
-                        }
-                    } else {
-                        if (!check(c, o)) ;
-                        {
-                            c = null;
-                        }
-                    }
 
                 }
             }
+
 
         } else if (d == Direction.RIGHT) {
             int z = r.y + ar;
 
-            for (int i = r.y; i >= z; i--) {
+            for (int i = r.y; i <= z; i++) {
                 Object c = board[r.x][i];
-                if (checke(getCurrentChampion(), (Champion) c)) {
-                    throw new AbilityUseException("can't use normal attack ");
-                }
+
                 if (c != null) {
-                    if (c instanceof Champion) {
-
+                    if (c instanceof Champion) {//check cases of shield or dodge
+                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
+                            Effect e = ((Champion) c).getAppliedEffects().get(i);
+                            if (e instanceof Shield) {
+                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
+                                break;
+                            } else if (e instanceof Dodge) {
+                                int q = (int) (Math.random() * 2);
+                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                    if (check2(getCurrentChampion(), (Champion) (c))) {
+                                        if (!extra(c, o)) {
+                                            c = null;
+                                        }
+                                    } else {
+                                        if (!check(c, o)) {
+                                            c = null;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                        //special attack
                         if (check2(getCurrentChampion(), (Champion) (c))) {
-
                             if (!extra(c, o)) {
                                 c = null;
                             }
+                            //normal attack
+                        } else {
+                            if (!check(c, o)) {
+                                c = null;
+                            }
+
+
                         }
-                    } else {
+                    }
+
+                    //cover apply normal attack
+                    else {
                         if (!check(c, o)) ;
                         {
                             c = null;
                         }
                     }
+
+
+                }
+            }
+
+        }
+         else {
+            int z = r.y - ar;
+
+            for (int i = r.y; i >= z; i--) {
+                Object c = board[r.x][i];
+                if (c != null) {
+                    if (c instanceof Champion) {//check cases of shield or dodge
+                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
+                            Effect e = ((Champion) c).getAppliedEffects().get(i);
+                            if (e instanceof Shield) {
+                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
+                                break;
+                            } else if (e instanceof Dodge) {
+                                int q = (int) (Math.random() * 2);
+                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                    if (check2(getCurrentChampion(), (Champion) (c))) {
+                                        if (!extra(c, o)) {
+                                            c = null;
+                                        }
+                                    } else {
+                                        if (!check(c, o)) {
+                                            c = null;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                        //special attack
+                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                            if (!extra(c, o)) {
+                                c = null;
+                            }
+                            //normal attack
+                        } else {
+                            if (!check(c, o)) {
+                                c = null;
+                            }
+
+
+                        }
+                    }
+
+                    //cover apply normal attack
+                    else {
+                        if (!check(c, o)) ;
+                        {
+                            c = null;
+                        }
+                    }
+
 
                 }
             }
@@ -498,7 +609,9 @@ public class Game {
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
     }
 
-    public void castAbility(Ability a) throws NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException {
+
+    public void castAbility(Ability a) throws
+            NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException {
         if (a.getCurrentCooldown() > 0) {
             throw new AbilityUseException("NO");
         }
@@ -540,11 +653,7 @@ public class Game {
                                     ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
                                 } else if (board[j][i] == null) {
                                     continue;
-                                } else {
-                                    throw new InvalidTargetException("NO");
                                 }
-                            } else {
-                                throw new InvalidTargetException(("NO"));
                             }
 
                     }
@@ -635,17 +744,12 @@ public class Game {
                                     }
                                 } else if (board[j][i] == null) {
                                     continue;
-                                } else {
-                                    throw new InvalidTargetException("NO");
                                 }
                             } else {
-                                if (board[j][i] instanceof Cover) {
-                                    ((Cover) board[j][i]).setCurrentHP(((Cover) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                    if ((int) ((Cover) getBoard()[j][i]).getCurrentHP() == 0)
-                                        getBoard()[j][i] = null;
-                                } else {
-                                    throw new InvalidTargetException("NO");
-                                }
+                                ((Cover) board[j][i]).setCurrentHP(((Cover) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
+                                if ((int) ((Cover) getBoard()[j][i]).getCurrentHP() == 0)
+                                    getBoard()[j][i] = null;
+
                             }
 
                     }
@@ -696,11 +800,7 @@ public class Game {
                                         ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
                                     } else if (board[j][i] == null) {
                                         continue;
-                                    } else {
-                                        throw new InvalidTargetException("NO");
                                     }
-                                } else {
-                                    throw new InvalidTargetException("NO");
                                 }
                         }
 
@@ -719,11 +819,7 @@ public class Game {
                                         ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
                                     } else if (board[j][i] == null) {
                                         continue;
-                                    } else {
-                                        throw new InvalidTargetException("NO");
                                     }
-                                } else {
-                                    throw new InvalidTargetException("NO");
                                 }
                         }
 
@@ -736,7 +832,8 @@ public class Game {
         a.setCurrentCooldown(a.getBaseCooldown());
     }
 
-    public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException {
+    public void castAbility(Ability a, Direction d) throws
+            NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException {
         if (getCurrentChampion().getMana() < a.getManaCost())
             throw new NotEnoughResourcesException("NO MANA!");
         else
@@ -765,9 +862,7 @@ public class Game {
                         continue;
                     else {
                         if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -786,9 +881,7 @@ public class Game {
                             }
 
                         } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -825,9 +918,7 @@ public class Game {
                         continue;
                     else {
                         if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -846,9 +937,7 @@ public class Game {
                             }
 
                         } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -885,9 +974,7 @@ public class Game {
                         continue;
                     else {
                         if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -906,9 +993,8 @@ public class Game {
                             }
 
                         } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+
                                 int c = 0;
                                 for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
                                     if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
@@ -925,77 +1011,73 @@ public class Game {
                                     }
                                 }
                             }
-                        }
 
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            ((Cover) getBoard()[temp.x][temp.y]).setCurrentHP(((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                            if ((int) ((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() == 0)
-                                getBoard()[temp.x][temp.y] = null;
+
+                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
+                                ((Cover) getBoard()[temp.x][temp.y]).setCurrentHP(((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
+                                if ((int) ((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() == 0)
+                                    getBoard()[temp.x][temp.y] = null;
+                            }
+                        }
+                    }
+                }
+
+                if (d == Direction.LEFT) {
+                    temp.y--;
+                    for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
+                        if (temp.y >= 0)
+                            break;
+                        if (getBoard()[temp.x][temp.y] == null)
+                            continue;
+                        else {
+                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                                if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                    int c = 0;
+                                    for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
+                                        if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
+                                            ((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).remove(((Champion) board[temp.x][temp.y]));
+                                            c++;
+                                        }
+                                    }
+                                    if (c == 0) {
+                                        ((Champion) board[temp.x][temp.y]).setCurrentHP(((Champion) board[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
+                                        if (((Champion) board[temp.x][temp.y]).getCurrentHP() == 0) {
+                                            ((Champion) board[temp.x][temp.y]).setCondition(Condition.KNOCKEDOUT);
+                                            Point u = ((Champion) board[temp.x][temp.y]).getLocation();
+                                            board[u.x][u.y] = null;
+                                        }
+                                    }
+                                }
+
+                            } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                    int c = 0;
+                                    for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
+                                        if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
+                                            ((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).remove(((Champion) board[temp.x][temp.y]));
+                                            c++;
+                                        }
+                                    }
+                                    if (c == 0) {
+                                        ((Champion) board[temp.x][temp.y]).setCurrentHP(((Champion) board[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
+                                        if (((Champion) board[temp.x][temp.y]).getCurrentHP() == 0) {
+                                            ((Champion) board[temp.x][temp.y]).setCondition(Condition.KNOCKEDOUT);
+                                            Point u = ((Champion) board[temp.x][temp.y]).getLocation();
+                                            board[u.x][u.y] = null;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
+                                ((Cover) getBoard()[temp.x][temp.y]).setCurrentHP(((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
+                                if ((int) ((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() == 0)
+                                    getBoard()[temp.x][temp.y] = null;
+                            }
                         }
                     }
                 }
             }
-
-            if (d == Direction.LEFT) {
-                temp.y--;
-                for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
-                    if (temp.y >= 0)
-                        break;
-                    if (getBoard()[temp.x][temp.y] == null)
-                        continue;
-                    else {
-                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
-                                int c = 0;
-                                for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
-                                    if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
-                                        ((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).remove(((Champion) board[temp.x][temp.y]));
-                                        c++;
-                                    }
-                                }
-                                if (c == 0) {
-                                    ((Champion) board[temp.x][temp.y]).setCurrentHP(((Champion) board[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                    if (((Champion) board[temp.x][temp.y]).getCurrentHP() == 0) {
-                                        ((Champion) board[temp.x][temp.y]).setCondition(Condition.KNOCKEDOUT);
-                                        Point u = ((Champion) board[temp.x][temp.y]).getLocation();
-                                        board[u.x][u.y] = null;
-                                    }
-                                }
-                            }
-
-                        } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                throw new InvalidTargetException("ALLY!");
-                            else {
-                                int c = 0;
-                                for (int k = 0; k < ((Champion) board[temp.x][temp.y]).getAppliedEffects().size(); k++) {
-                                    if (((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).getName().equals("Shield")) {
-                                        ((Champion) board[temp.x][temp.y]).getAppliedEffects().get(k).remove(((Champion) board[temp.x][temp.y]));
-                                        c++;
-                                    }
-                                }
-                                if (c == 0) {
-                                    ((Champion) board[temp.x][temp.y]).setCurrentHP(((Champion) board[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                    if (((Champion) board[temp.x][temp.y]).getCurrentHP() == 0) {
-                                        ((Champion) board[temp.x][temp.y]).setCondition(Condition.KNOCKEDOUT);
-                                        Point u = ((Champion) board[temp.x][temp.y]).getLocation();
-                                        board[u.x][u.y] = null;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            ((Cover) getBoard()[temp.x][temp.y]).setCurrentHP(((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                            if ((int) ((Cover) getBoard()[temp.x][temp.y]).getCurrentHP() == 0)
-                                getBoard()[temp.x][temp.y] = null;
-                        }
-                    }
-                }
-            }
-        }
 
             if (a instanceof HealingAbility) {
                 if (d == Direction.UP) {
@@ -1009,21 +1091,15 @@ public class Game {
                             if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                                     ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
+
 
                             } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
                                 if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                                     ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
+
                             }
 
-                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                                throw new InvalidTargetException("CAN'T HEAL COVER!");
-                            }
+
                         }
                     }
                 }
@@ -1038,217 +1114,178 @@ public class Game {
                             if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                                     ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
-
-                            } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                    ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
                             }
 
-                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                                throw new InvalidTargetException("CAN'T HEAL COVER!");
-                            }
+                        else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
+                                ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+
                         }
+                    }}
+                }
+            }
+            if (d == Direction.RIGHT) {
+                temp.y++;
+                for (int i = 0; i < a.getCastRange(); i++, temp.y++) {
+                    if (temp.y >= 5)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    else {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
+                                ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+
+
+                        } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
+                                ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+
+                        }
+
+
                     }
                 }
-                if (d == Direction.RIGHT) {
-                    temp.y++;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.y++) {
-                        if (temp.y >= 5)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        else {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                    ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
+            }
+            if (d == Direction.LEFT) {
+                temp.y--;
+                for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
+                    if (temp.y <= 0)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    else {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
+                                ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
 
-                            } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                    ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
-                            }
+                        } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
+                                ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
 
-                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                                throw new InvalidTargetException("CAN'T HEAL COVER!");
-                            }
                         }
+
                     }
                 }
-                if (d == Direction.LEFT) {
-                    temp.y--;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
-                        if (temp.y <= 0)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        else {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                    ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
-
-                            } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
-                                    ((Champion) getBoard()[temp.x][temp.y]).setCurrentHP(((Champion) getBoard()[temp.x][temp.y]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
-                                else {
-                                    throw new InvalidTargetException("CAN'T HEAL ENEMY!");
-                                }
-                            }
-
-                            if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                                throw new InvalidTargetException("CAN'T HEAL COVER!");
-                            }
-                        }
-                    }
-                }
-
             }
 
-            if (a instanceof CrowdControlAbility) {
-                if (d == Direction.UP) {
-                    temp.x++;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.x++) {
-                        if (temp.x >= 5)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                } else {
-                                    throw new InvalidTargetException("CAN'T BUFF ENEMY");
-                                }
-                            }
-                        }
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    throw new InvalidTargetException("CAN'T DEBUFF ALLY");
-                                } else {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                }
-                            }
-                        }
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            throw new InvalidTargetException("CAN'T CC COVER!");
-                        }
-                    }
-
-                }
-                if (d == Direction.DOWN) {
-                    temp.x--;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.x--) {
-                        if (temp.x <= 0)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                } else {
-                                    throw new InvalidTargetException("CAN'T BUFF ENEMY");
-                                }
-                            }
-                        }
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    throw new InvalidTargetException("CAN'T DEBUFF ALLY");
-                                } else {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                }
-                            }
-                        }
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            throw new InvalidTargetException("CAN'T CC COVER!");
-                        }
-                    }
-
-                }
-                if (d == Direction.RIGHT) {
-                    temp.y++;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.y++) {
-                        if (temp.y >= 5)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                } else {
-                                    throw new InvalidTargetException("CAN'T BUFF ENEMY");
-                                }
-                            }
-                        }
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    throw new InvalidTargetException("CAN'T DEBUFF ALLY");
-                                } else {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                }
-                            }
-                        }
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            throw new InvalidTargetException("CAN'T CC COVER!");
-                        }
-                    }
-
-                }
-                if (d == Direction.DOWN) {
-                    temp.y--;
-                    for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
-                        if (temp.y <= 0)
-                            break;
-                        if (getBoard()[temp.x][temp.y] == null)
-                            continue;
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                } else {
-                                    throw new InvalidTargetException("CAN'T BUFF ENEMY");
-                                }
-                            }
-                        }
-                        if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
-                            if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
-                                if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
-                                    throw new InvalidTargetException("CAN'T DEBUFF ALLY");
-                                } else {
-                                    ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
-                                }
-                            }
-                        }
-                        if (getBoard()[temp.x][temp.y] instanceof Cover) {
-                            throw new InvalidTargetException("CAN'T CC COVER!");
-                        }
-                    }
-
-                }
-
-            }
-            a.setCurrentCooldown(a.getBaseCooldown());
         }
 
-        ////////////////////////////END
-    public void castAbility(Ability a, int x, int y) throws NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException {
+        if (a instanceof CrowdControlAbility) {
+            if (d == Direction.UP) {
+                temp.x++;
+                for (int i = 0; i < a.getCastRange(); i++, temp.x++) {
+                    if (temp.x >= 5)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+                        }
+                    }
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+
+
+                        }
+                    }
+
+                }
+
+            }
+            if (d == Direction.DOWN) {
+                temp.x--;
+                for (int i = 0; i < a.getCastRange(); i++, temp.x--) {
+                    if (temp.x <= 0)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+                        }
+                    }
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+
+
+                        }
+                    }
+
+                }
+
+            }
+            if (d == Direction.RIGHT) {
+                temp.y++;
+                for (int i = 0; i < a.getCastRange(); i++, temp.y++) {
+                    if (temp.y >= 5)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+                        }
+                    }
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            if (d == Direction.DOWN) {
+                temp.y--;
+                for (int i = 0; i < a.getCastRange(); i++, temp.y--) {
+                    if (temp.y <= 0)
+                        break;
+                    if (getBoard()[temp.x][temp.y] == null)
+                        continue;
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (firstPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+                        }
+                    }
+                    if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion) {
+                            if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y])) {
+                                ((CrowdControlAbility) a).getEffect().apply((Champion) getBoard()[temp.x][temp.y]);
+                            }
+
+
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+        a.setCurrentCooldown(a.getBaseCooldown());
+    }
+
+    ////////////////////////////END
+    public void castAbility(Ability a, int x, int y) throws
+            NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException {
 
         if (getCurrentChampion().getMana() < a.getManaCost()) {
             throw new NotEnoughResourcesException("No");
@@ -1284,82 +1321,84 @@ public class Game {
                 ((Champion) board[x][y]).setCurrentHP(((Champion) (board[x][y])).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
                 if (((Champion) board[x][y]).getCurrentHP() == 0) {
                     ((Champion) board[x][y]).setCondition(Condition.KNOCKEDOUT);
-                    board[x][y]=null;
+                    board[x][y] = null;
                 }
             } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
                 ((Champion) board[x][y]).setCurrentHP(((Champion) (board[x][y])).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
                 if (((Champion) board[x][y]).getCurrentHP() == 0) {
                     ((Champion) board[x][y]).setCondition(Condition.KNOCKEDOUT);
-                    board[x][y]=null;
+                    board[x][y] = null;
                 }
 
-        }
-            else if(board[x][y] instanceof Cover){
+            } else if (board[x][y] instanceof Cover) {
                 ((Cover) board[x][y]).setCurrentHP(((Cover) (board[x][y])).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                if (((Cover) board[x][y]).getCurrentHP()==0){
-                    board[x][y]=null;
+                if (((Cover) board[x][y]).getCurrentHP() == 0) {
+                    board[x][y] = null;
                 }
             }
-        if(a instanceof CrowdControlAbility){
-            if(((CrowdControlAbility) a).getEffect().getType()==EffectType.BUFF){
-                if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
-                   ((CrowdControlAbility) a).getEffect().apply((Champion)board[x][y]);
-                } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
-                    ((CrowdControlAbility) a).getEffect().apply((Champion)board[x][y]);
-                } else {
-                    throw new InvalidTargetException("NO");
+            if (a instanceof CrowdControlAbility) {
+                if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
+                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
+                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                    } else {
+                        throw new InvalidTargetException("NO");
+                    }
                 }
-            }
-            if(((CrowdControlAbility) a).getEffect().getType()==EffectType.DEBUFF){
-                if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
-                    ((CrowdControlAbility) a).getEffect().apply((Champion)board[x][y]);
-                } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
-                    ((CrowdControlAbility) a).getEffect().apply((Champion)board[x][y]);
-                } else {
-                    throw new InvalidTargetException("NO");
+                if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
+                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
+                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                    } else {
+                        throw new InvalidTargetException("NO");
+                    }
                 }
             }
         }
-    }
 
         a.setCurrentCooldown(a.getBaseCooldown());
     }
 
-    public ArrayList checkl(Champion x, Player y,int i) {
+    public ArrayList checkl(Champion x, Player y, int i) {
         ArrayList<Champion> a = new ArrayList();
 
         if (x instanceof Hero) {
             a = y.getTeam();
-        } else if (x instanceof Villain) {if(i==1){
-            a = secondPlayer.getTeam();}
-        else{  a = firstPlayer.getTeam();}}
-        else{
-            for(int k=0;k<getFirstPlayer().getTeam().size();k++){
-                if(!getFirstPlayer().getTeam().get(k).getName().equals(firstPlayer.getLeader().getName()))
+        } else if (x instanceof Villain) {
+            if (i == 1) {
+                a = secondPlayer.getTeam();
+            } else {
+                a = firstPlayer.getTeam();
+            }
+        } else {
+            for (int k = 0; k < getFirstPlayer().getTeam().size(); k++) {
+                if (!getFirstPlayer().getTeam().get(k).getName().equals(firstPlayer.getLeader().getName()))
                     a.add(getFirstPlayer().getTeam().get(k));
-            } for(int k=0;k<getSecondPlayer().getTeam().size();k++){
-                if(!getFirstPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
+            }
+            for (int k = 0; k < getSecondPlayer().getTeam().size(); k++) {
+                if (!getFirstPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
                     a.add(getFirstPlayer().getTeam().get(k));
             }
         }
         return a;
     }
 
-    public void useLeaderAbility () throws LeaderAbilityAlreadyUsedException, IOException {
+    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException {
         Champion x = getCurrentChampion();
         boolean which = getFirstPlayer().getTeam().contains(x) ? true : false;
         if (which) {
             if (x.getName().equals((getFirstPlayer().getLeader()).getName())) {
-                x.useLeaderAbility(checkl(x,getFirstPlayer(),1));
+                x.useLeaderAbility(checkl(x, getFirstPlayer(), 1));
 
-            }
-            else if(x.getName().equals((getSecondPlayer().getLeader()).getName()))
-                x.useLeaderAbility(checkl(x,getSecondPlayer(),2));
+            } else if (x.getName().equals((getSecondPlayer().getLeader()).getName()))
+                x.useLeaderAbility(checkl(x, getSecondPlayer(), 2));
         }
-        if(isFirstLeaderAbilityUsed()){
+        if (isFirstLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
         }
-        if(isSecondLeaderAbilityUsed()){
+        if (isSecondLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
 
         }
@@ -1367,20 +1406,20 @@ public class Game {
 
     public void endTurn() throws IOException {
         turnOrder.remove();
-        if(turnOrder.size() == 0){
+        if (turnOrder.size() == 0) {
             prepareChampionTurns();
         }
-        while(getCurrentChampion().getCondition()== Condition.INACTIVE){
+        while (getCurrentChampion().getCondition() == Condition.INACTIVE) {
             turnOrder.remove();
         }
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
-        for(int i = 0; i < getCurrentChampion().getAppliedEffects().size();i++){
-            getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration()-1);
-            if(getCurrentChampion().getAppliedEffects().get(i).getDuration()==0)
+        for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
+            getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
+            if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
                 getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
         }
-        for(int i = 0;i < getCurrentChampion().getAbilities().size();i++){
-            getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown()-1);
+        for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
+            getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
         }
 
     }
