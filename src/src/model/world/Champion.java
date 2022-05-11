@@ -158,31 +158,9 @@ public abstract class Champion implements Damageable, Comparable {
 
     //Start of milestone 2
 
-    public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
-        if (this instanceof Hero) {
-            for (int i = 0; i < targets.size(); i++) {
-                for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
-                    if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) ;
-                    {
-                        targets.get(i).getAppliedEffects().remove(j);
-                    }
-                }
-                Embrace temp = new Embrace(2);
-                temp.apply(targets.get(i));
-            }
-        } else if (this instanceof Villain) {
-            for (int i = 0; i < targets.size(); i++) {
-                if (targets.get(i).getCurrentHP() < ((targets.get(i).getMaxHP() * 30) / 100))
-                    targets.get(i).setCondition(Condition.KNOCKEDOUT);
-            }
+    public abstract void useLeaderAbility(ArrayList<Champion> targets) throws IOException ;
 
-        } else if (this instanceof AntiHero) {
-            Stun x = new Stun(2);
-            for (int i = 0; i < targets.size();i++){
-            x.apply(targets.get(i));
-            }
-        }
-    }
+
 
 
 }

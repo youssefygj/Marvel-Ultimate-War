@@ -373,8 +373,13 @@ public class Game {
             }
         }
         if (d == Direction.UP) {
+
             int z = r.x + ar;
             for (int i = r.x; i <= z; i++) {
+                if(i>4){
+                    break;
+                }
+
                 Object c = board[i][r.y];
 
                 if (c != null) {
@@ -429,8 +434,11 @@ public class Game {
             }
 
         } else if (d == Direction.DOWN) {
+
             int z = r.x - ar;
             for (int i = r.x; i >= z; i--) {
+                if(i<0)
+                {break;}
                 Object c = board[i][r.y];
 
                 if (c != null) {
@@ -489,6 +497,9 @@ public class Game {
             int z = r.y + ar;
 
             for (int i = r.y; i <= z; i++) {
+                if(i>4){
+                    break;
+                }
                 Object c = board[r.x][i];
 
                 if (c != null) {
@@ -546,6 +557,9 @@ public class Game {
             int z = r.y - ar;
 
             for (int i = r.y; i >= z; i--) {
+             if(i<0){
+                 break;
+             }
                 Object c = board[r.x][i];
                 if (c != null) {
                     if (c instanceof Champion) {//check cases of shield or dodge
@@ -627,8 +641,10 @@ public class Game {
             throw new NotEnoughResourcesException("NO");
         }
         if (a instanceof HealingAbility) {
+
             if (a.getCastArea() == AreaOfEffect.SELFTARGET) {
                 getCurrentChampion().setCurrentHP(getCurrentChampion().getCurrentHP() + ((HealingAbility) a).getHealAmount());
+
             }
             if (a.getCastArea() == AreaOfEffect.TEAMTARGET) {
                 if (firstPlayer.getTeam().contains(getCurrentChampion())) {
