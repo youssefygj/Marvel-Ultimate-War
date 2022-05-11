@@ -353,7 +353,7 @@ public class Game {
 
     public boolean extra(Object c, int o) {
         if (((Champion) c).getCurrentHP() - 0.5 * o > 0) {
-            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (0.5 * o));
+            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (1.5 * o));
             return true;
         } else {
             ((Champion) c).setCurrentHP(0);
@@ -383,11 +383,12 @@ public class Game {
 
         }  getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
         if (d == Direction.UP) {
+            if(r.x==4){
+                return;
+            }
             int z = r.x + ar;
-            for (int i = r.x; i <= z; i++) {
-                if (i > 4) {
-                    break;
-                }
+            for (int i = r.x; i < z&&i<4; i++) {
+
                 Object c = board[i][r.y];
 
                 if (c != null) {
@@ -401,9 +402,7 @@ public class Game {
                                 int q = (int) (Math.random() * 2);
                                 if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
                                     if (check2(getCurrentChampion(), (Champion) (c))) {
-                                        if (!check(c, o)) {
-                                            c = null;
-                                        }
+
                                         if (!extra(c, o)) {
                                             c = null;
                                         }
@@ -423,9 +422,7 @@ public class Game {
                         //special attack
                         if (check2(getCurrentChampion(), (Champion) (c))) {
 
-                            if (!check(c, o)) {
-                                c = null;
-                            }
+
                             if (!extra(c, o)) {
                                 c = null;
                             }
@@ -448,12 +445,11 @@ public class Game {
                 }
 
             }} else if (d == Direction.DOWN) {
-
+                if (r.x==0)
+                {return;}
                 int z = r.x - ar;
-                for (int i = r.x; i >= z; i--) {
-                    if (i < 0) {
-                        break;
-                    }
+                for (int i = r.x; i >= z&&i > 0; i--) {
+
                     Object c = board[i][r.y];
 
                     if (c != null) {
@@ -515,12 +511,10 @@ public class Game {
 
                 }
             } else if (d == Direction.RIGHT) {
+            if(r.y==4){return;}
                 int z = r.y + ar;
+                for (int i = r.y; i <= z&&i < 4; i++) {
 
-                for (int i = r.y; i <= z; i++) {
-                    if (i > 4) {
-                        break;
-                    }
                     Object c = board[r.x][i];
 
                     if (c != null) {
@@ -582,12 +576,10 @@ public class Game {
 
                 }
             } else {
+            if(r.y==0){return;}
                 int z = r.y - ar;
+                for (int i = r.y; i > z&&i >=0; i--) {
 
-                for (int i = r.y; i >= z; i--) {
-                    if (i < 0) {
-                        break;
-                    }
                     Object c = board[r.x][i];
                     if (c != null) {
                         if (c instanceof Champion) {//check cases of shield or dodge
