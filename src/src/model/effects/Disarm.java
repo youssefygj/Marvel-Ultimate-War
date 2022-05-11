@@ -1,7 +1,29 @@
 package model.effects;
 
+import model.abilities.AreaOfEffect;
+import model.abilities.DamagingAbility;
+import model.world.Champion;
+
+import java.io.IOException;
+
 public class Disarm extends Effect {
     public Disarm(int duration) {
         super("Disarm",duration,EffectType.DEBUFF);
+    }
+
+    @Override
+    public void apply(Champion c) throws IOException {
+        c.getAppliedEffects().add(this);
+        DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
+        c.getAbilities().add(punch);
+
+    }
+
+    @Override
+    public void remove(Champion c) throws IOException {
+        c.getAppliedEffects().remove(this);
+        DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
+        c.getAbilities().remove(punch);
+
     }
 }
