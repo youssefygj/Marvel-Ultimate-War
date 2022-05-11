@@ -25,12 +25,12 @@ public class DamagingAbility extends Ability {
         this.damageAmount = damageAmount;
 
     }
-    public void execute(ArrayList<Damageable> targets){
 
-for(int i=0;i<targets.size();i++){
+    public void execute(ArrayList<Damageable> targets) {
 
-targets.get(i).setCurrentHP(targets.get(i).getCurrentHP()-this.getDamageAmount());
+        for (int i = 0; i < targets.size(); i++) {
+            targets.get(i).setCurrentHP(targets.get(i).getCurrentHP() - this.getDamageAmount());
+        }
 
+    }
 }
-
-}}

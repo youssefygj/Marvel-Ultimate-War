@@ -11,7 +11,7 @@ public class CrowdControlAbility extends Ability {
 
     private Effect effect;
 
-    public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required,Effect effect) throws IOException {
+    public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required, Effect effect) throws IOException {
         super(name, cost, baseCoolDown, castRange, area, required);
         this.effect = effect;
     }
@@ -21,17 +21,11 @@ public class CrowdControlAbility extends Ability {
         return this.effect;
 
     }
-    public void execute(ArrayList<Damageable> targets) throws IOException {
 
-     for(int i=0;i<targets.size();i++){
-         if(targets.get(i) instanceof Champion){
-             getEffect().apply((Champion) targets.get(i));
-
-
-         }
-     }
-}
-
-
-
+    public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, IOException {
+        Effect c = (Effect)effect.clone();
+        for (int i = 0; i < targets.size(); i++)
+            c.apply((Champion) targets.get(i));
     }
+
+}
