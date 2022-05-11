@@ -645,6 +645,9 @@ public class Game {
                 Point z = getCurrentChampion().getLocation();
                 for (int i = z.y - 1; i <= z.y + 1; i++) {
                     for (int j = z.x - 1; j <= z.x + 1; j++) {
+                        if (i < 0 || i > 4 || j < 0 || j > 4) {
+                            continue;
+                        }
                         if (z != new Point(j, i))
                             if (board[j][i] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
@@ -708,6 +711,10 @@ public class Game {
                 Point z = getCurrentChampion().getLocation();
                 for (int i = z.y - 1; i <= z.y + 1; i++) {
                     for (int j = z.x - 1; j <= z.x + 1; j++) {
+                        if (i < 0 || i > 4 || j < 0 || j > 4) {
+                            continue;
+                        }
+
                         if (z != new Point(j, i))
                             if (board[j][i] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
@@ -792,6 +799,9 @@ public class Game {
                     Point z = getCurrentChampion().getLocation();
                     for (int i = z.y - 1; i <= z.y + 1; i++) {
                         for (int j = z.x - 1; j <= z.x + 1; j++) {
+                            if (i < 0 || i > 4 || j < 0 || j > 4) {
+                                continue;
+                            }
                             if (z != new Point(j, i))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
@@ -811,6 +821,9 @@ public class Game {
                     Point z = getCurrentChampion().getLocation();
                     for (int i = z.y - 1; i <= z.y + 1; i++) {
                         for (int j = z.x - 1; j <= z.x + 1; j++) {
+                            if (i < 0 || i > 4 || j < 0 || j > 4) {
+                                continue;
+                            }
                             if (z != new Point(j, i))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
@@ -1176,13 +1189,17 @@ public class Game {
                 }
             }
             if (a instanceof CrowdControlAbility) {
+                if (board[x][y] instanceof Cover) {
+                    throw new InvalidTargetException();
+                }
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+
                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
                         ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
                     } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
                         ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
                     } else {
-                        throw new InvalidTargetException("NO");
+                        throw new InvalidTargetException();
                     }
                 }
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
@@ -1191,7 +1208,7 @@ public class Game {
                     } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
                         ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
                     } else {
-                        throw new InvalidTargetException("NO");
+                        throw new InvalidTargetException();
                     }
                 }
             }

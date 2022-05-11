@@ -10,7 +10,10 @@ public class Shield extends Effect{
     }
 
     @Override
-    public void apply(Champion c) throws IOException {
+    public void apply(Champion c) throws IOException{
+        if(this.getDuration()==0){
+            return;
+        }
         c.getAppliedEffects().add(this);
         c.setSpeed((int) (c.getSpeed() * 1.02));
 
