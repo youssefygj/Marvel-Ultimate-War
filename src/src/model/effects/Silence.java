@@ -11,7 +11,7 @@ public class Silence extends Effect{
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() + 2);
         c.setCurrentActionPoints(c.getCurrentActionPoints() + 2);
     }

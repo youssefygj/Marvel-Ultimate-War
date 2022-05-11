@@ -13,7 +13,7 @@ public class PowerUp extends Effect{
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         for (int i = 0; i < c.getAbilities().size(); i++) {
             if (c.getAbilities().get(i) instanceof DamagingAbility) {
                 double dam = ((DamagingAbility) (c.getAbilities().get(i))).getDamageAmount() * 1.2;

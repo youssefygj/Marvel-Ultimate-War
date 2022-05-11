@@ -182,12 +182,10 @@ public class Game {
 
     public static boolean check2(Champion c, Champion k) {
 
-        if (c instanceof Hero && k instanceof Hero || (c instanceof Villain && k instanceof Villain)) {
+        if ((c instanceof Hero && k instanceof Hero) || (c instanceof Villain && k instanceof Villain) || (c instanceof AntiHero && k instanceof AntiHero)) {
             return false;
-        } else if( ((c instanceof Hero)&& (k instanceof Villain))||(k instanceof Hero)||(k instanceof Villain)) {
-            return true;
         } else {
-            return false;
+            return true;
         }
 
     }
@@ -329,85 +327,105 @@ public class Game {
     }
 
     public boolean check(Object c, int o) {
+
         if (c instanceof Champion) {
             if (((Champion) c).getCurrentHP() - o > 0) {
                 ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - o);
                 return true;
             } else {
                 ((Champion) c).setCondition(Condition.KNOCKEDOUT);
-
+                ((Champion) c).setCurrentHP(0);
+                return false;
             }
-        } else if (c instanceof Cover) {
+        } else {
             if (((Cover) c).getCurrentHP() - o > 0) {
                 ((Cover) c).setCurrentHP(((Cover) c).getCurrentHP() - o);
+                return true;
+            } else {
+                ((Cover) c).setCurrentHP(0);
+                return false;
             }
-            return true;
 
         }
-        return false;
+
     }
 ////////////////END
 
     public boolean extra(Object c, int o) {
-        if (((Champion) c).getCurrentHP() - o > 0) {
-            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (1.5 * o));
+        if (((Champion) c).getCurrentHP() - 0.5 * o > 0) {
+            ((Champion) c).setCurrentHP(((Champion) c).getCurrentHP() - (int) (0.5 * o));
             return true;
         } else {
+            ((Champion) c).setCurrentHP(0);
             ((Champion) c).setCondition(Condition.KNOCKEDOUT);
             return false;
         }
     }
 
-    public void attack(Direction d) throws AbilityUseException, ChampionDisarmedException, IOException {
+    public void attack(Direction d) throws AbilityUseException, ChampionDisarmedException, NotEnoughResourcesException, IOException {
         Point r = getCurrentChampion().getLocation();
         int ar = getCurrentChampion().getAttackRange();
         int o = getCurrentChampion().getAttackDamage();
-
-        for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
+        if (getCurrentChampion().getCurrentActionPoints() < 2) {
+            throw new NotEnoughResourcesException("not enough");
+        }
+        for (int i = getCurrentChampion().getAppliedEffects().size() - 1; i >= 0; i--) {
             Effect g = getCurrentChampion().getAppliedEffects().get(i);
-            if (g instanceof Disarm) {
+            if (g.getName().equals("Disarm")) {
                 throw new ChampionDisarmedException("Champion is diarmed");
+
             }
+
             if (g instanceof Stun) {
                 throw new AbilityUseException("Champion is Inactive rn");
             }
-        }
-        if (d == Direction.UP) {
 
+
+        }  getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
+        if (d == Direction.UP) {
             int z = r.x + ar;
             for (int i = r.x; i <= z; i++) {
-                if(i>4){
+                if (i > 4) {
                     break;
                 }
-
                 Object c = board[i][r.y];
 
                 if (c != null) {
                     if (c instanceof Champion) {//check cases of shield or dodge
-                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
+                        for (int j = ((Champion) c).getAppliedEffects().size() - 1; i >= 0; i--) {
                             Effect e = ((Champion) c).getAppliedEffects().get(i);
                             if (e instanceof Shield) {
-                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
-                                break;
+                                ((Shield) getCurrentChampion().getAppliedEffects().get(i)).remove(getCurrentChampion());
+                                return;
                             } else if (e instanceof Dodge) {
                                 int q = (int) (Math.random() * 2);
                                 if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
                                     if (check2(getCurrentChampion(), (Champion) (c))) {
-                                        if (!extra(c, o)) {
-                                            c = null;
-                                        }
-                                    } else {
                                         if (!check(c, o)) {
                                             c = null;
                                         }
+                                        if (!extra(c, o)) {
+                                            c = null;
+                                        }
+                                        return;
+                                    } else {
+                                        if (!check(c, o)) {
+                                            c = null;
+                                            return;
+                                        }
                                     }
-                                    break;
+                                } else {
+                                    return;
                                 }
                             }
                         }
                         //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
                         //special attack
                         if (check2(getCurrentChampion(), (Champion) (c))) {
+
+                            if (!check(c, o)) {
+                                c = null;
+                            }
                             if (!extra(c, o)) {
                                 c = null;
                             }
@@ -418,205 +436,220 @@ public class Game {
                             }
 
 
+                        }}
+  //cover apply normal attack
+                    else{
+                            if (!check(c, o)) ;
+                            {
+                                c = null;
+                            }
                         }
-                    }
-
-                    //cover apply normal attack
-                    else {
-                        if (!check(c, o)) ;
-                        {
-                            c = null;
-                        }
-                    }
-
 
                 }
-            }
 
-        } else if (d == Direction.DOWN) {
+            }} else if (d == Direction.DOWN) {
 
-            int z = r.x - ar;
-            for (int i = r.x; i >= z; i--) {
-                if(i<0)
-                {break;}
-                Object c = board[i][r.y];
+                int z = r.x - ar;
+                for (int i = r.x; i >= z; i--) {
+                    if (i < 0) {
+                        break;
+                    }
+                    Object c = board[i][r.y];
 
-                if (c != null) {
-                    if (c instanceof Champion) {//check cases of shield or dodge
-                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
-                            Effect e = ((Champion) c).getAppliedEffects().get(i);
-                            if (e instanceof Shield) {
-                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
-                                break;
-                            } else if (e instanceof Dodge) {
-                                int q = (int) (Math.random() * 2);
-                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
-                                    if (check2(getCurrentChampion(), (Champion) (c))) {
-                                        if (!extra(c, o)) {
-                                            c = null;
+                    if (c != null) {
+                        if (c instanceof Champion) {//check cases of shield or dodge
+                            for (int j = ((Champion) c).getAppliedEffects().size() - 1; i >= 0; i--) {
+                                Effect e = ((Champion) c).getAppliedEffects().get(i);
+                                if (e instanceof Shield) {
+                                    ((Shield) getCurrentChampion().getAppliedEffects().get(i)).remove(getCurrentChampion());
+                                    return;
+                                } else if (e instanceof Dodge) {
+                                    int q = (int) (Math.random() * 2);
+                                    if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                            }
+                                            if (!extra(c, o)) {
+                                                c = null;
+                                            }
+                                            return;
+                                        } else {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                                return;
+                                            }
                                         }
                                     } else {
-                                        if (!check(c, o)) {
-                                            c = null;
-                                        }
+                                        return;
                                     }
-                                    break;
                                 }
                             }
-                        }
-                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
-                        //special attack
-                        if (check2(getCurrentChampion(), (Champion) (c))) {
-                            if (!extra(c, o)) {
+                            //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                            //special attack
+                            if (check2(getCurrentChampion(), (Champion) (c))) {
+
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+                                if (!extra(c, o)) {
+                                    c = null;
+                                }
+                                //normal attack
+                            } else {
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+
+
+                            }}
+                        //cover apply normal attack
+                        else{
+                            if (!check(c, o)) ;
+                            {
                                 c = null;
                             }
-                            //normal attack
-                        } else {
-                            if (!check(c, o)) {
-                                c = null;
-                            }
-
-
                         }
+
                     }
 
-                    //cover apply normal attack
-                    else {
-                        if (!check(c, o)) ;
-                        {
-                            c = null;
-                        }
+                }
+            } else if (d == Direction.RIGHT) {
+                int z = r.y + ar;
+
+                for (int i = r.y; i <= z; i++) {
+                    if (i > 4) {
+                        break;
                     }
+                    Object c = board[r.x][i];
 
-
-                }
-            }
-
-
-        } else if (d == Direction.RIGHT) {
-            int z = r.y + ar;
-
-            for (int i = r.y; i <= z; i++) {
-                if(i>4){
-                    break;
-                }
-                Object c = board[r.x][i];
-
-                if (c != null) {
-                    if (c instanceof Champion) {//check cases of shield or dodge
-                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
-                            Effect e = ((Champion) c).getAppliedEffects().get(i);
-                            if (e instanceof Shield) {
-                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
-                                break;
-                            } else if (e instanceof Dodge) {
-                                int q = (int) (Math.random() * 2);
-                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
-                                    if (check2(getCurrentChampion(), (Champion) (c))) {
-                                        if (!extra(c, o)) {
-                                            c = null;
+                    if (c != null) {
+                        if (c instanceof Champion) {//check cases of shield or dodge
+                            for (int j = ((Champion) c).getAppliedEffects().size() - 1; i >= 0; i--) {
+                                Effect e = ((Champion) c).getAppliedEffects().get(i);
+                                if (e instanceof Shield) {
+                                    ((Shield) getCurrentChampion().getAppliedEffects().get(i)).remove(getCurrentChampion());
+                                    return;
+                                } else if (e instanceof Dodge) {
+                                    int q = (int) (Math.random() * 2);
+                                    if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                            }
+                                            if (!extra(c, o)) {
+                                                c = null;
+                                            }
+                                            return;
+                                        } else {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                                return;
+                                            }
                                         }
                                     } else {
-                                        if (!check(c, o)) {
-                                            c = null;
-                                        }
+                                        return;
                                     }
-                                    break;
                                 }
                             }
-                        }
-                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
-                        //special attack
-                        if (check2(getCurrentChampion(), (Champion) (c))) {
-                            if (!extra(c, o)) {
+                            //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                            //special attack
+                            if (check2(getCurrentChampion(), (Champion) (c))) {
+
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+                                if (!extra(c, o)) {
+                                    c = null;
+                                }
+                                //normal attack
+                            } else {
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+
+
+                            }}
+                        //cover apply normal attack
+                        else{
+                            if (!check(c, o)) ;
+                            {
                                 c = null;
                             }
-                            //normal attack
-                        } else {
-                            if (!check(c, o)) {
-                                c = null;
-                            }
-
-
                         }
-                    }
 
-                    //cover apply normal attack
-                    else {
-                        if (!check(c, o)) ;
-                        {
-                            c = null;
-                        }
                     }
-
 
                 }
-            }
+            } else {
+                int z = r.y - ar;
 
-        } else {
-            int z = r.y - ar;
-
-            for (int i = r.y; i >= z; i--) {
-             if(i<0){
-                 break;
-             }
-                Object c = board[r.x][i];
-                if (c != null) {
-                    if (c instanceof Champion) {//check cases of shield or dodge
-                        for (int j = 0; i < ((Champion) c).getAppliedEffects().size(); i++) {
-                            Effect e = ((Champion) c).getAppliedEffects().get(i);
-                            if (e instanceof Shield) {
-                                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
-                                break;
-                            } else if (e instanceof Dodge) {
-                                int q = (int) (Math.random() * 2);
-                                if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
-                                    if (check2(getCurrentChampion(), (Champion) (c))) {
-                                        if (!extra(c, o)) {
-                                            c = null;
+                for (int i = r.y; i >= z; i--) {
+                    if (i < 0) {
+                        break;
+                    }
+                    Object c = board[r.x][i];
+                    if (c != null) {
+                        if (c instanceof Champion) {//check cases of shield or dodge
+                            for (int j = ((Champion) c).getAppliedEffects().size() - 1; i >= 0; i--) {
+                                Effect e = ((Champion) c).getAppliedEffects().get(i);
+                                if (e instanceof Shield) {
+                                    ((Shield) getCurrentChampion().getAppliedEffects().get(i)).remove(getCurrentChampion());
+                                    return;
+                                } else if (e instanceof Dodge) {
+                                    int q = (int) (Math.random() * 2);
+                                    if (q == 1) {//extra damage or normal damage and replace with null if no hp remauled after damage
+                                        if (check2(getCurrentChampion(), (Champion) (c))) {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                            }
+                                            if (!extra(c, o)) {
+                                                c = null;
+                                            }
+                                            return;
+                                        } else {
+                                            if (!check(c, o)) {
+                                                c = null;
+                                                return;
+                                            }
                                         }
                                     } else {
-                                        if (!check(c, o)) {
-                                            c = null;
-                                        }
+                                        return;
                                     }
-                                    break;
                                 }
                             }
-                        }
-                        //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
-                        //special attack
-                        if (check2(getCurrentChampion(), (Champion) (c))) {
-                            if (!extra(c, o)) {
+                            //so the c(obj  on the booard with cast range) does not have neither dodge nor shiled s apply on it wheter normal or speciall attack
+                            //special attack
+                            if (check2(getCurrentChampion(), (Champion) (c))) {
+
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+                                if (!extra(c, o)) {
+                                    c = null;
+                                }
+                                //normal attack
+                            } else {
+                                if (!check(c, o)) {
+                                    c = null;
+                                }
+
+
+                            }}
+                        //cover apply normal attack
+                        else{
+                            if (!check(c, o)) ;
+                            {
                                 c = null;
                             }
-                            //normal attack
-                        } else {
-                            if (!check(c, o)) {
-                                c = null;
-                            }
-
-
                         }
+
                     }
 
-                    //cover apply normal attack
-                    else {
-                        if (!check(c, o)) ;
-                        {
-                            c = null;
-                        }
-                    }
-
-
-                }
-            }
+                }}
 
         }
 
-
-        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - 2);
-    }
 
     public void castAbility(Ability a) throws
             NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException {

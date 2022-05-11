@@ -11,7 +11,7 @@ public class Dodge extends Effect{
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         c.setSpeed((int) (c.getSpeed() + c.getSpeed() * 0.05));
     }
 

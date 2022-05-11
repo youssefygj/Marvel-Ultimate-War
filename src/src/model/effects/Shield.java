@@ -14,7 +14,7 @@ public class Shield extends Effect{
         if(this.getDuration()==0){
             return;
         }
-        c.getAppliedEffects().add(this);
+
         c.setSpeed((int) (c.getSpeed() * 1.02));
 
     }

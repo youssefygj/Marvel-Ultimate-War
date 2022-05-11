@@ -13,7 +13,7 @@ public class Disarm extends Effect {
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
         c.getAbilities().add(punch);
 
@@ -23,7 +23,9 @@ public class Disarm extends Effect {
     public void remove(Champion c) throws IOException {
         c.getAppliedEffects().remove(this);
         DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
-        c.getAbilities().remove(punch);
 
+        for(int i=0;i<c.getAppliedEffects().size();i++) {
+        c.getAbilities().remove(punch);
+break;
     }
-}
+}}

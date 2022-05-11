@@ -9,7 +9,7 @@ public class Embrace extends Effect{
         super("Embrace",duration,EffectType.BUFF);
     }
     public  void apply(Champion c) throws IOException{
-        c.getAppliedEffects().add(this);
+
         int twentyPercent_HP = (c.getMaxHP() * 20) / 100;
         c.setCurrentHP(c.getCurrentHP() + twentyPercent_HP);
         int twentyPercent_Mana = (c.getMana() * 20) / 100;

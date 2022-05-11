@@ -12,7 +12,7 @@ public class Root extends Effect{
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         if (c.getCondition()== Condition.ACTIVE) {
             c.setCondition(Condition.ROOTED);
         }
@@ -20,13 +20,17 @@ public class Root extends Effect{
 
     @Override
     public void remove(Champion c) throws IOException {
-        if(c.getCondition()==Condition.ROOTED){
-            c.setCondition(Condition.ACTIVE);
-        }else{
-            if(c.getCondition()==Condition.INACTIVE){
-                c.setCondition(Condition.INACTIVE);
-            }
-        }
         c.getAppliedEffects().remove(this);
-    }
-}
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i) instanceof Root) {
+                c.setCondition(Condition.ROOTED);
+                return;
+            }if (c.getAppliedEffects().get(i) instanceof Stun) {
+                c.setCondition(Condition.INACTIVE);
+                return;
+            }
+
+        }
+
+        c.setCondition(Condition.ACTIVE);
+}}

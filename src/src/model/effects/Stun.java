@@ -12,7 +12,7 @@ public class Stun extends Effect {
 
     @Override
     public void apply(Champion c) throws IOException {
-        c.getAppliedEffects().add(this);
+
         c.setCondition(Condition.INACTIVE);
     }
 
@@ -23,7 +23,11 @@ public class Stun extends Effect {
             if (c.getAppliedEffects().get(i).getName().equals("Root")) {
                 c.setCondition(Condition.ROOTED);
                 return;
+            }if (c.getAppliedEffects().get(i).getName().equals("Stun")) {
+                c.setCondition(Condition.INACTIVE);
+                return;
             }
+
         }
 
         c.setCondition(Condition.ACTIVE);
