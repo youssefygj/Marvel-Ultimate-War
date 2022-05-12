@@ -335,6 +335,8 @@ public class Game {
             } else {
                 ((Champion) c).setCondition(Condition.KNOCKEDOUT);
                 ((Champion) c).setCurrentHP(0);
+              if( ((Champion)(turnOrder.peekMin())).getName().equals(((Champion) c).getName()));
+                {turnOrder.remove();}
                 return false;
             }
         } else {
@@ -1339,12 +1341,12 @@ public class Game {
         ArrayList<Champion> a = new ArrayList();
 
         if (x instanceof Hero) {
-            a = y.getTeam();
+           return y.getTeam();
         } else if (x instanceof Villain) {
             if (i == 1) {
-                a = secondPlayer.getTeam();
+                return secondPlayer.getTeam();
             } else {
-                a = firstPlayer.getTeam();
+                return firstPlayer.getTeam();
             }
         } else {
             for (int k = 0; k < getFirstPlayer().getTeam().size(); k++) {
@@ -1355,28 +1357,33 @@ public class Game {
                 if (!getFirstPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
                     a.add(getFirstPlayer().getTeam().get(k));
             }
-        }
-        return a;
+            return a; }
+
     }
 
-    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException {
-        Champion x = getCurrentChampion();
-        boolean which = getFirstPlayer().getTeam().contains(x) ? true : false;
-        if (which) {
-            if (x.getName().equals((getFirstPlayer().getLeader()).getName())) {
-                x.useLeaderAbility(checkl(x, getFirstPlayer(), 1));
-
-            } else if (x.getName().equals((getSecondPlayer().getLeader()).getName()))
-                x.useLeaderAbility(checkl(x, getSecondPlayer(), 2));
-        }
+    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException,LeaderNotCurrentException {
         if (isFirstLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
         }
         if (isSecondLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
 
-        }
-    }
+        } if ((!getCurrentChampion().getName().equals((getFirstPlayer().getLeader()).getName()))&&((!getCurrentChampion().getName().equals((getSecondPlayer().getLeader()).getName()))))
+            throw new LeaderNotCurrentException();
+
+
+        Champion x = getCurrentChampion();
+        boolean which = getFirstPlayer().getTeam().contains(x) ? true : false;
+        if (which) {
+
+                x.useLeaderAbility(checkl(x, getFirstPlayer(), 1));
+
+
+        }else{
+
+            x.useLeaderAbility(checkl(x, getSecondPlayer(), 2));
+        }}
+
 
     public void endTurn() throws IOException {
         turnOrder.remove();

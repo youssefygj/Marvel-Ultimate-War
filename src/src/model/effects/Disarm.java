@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Disarm extends Effect {
     public Disarm(int duration) {
-        super("Disarm",duration,EffectType.DEBUFF);
+        super("Disarm", duration, EffectType.DEBUFF);
     }
 
     @Override
@@ -22,10 +22,11 @@ public class Disarm extends Effect {
     @Override
     public void remove(Champion c) throws IOException {
         c.getAppliedEffects().remove(this);
-        DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
 
-        for(int i=0;i<c.getAppliedEffects().size();i++) {
-        c.getAbilities().remove(punch);
-break;
+        for (int i = 0; i < c.getAbilities().size(); i++) {
+            if (c.getAbilities().get(i).getName().equals("Punch")) {
+                c.getAbilities().remove(i);
+            }
+        }
     }
-}}
+}

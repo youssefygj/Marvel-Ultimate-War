@@ -16,21 +16,32 @@ public class Hero extends Champion {
 
 
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
+        Embrace temp = new Embrace(2);
         for (int i = 0; i < targets.size(); i++) {
+            temp.apply(targets.get(i));
             for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
+
                 if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) ;
                 {
                     targets.get(i).getAppliedEffects().remove(j);
                 }
             }
-            Embrace temp = new Embrace(2);
-            temp.apply(targets.get(i));
+
+
 
         }}
 
 
     @Override
     public int compareTo(Object o) {
-        return 0;
+        int x= ((Champion) o).getSpeed();
+        if (this.getSpeed() >x) {
+            return -1;
+        } else if (this.getSpeed() < x) {
+            return 1;
+        } else {
+            Champion z=  ((Champion)o);
+            return (this.getName().compareTo(z.getName()));
+        }
     }
 }

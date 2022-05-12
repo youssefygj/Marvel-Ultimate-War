@@ -19,18 +19,21 @@ public class Stun extends Effect {
     @Override
     public void remove(Champion c) throws IOException {
         c.getAppliedEffects().remove(this);
+        c.setCondition(Condition.ACTIVE);
+
         for (int i = 0; i < c.getAppliedEffects().size(); i++) {
             if (c.getAppliedEffects().get(i).getName().equals("Root")) {
                 c.setCondition(Condition.ROOTED);
-                return;
-            }if (c.getAppliedEffects().get(i).getName().equals("Stun")) {
-                c.setCondition(Condition.INACTIVE);
-                return;
-            }
+            }}
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+                if (c.getAppliedEffects().get(i).getName().equals("Stun")) {
+                    c.setCondition(Condition.INACTIVE);
 
+                }
+            }
         }
 
-        c.setCondition(Condition.ACTIVE);
+
     }
 
-}
+

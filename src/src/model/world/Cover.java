@@ -18,10 +18,10 @@ public class Cover  {
 
     public void setCurrentHP(int newHp) {
         if (newHp < 0) {
-            currentHP = 0;
+            this.currentHP = 0;
 
         } else
-            currentHP = newHp;
+            this.currentHP = newHp;
     }
 
     public Point getLocation() {

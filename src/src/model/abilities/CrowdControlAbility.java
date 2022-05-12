@@ -29,6 +29,7 @@ public class CrowdControlAbility extends Ability {
         for (int i = 0; i < targets.size(); i++)
         {
             c.apply((Champion)targets.get(i));
+
             ((Champion) targets.get(i)).getAppliedEffects().add(c);
     }
 
