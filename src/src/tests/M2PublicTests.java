@@ -21875,7 +21875,8 @@ public class M2PublicTests {
 				try {
 					Method m5 = champ1.getClass().getMethod("getCurrentHP");
 					int oldHP = (Integer) m5.invoke(champ6);
-
+					Method mlmao = champ1.getClass().getMethod("getLocation");
+					Point x =(Point) mlmao.invoke(champ6);
 					Method m3 = createdGame.getClass().getMethod("attack", Class.forName(directionPath));
 					m3.invoke(createdGame, Enum.valueOf((Class<Enum>) Class.forName(directionPath), "UP"));
 					int newHP = (Integer) m5.invoke(champ6);
@@ -21887,7 +21888,7 @@ public class M2PublicTests {
 					int expectedHP = oldHP - (attackDamage + extraDamage);
 
 					assertTrue("The HP of the hero attacked by an antihero is not updated correctly. Expected "
-							+ expectedHP + " but was " + newHP + ".", newHP == expectedHP);
+							+ expectedHP + " but was " + newHP + "."+x.x+". "+x.y, newHP == expectedHP);
 
 				} catch (NoSuchMethodException e) {
 					fail("Game class should have attack method");
