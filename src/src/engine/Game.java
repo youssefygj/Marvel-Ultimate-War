@@ -429,6 +429,10 @@ public class Game {
             Point z = c.getLocation();
             board[z.x][z.y] = null;
             ArrayList<Champion> f = new ArrayList<Champion>();
+            if(firstPlayer.getTeam().contains(c))
+                firstPlayer.getTeam().remove(c);
+            if(secondPlayer.getTeam().contains(c))
+                secondPlayer.getTeam().remove(c);
             while (!turnOrder.isEmpty())
                 f.add((Champion) turnOrder.remove());
             for (int i = 0; i < f.size(); i++) {
