@@ -27,7 +27,7 @@ public class Hero extends Champion {
 
                 if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) {
                     targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));
-
+                    j--;
                 }
             }
 
