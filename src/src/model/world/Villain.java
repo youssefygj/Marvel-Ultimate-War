@@ -16,7 +16,6 @@ public class Villain extends Champion {
 
         for (int i = 0; i < targets.size(); i++) {
             Champion c = targets.get(i);
-
             c.setCondition(Condition.KNOCKEDOUT);
             c.setCurrentActionPoints(0);
 

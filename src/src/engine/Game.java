@@ -1453,9 +1453,21 @@ public class Game {
             return y.getTeam();
         } else if (x instanceof Villain) {
             if (i == 1) {
-                return secondPlayer.getTeam();
+                for (int k = 0; k < getSecondPlayer().getTeam().size(); k++) {
+                    if (((Champion) getSecondPlayer().getTeam().get(k)).getCurrentHP() < 0.3 * ((Champion) getSecondPlayer().getTeam().get(k)).getMaxHP()) {
+                        die((Champion) getSecondPlayer().getTeam().get(k));
+                        a.add((Champion) getSecondPlayer().getTeam().get(k));
+                    }
+                }
+                return a;
             } else {
-                return firstPlayer.getTeam();
+                for (int k = 0; k < getFirstPlayer().getTeam().size(); k++) {
+                    if (((Champion) getFirstPlayer().getTeam().get(k)).getCurrentHP() < 0.3 * ((Champion) getFirstPlayer().getTeam().get(k)).getMaxHP()) {
+                        die((Champion) getFirstPlayer().getTeam().get(k));
+                        a.add((Champion) getFirstPlayer().getTeam().get(k));
+                    }
+                }
+                return a;
             }
         } else {
 
@@ -1485,18 +1497,16 @@ public class Game {
         }
         if ((!getCurrentChampion().getName().equals((getFirstPlayer().getLeader()).getName())) && ((!getCurrentChampion().getName().equals((getSecondPlayer().getLeader()).getName()))))
             throw new LeaderNotCurrentException();
-        if (getCurrentChampion().getCurrentHP() >= getCurrentChampion().getMaxHP() * 0.3) {
-            boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
-            if (which) {
 
-                getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
-                firstLeaderAbilityUsed = true;
-            } else {
-                if (getCurrentChampion().getCurrentHP() >= getCurrentChampion().getMaxHP() * 0.3) {
-                    getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getSecondPlayer(), 2));
-                    secondLeaderAbilityUsed = true;
-                }
-            }
+        boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
+        if (which) {
+
+            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
+            firstLeaderAbilityUsed = true;
+        } else {
+
+            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getSecondPlayer(), 2));
+            secondLeaderAbilityUsed = true;
         }
     }
 
