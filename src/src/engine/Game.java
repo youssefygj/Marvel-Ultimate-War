@@ -429,15 +429,15 @@ public class Game {
             Point z = c.getLocation();
             board[z.x][z.y] = null;
             ArrayList<Champion> f = new ArrayList<Champion>();
-            if(firstPlayer.getTeam().contains(c))
+            if (firstPlayer.getTeam().contains(c))
                 firstPlayer.getTeam().remove(c);
-            if(secondPlayer.getTeam().contains(c))
+            if (secondPlayer.getTeam().contains(c))
                 secondPlayer.getTeam().remove(c);
             while (!turnOrder.isEmpty())
                 f.add((Champion) turnOrder.remove());
-            if(firstPlayer.getTeam().contains(c))
+            if (firstPlayer.getTeam().contains(c))
                 firstPlayer.getTeam().remove(c);
-            if(secondPlayer.getTeam().contains(c))
+            if (secondPlayer.getTeam().contains(c))
                 secondPlayer.getTeam().remove(c);
             for (int i = 0; i < f.size(); i++) {
                 if (!f.get(i).getName().equals(c.getName()))
@@ -796,16 +796,16 @@ public class Game {
                     for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
                         Point fj = firstPlayer.getTeam().get(i).getLocation();
                         Point z = getCurrentChampion().getLocation();
-                        int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                        if (kf<=a.getCastRange())
+                        int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                        if (kf <= a.getCastRange())
                             targets.add(firstPlayer.getTeam().get(i));
                     }
                 } else {
                     for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
                         Point fj = secondPlayer.getTeam().get(i).getLocation();
                         Point z = getCurrentChampion().getLocation();
-                        int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                        if (kf<=a.getCastRange())
+                        int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                        if (kf <= a.getCastRange())
                             targets.add(secondPlayer.getTeam().get(i));
                     }
                 }
@@ -850,9 +850,9 @@ public class Game {
                         if (c == 0) {
                             Point fj = secondPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
-                            targets.add(secondPlayer.getTeam().get(i));
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
+                                targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
                 } else {
@@ -867,8 +867,8 @@ public class Game {
                         if (c == 0) {
                             Point fj = firstPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
                                 targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
@@ -911,7 +911,7 @@ public class Game {
                                 continue;
                             } else {
 
-                                    targets.add((Cover) board[j][i]);
+                                targets.add((Cover) board[j][i]);
                             }
 
                     }
@@ -930,16 +930,16 @@ public class Game {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
                             Point fj = secondPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
                                 targets.add(secondPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
                             Point fj = firstPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
                                 targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
@@ -949,16 +949,16 @@ public class Game {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
                             Point fj = firstPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
                                 targets.add(firstPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
                             Point fj = secondPlayer.getTeam().get(i).getLocation();
                             Point z = getCurrentChampion().getLocation();
-                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
-                            if (kf<=a.getCastRange())
+                            int kf = Math.abs(fj.x - z.x) + Math.abs(fj.y - z.y);
+                            if (kf <= a.getCastRange())
                                 targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
@@ -1360,10 +1360,9 @@ public class Game {
     public void castAbility(Ability a, int x, int y) throws
             NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException, CloneNotSupportedException {
 
-            if (a.getCurrentCooldown() > 0) {
-                throw new AbilityUseException("NO");
-            }
-
+        if (a.getCurrentCooldown() > 0) {
+            throw new AbilityUseException("NO");
+        }
 
 
         if (getCurrentChampion().getMana() < a.getManaCost()) {
@@ -1379,7 +1378,7 @@ public class Game {
                 throw new AbilityUseException("NO");
             }
         }
-        if(board[x][y]==null){
+        if (board[x][y] == null) {
             throw new InvalidTargetException("NO");
         }
 
@@ -1398,7 +1397,7 @@ public class Game {
                 target.add((Champion) board[x][y]);
             } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
                 target.add((Champion) board[x][y]);
-            } else if (board[x][y] instanceof Cover){
+            } else if (board[x][y] instanceof Cover) {
                 throw new InvalidTargetException("NO");
             }
         }
@@ -1409,8 +1408,7 @@ public class Game {
                 target.add((Champion) board[x][y]);
             } else if (board[x][y] instanceof Cover) {
                 target.add((Cover) board[x][y]);
-            }
-            else{
+            } else {
                 throw new InvalidTargetException("NO");
             }
         }
@@ -1487,14 +1485,18 @@ public class Game {
         }
         if ((!getCurrentChampion().getName().equals((getFirstPlayer().getLeader()).getName())) && ((!getCurrentChampion().getName().equals((getSecondPlayer().getLeader()).getName()))))
             throw new LeaderNotCurrentException();
-        boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
-        if (which) {
+        if (getCurrentChampion().getCurrentHP() >= getCurrentChampion().getMaxHP() * 0.3) {
+            boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
+            if (which) {
 
-            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
-            firstLeaderAbilityUsed = true;
-        } else {
-            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getSecondPlayer(), 2));
-            secondLeaderAbilityUsed = true;
+                getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
+                firstLeaderAbilityUsed = true;
+            } else {
+                if (getCurrentChampion().getCurrentHP() >= getCurrentChampion().getMaxHP() * 0.3) {
+                    getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getSecondPlayer(), 2));
+                    secondLeaderAbilityUsed = true;
+                }
+            }
         }
     }
 
@@ -1504,13 +1506,7 @@ public class Game {
         if (turnOrder.isEmpty())
             prepareChampionTurns();
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
-        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE) ) {
-            if(!turnOrder.isEmpty())
-                turnOrder.remove();
-            else{
-                prepareChampionTurns();
-            }
-        }
+
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
             if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
@@ -1520,7 +1516,13 @@ public class Game {
         for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
             getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
         }
-
+        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE)) {
+            if (!turnOrder.isEmpty())
+                turnOrder.remove();
+            else {
+                prepareChampionTurns();
+            }
+        }
 
     }
 
@@ -1539,6 +1541,5 @@ public class Game {
 
 
 }
-
 
 
