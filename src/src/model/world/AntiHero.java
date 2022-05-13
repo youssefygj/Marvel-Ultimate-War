@@ -17,12 +17,15 @@ public class AntiHero extends Champion {
 
     @Override
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
+        Stun x = new Stun(2);
 
-       Stun x= new Stun(2);
-        for (int i = 0; i < targets.size();i++){
+        ArrayList<Damageable> targ= new ArrayList<Damageable>();
+        for(int i=0;i<targets.size();i++){
+            targ.add((Damageable) targets.get(i));
+        }
 
-            x.apply(targets.get(i));
-        }}
+
+    }
 
 
     @Override

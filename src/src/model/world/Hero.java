@@ -19,17 +19,11 @@ public class Hero extends Champion {
         Embrace temp = new Embrace(2);
         for (int i = 0; i < targets.size(); i++) {
             temp.apply(targets.get(i));
-            for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
-
-                if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) ;
-                {
-                    targets.get(i).getAppliedEffects().remove(j);
-                }
-            }
-
-
-
-        }}
+            for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++)
+                if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF)
+                    targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));
+        }
+    }
 
 
     @Override

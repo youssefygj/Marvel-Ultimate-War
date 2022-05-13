@@ -347,8 +347,10 @@ public class Game {
             } else {
                 ((Champion) c).setCondition(Condition.KNOCKEDOUT);
                 ((Champion) c).setCurrentHP(0);
-              if( ((Champion)(turnOrder.peekMin())).getName().equals(((Champion) c).getName()));
-                {turnOrder.remove();}
+                if (((Champion) (turnOrder.peekMin())).getName().equals(((Champion) c).getName())) ;
+                {
+                    turnOrder.remove();
+                }
                 return false;
             }
         } else {
@@ -375,19 +377,20 @@ public class Game {
             return false;
         }
     }
-    public boolean checkSaD(Champion c ){
+
+    public boolean checkSaD(Champion c) {
         boolean hasShield = false;
         boolean hasDodge = false;
-        for(int i=0;i<c.getAppliedEffects().size();i++){
-            if (c.getAppliedEffects().get(i).getName().equals("Shield")){
-                hasShield=true;
-            }
-            else if(c.getAppliedEffects().get(i).getName().equals("Dodge")){
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i).getName().equals("Shield")) {
+                hasShield = true;
+            } else if (c.getAppliedEffects().get(i).getName().equals("Dodge")) {
                 hasDodge = true;
             }
         }
-        return hasShield&&hasDodge;
+        return hasShield && hasDodge;
     }
+
     public boolean checkdis(Champion c) {
         boolean hasDis = false;
         for (int i = 0; i < c.getAppliedEffects().size(); i++) {
@@ -397,30 +400,55 @@ public class Game {
         }
         return hasDis;
     }
-    public boolean checkshield(Champion c){
+
+    public boolean checkshield(Champion c) {
         boolean hasShield = false;
 
-        for(int i=0;i<c.getAppliedEffects().size();i++){
-            if (c.getAppliedEffects().get(i).getName().equals("Shield")){
-                hasShield=true;
-            }}
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i).getName().equals("Shield")) {
+                hasShield = true;
+            }
+        }
         return hasShield;
     }
-    public boolean checkdodge(Champion c){
+
+    public boolean checkdodge(Champion c) {
         boolean hasDodge = false;
 
-        for(int i=0;i<c.getAppliedEffects().size();i++){
-            if (c.getAppliedEffects().get(i).getName().equals("Dodge")){
-                hasDodge=true;
-            }}
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i).getName().equals("Dodge")) {
+                hasDodge = true;
+            }
+        }
         return hasDodge;
     }
+    public void die(Champion c){
+        if(c.getCurrentHP()==0) {
+            c.setCondition(Condition.KNOCKEDOUT);
+            Point z = c.getLocation();
+            board[z.x][z.y] = null;
+            ArrayList<Champion> f= new ArrayList<Champion>();
+            while(!turnOrder.isEmpty())
+                f.add((Champion)turnOrder.remove());
+            for(int i=0;i<f.size();i++) {
+                if(!f.get(i).getName().equals(c.getName()))
+                    turnOrder.insert(f.get(i));
+            }
+        }
+    }
 
-    public void attack(Direction d) throws AbilityUseException, ChampionDisarmedException, NotEnoughResourcesException, IOException,InvalidTargetException {
-        if(getCurrentChampion().getCurrentActionPoints()<2){
+    public void die(Cover c){
+        if(c.getCurrentHP()==0) {
+            Point z = c.getLocation();
+            board[z.x][z.y] = null;
+        }
+    }
+
+    public void attack(Direction d) throws AbilityUseException, ChampionDisarmedException, NotEnoughResourcesException, IOException, InvalidTargetException {
+        if (getCurrentChampion().getCurrentActionPoints() < 2) {
             throw new NotEnoughResourcesException();
         }
-        if(checkdis(getCurrentChampion())){
+        if (checkdis(getCurrentChampion())) {
             throw new ChampionDisarmedException();
         }
         Point z = getCurrentChampion().getLocation();
@@ -452,9 +480,9 @@ public class Game {
                                         }
                                     }
 
-                            } else {
-                                return;
-                            }
+                                } else {
+                                    return;
+                                }
 
                             } else if (checkshield((Champion) board[i][z.y])) {
 
@@ -492,7 +520,7 @@ public class Game {
                                 }
                             }
 
-                    }
+                        }
 
                     } else {
                         ((Cover) board[i][z.y]).setCurrentHP((((Cover) board[i][z.y]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
@@ -579,167 +607,147 @@ public class Game {
                 }
             }
         }
-    if (d ==Direction.LEFT){
+        if (d == Direction.LEFT) {
 
-        for (int i = z.y - 1; i > z.y - 1 - getCurrentChampion().getAttackRange(); i--) {
-            if(i<0){
-                break;
-            }
-            if (board[z.x][i] != null) {
-                if (board[z.x][i] instanceof Champion) {
-                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[z.x][i])) {
-                        throw new InvalidTargetException();
-                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[z.x][i])) {
-                        throw new InvalidTargetException();
-                    } else {
-                        if (checkSaD((Champion) board[z.x][i])) {
-                            int x = (int) (Math.random() * 2);
-                            if (x == 1) {
+            for (int i = z.y - 1; i > z.y - 1 - getCurrentChampion().getAttackRange(); i--) {
+                if (i < 0) {
+                    break;
+                }
+                if (board[z.x][i] != null) {
+                    if (board[z.x][i] instanceof Champion) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[z.x][i])) {
+                            continue;
+                        } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[z.x][i])) {
+                            continue;
+                        } else {
+                            if (checkSaD((Champion) board[z.x][i])) {
+                                int x = (int) (Math.random() * 2);
+                                if (x == 1) {
+                                    for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
+                                        if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
+                                            ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
+                                            return;
+                                        }
+                                    }
+
+                                } else {
+                                    return;
+                                }
+                            } else if (checkshield((Champion) board[z.x][i])) {
                                 for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
                                     if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
                                         ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
                                         return;
                                     }
                                 }
-
-                            } else {
-                                return;
-                            }
-                        } else if (checkshield((Champion) board[z.x][i])) {
-                            for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
-                                if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
-                                    ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
-                                    return;
-                                } else if (checkdodge((Champion) board[z.x][i])) {
-                                    int x = (int) (Math.random() * 2);
-                                    if (x == 1) {
-                                        if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
-                                            if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            if (!extradamage((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            return;
-                                        } else {
-                                            if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            return;
-                                        }
+                            } else if (checkdodge((Champion) board[z.x][i])) {
+                                int x = (int) (Math.random() * 2);
+                                if (x == 1) {
+                                    if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
+                                        ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1.5)));
+                                        die((Champion) board[z.x][i]);
                                     } else {
+                                        ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                                        die((Champion) board[z.x][i]);
                                         return;
                                     }
                                 } else {
-                                    if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
-                                        if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        if (!extradamage((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        return;
-                                    } else {
-                                        if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        return;
-                                    }
+                                    return;
                                 }
-
+                            } else {
+                                if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
+                                    ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1.5)));
+                                    die((Champion) board[z.x][i]);
+                                    return;
+                                } else {
+                                    ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                                    die((Champion) board[z.x][i]);
+                                    return;
+                                }
                             }
                         }
+                    } else {
+                        ((Cover) board[z.x][i]).setCurrentHP((((Cover) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                        return;
                     }
-                } else {
-                    if (!normalattack((Cover) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                        board[z.x][i] = null;
-                    }
-                    return;
+
                 }
             }
         }
-        }
-    if (d == Direction.RIGHT){
-        for (int i = z.y + 1; i < z.y + 1 + getCurrentChampion().getAttackRange(); i++) {
-            if(i>4){
-                break;
-            }
-            if (board[z.x][i] != null) {
-                if (board[z.x][i] instanceof Champion) {
-                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[z.x][i])) {
-                        throw new InvalidTargetException();
-                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[z.x][i])) {
-                        throw new InvalidTargetException();
-                    } else {
-                        if (checkSaD((Champion) board[z.x][i])) {
-                            int x = (int) (Math.random() * 2);
-                            if (x == 1) {
+        if (d == Direction.RIGHT) {
+            for (int i = z.y + 1; i < z.y + 1 + getCurrentChampion().getAttackRange(); i++) {
+
+                if (i > 4) {
+                    break;
+                }
+
+                if (board[z.x][i] != null) {
+
+                    if (board[z.x][i] instanceof Champion) {
+                        if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[z.x][i])) {
+                            continue;
+                        } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[z.x][i])) {
+                            continue;
+                        } else {
+                            if (checkSaD((Champion) board[z.x][i])) {
+                                int x = (int) (Math.random() * 2);
+                                if (x == 1) {
+                                    for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
+                                        if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
+                                            ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
+                                            return;
+                                        }
+                                    }
+
+                                } else {
+                                    return;
+                                }
+                            } else if (checkshield((Champion) board[z.x][i])) {
                                 for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
                                     if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
                                         ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
                                         return;
                                     }
                                 }
-
-                            } else {
-                                return;
-                            }
-                        } else if (checkshield((Champion) board[z.x][i])) {
-                            for (int j = 0; j < ((Champion) board[z.x][i]).getAppliedEffects().size(); j++) {
-                                if (((Champion) board[z.x][i]).getAppliedEffects().get(j).getName().equals(("Shield"))) {
-                                    ((Champion) board[z.x][i]).getAppliedEffects().get(j).remove(((Champion) board[z.x][i]));
-                                    return;
-                                } else if (checkdodge((Champion) board[z.x][i])) {
-                                    int x = (int) (Math.random() * 2);
-                                    if (x == 1) {
-                                        if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
-                                            if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            if (!extradamage((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            return;
-                                        } else {
-                                            if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                                board[z.x][i] = null;
-                                            }
-                                            return;
-                                        }
+                            } else if (checkdodge((Champion) board[z.x][i])) {
+                                int x = (int) (Math.random() * 2);
+                                if (x == 1) {
+                                    if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
+                                        ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1.5)));
+                                        die((Champion) board[z.x][i]);
+                                        return;
                                     } else {
+                                        ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                                        die((Champion) board[z.x][i]);
                                         return;
                                     }
                                 } else {
-                                    if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
-                                        if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        if (!extradamage((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        return;
-                                    } else {
-                                        if (!normalattack((Champion) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                                            board[z.x][i] = null;
-                                        }
-                                        return;
-                                    }
+                                    return;
                                 }
-
+                            } else {
+                                if (checkifextra(getCurrentChampion(), (Champion) board[z.x][i])) {
+                                    ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1.5)));
+                                    die((Champion) board[z.x][i]);
+                                    return;
+                                } else {
+                                    ((Champion) board[z.x][i]).setCurrentHP((((Champion) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                                    die((Champion) board[z.x][i]);
+                                    return;
+                                }
                             }
                         }
+                    } else {
+                        ((Cover) board[z.x][i]).setCurrentHP((((Cover) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                        return;
                     }
+
                 } else {
-                    if (!normalattack((Cover) board[z.x][i], getCurrentChampion().getAttackDamage())) {
-                        board[z.x][i] = null;
-                    }
-                    return;
+                    continue;
                 }
             }
         }
-        }
 
-        }
+    }
 
 
     public void castAbility(Ability a) throws
@@ -1015,6 +1023,14 @@ public class Game {
                         break;
                     if (getBoard()[temp.x][temp.y] == null)
                         continue;
+                    if (getBoard()[temp.x][temp.y] instanceof Champion && checkshield((Champion) getBoard()[temp.x][temp.y])) {
+                        for (int j = 0; j < ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().size(); j++) {
+                            if (((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).getName().equals("Shield")) {
+                                ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).remove(((Champion) (getBoard()[temp.x][temp.y])));
+                                return;
+                            }
+                        }
+                    }
                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion)
                         if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                             targets.add(getBoard()[temp.x][temp.y]);
@@ -1036,6 +1052,16 @@ public class Game {
                         break;
                     if (getBoard()[temp.x][temp.y] == null)
                         continue;
+                    if (getBoard()[temp.x][temp.y] instanceof Champion && checkshield((Champion) getBoard()[temp.x][temp.y])) {
+                        for (int j = 0; j < ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().size(); j++) {
+                            if (((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).getName().equals("Shield")) {
+                                ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).remove(((Champion) (getBoard()[temp.x][temp.y])));
+                                return;
+                            }
+
+                        }
+
+                    }
                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion)
                         if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                             targets.add(getBoard()[temp.x][temp.y]);
@@ -1056,6 +1082,15 @@ public class Game {
                         break;
                     if (getBoard()[temp.x][temp.y] == null)
                         continue;
+                    if (getBoard()[temp.x][temp.y] instanceof Champion && checkshield((Champion) getBoard()[temp.x][temp.y])) {
+                        for (int j = 0; j < ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().size(); j++) {
+                            if (((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).getName().equals("Shield")) {
+                                ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).remove(((Champion) (getBoard()[temp.x][temp.y])));
+                                return;
+                            }
+                        }
+
+                    }
                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion)
                         if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                             targets.add(getBoard()[temp.x][temp.y]);
@@ -1077,6 +1112,15 @@ public class Game {
                         break;
                     if (getBoard()[temp.x][temp.y] == null)
                         continue;
+                    if (getBoard()[temp.x][temp.y] instanceof Champion && checkshield((Champion) getBoard()[temp.x][temp.y])) {
+                        for (int j = 0; j < ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().size(); j++) {
+                            if (((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).getName().equals("Shield")) {
+                                ((Champion) (getBoard()[temp.x][temp.y])).getAppliedEffects().get(j).remove(((Champion) (getBoard()[temp.x][temp.y])));
+                                return;
+                            }
+
+                        }
+                    }
                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && getBoard()[temp.x][temp.y] instanceof Champion)
                         if (secondPlayer.getTeam().contains(getBoard()[temp.x][temp.y]))
                             targets.add(getBoard()[temp.x][temp.y]);
@@ -1274,6 +1318,9 @@ public class Game {
             }
         }
         a.execute(targets);
+        for(int i = 0; i < targets.size(); i ++){
+            die((Champion)targets.get(i));
+        }
     }
 
     ////////////////////////////END
@@ -1329,28 +1376,28 @@ public class Game {
                     board[x][y] = null;
                 }
             }
-            if (a instanceof CrowdControlAbility) {
-                if (board[x][y] instanceof Cover) {
+        }
+        if (a instanceof CrowdControlAbility) {
+            if (board[x][y] instanceof Cover) {
+                throw new InvalidTargetException();
+            }
+            if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
+
+                if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
+                    ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
+                    ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                } else {
                     throw new InvalidTargetException();
                 }
-                if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-
-                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
-                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
-                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
-                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
-                    } else {
-                        throw new InvalidTargetException();
-                    }
-                }
-                if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
-                    if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
-                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
-                    } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
-                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
-                    } else {
-                        throw new InvalidTargetException();
-                    }
+            }
+            if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
+                if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
+                    ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
+                    ((CrowdControlAbility) a).getEffect().apply((Champion) board[x][y]);
+                } else {
+                    throw new InvalidTargetException();
                 }
             }
         }
@@ -1361,7 +1408,7 @@ public class Game {
         ArrayList<Champion> a = new ArrayList();
 
         if (x instanceof Hero) {
-           return y.getTeam();
+            return y.getTeam();
         } else if (x instanceof Villain) {
             if (i == 1) {
                 return secondPlayer.getTeam();
@@ -1377,42 +1424,37 @@ public class Game {
                 if (!getFirstPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
                     a.add(getFirstPlayer().getTeam().get(k));
             }
-            return a; }
+            return a;
+        }
 
     }
 
-    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException,LeaderNotCurrentException {
+    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException, LeaderNotCurrentException {
+
         if (isFirstLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
         }
         if (isSecondLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
 
-        } if ((!getCurrentChampion().getName().equals((getFirstPlayer().getLeader()).getName()))&&((!getCurrentChampion().getName().equals((getSecondPlayer().getLeader()).getName()))))
+        }
+        if ((!getCurrentChampion().getName().equals((getFirstPlayer().getLeader()).getName())) && ((!getCurrentChampion().getName().equals((getSecondPlayer().getLeader()).getName()))))
             throw new LeaderNotCurrentException();
-
-
-        Champion x = getCurrentChampion();
-        boolean which = getFirstPlayer().getTeam().contains(x) ? true : false;
+        boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
         if (which) {
+            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
+            firstLeaderAbilityUsed = true;
+        } else {
+            getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getSecondPlayer(), 2));
+            secondLeaderAbilityUsed = true;
+        }
+    }
 
-                x.useLeaderAbility(checkl(x, getFirstPlayer(), 1));
 
-
-        }else{
-
-            x.useLeaderAbility(checkl(x, getSecondPlayer(), 2));
-        }}
-
-
-    public void endTurn() throws IOException {
+    public void endTurn() throws IOException{
         turnOrder.remove();
-        if (turnOrder.size() == 0) {
+        if (turnOrder.size() == 0)
             prepareChampionTurns();
-        }
-        while (getCurrentChampion().getCondition() == Condition.INACTIVE) {
-            turnOrder.remove();
-        }
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
@@ -1421,6 +1463,9 @@ public class Game {
         }
         for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
             getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
+        }
+        while(getCurrentChampion().getCondition() == Condition.INACTIVE) {
+            turnOrder.remove();
         }
 
     }
@@ -1437,8 +1482,6 @@ public class Game {
             }
         }
     }
-
-
 
 
 }

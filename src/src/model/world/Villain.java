@@ -14,10 +14,8 @@ public class Villain extends Champion {
     @Override
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
 
-            for (int i = 0; i < targets.size(); i++) {
-                if (targets.get(i).getCurrentHP() <((int)(targets.get(i).getMaxHP()*0.3))){
-                    (targets.get(i)).setCondition(Condition.KNOCKEDOUT);}
-            }
+        for (int i = 0; i < targets.size(); i++) {
+            (targets.get(i)).setCondition(Condition.KNOCKEDOUT);
         }
     }
 
