@@ -12,7 +12,6 @@ public class Stun extends Effect {
 
     @Override
     public void apply(Champion c) throws IOException {
-
         c.setCondition(Condition.INACTIVE);
     }
 

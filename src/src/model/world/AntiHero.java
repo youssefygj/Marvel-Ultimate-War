@@ -18,13 +18,11 @@ public class AntiHero extends Champion {
 
 
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException, CloneNotSupportedException {
-        Stun x = new Stun(2);
-        CrowdControlAbility y = new CrowdControlAbility("test",1,1,1, AreaOfEffect.DIRECTIONAL,1,x);
-        ArrayList<Damageable> targ= new ArrayList<Damageable>();
         for(int i=0;i<targets.size();i++){
-            targ.add((Damageable) targets.get(i));
+            Stun x = new Stun(2);
+            x.apply(targets.get(i));
+            targets.get(i).getAppliedEffects().add(x);
         }
-        y.execute(targ);
     }
 
     @Override

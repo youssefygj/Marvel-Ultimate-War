@@ -10,7 +10,7 @@ public class Embrace extends Effect{
     }
     public  void apply(Champion c) throws IOException{
 
-        int twentyPercent_HP = (c.getMaxHP() * 20) / 100;
+        int twentyPercent_HP = (int)(c.getMaxHP() * 0.2);
         c.setCurrentHP(c.getCurrentHP() + twentyPercent_HP);
         c.setMana((int)(c.getMana()*1.20));
         c.setSpeed((int) (c.getSpeed() * 1.20));

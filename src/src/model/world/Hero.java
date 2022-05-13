@@ -19,24 +19,21 @@ public class Hero extends Champion {
 
 
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException, CloneNotSupportedException {
-        Embrace temp = new Embrace(2);
-
-        CrowdControlAbility y = new CrowdControlAbility("test",1,1,1, AreaOfEffect.DIRECTIONAL,1,temp);
-
-        ArrayList<Damageable> targ = new ArrayList<Damageable>();
-
-
 
         for (int i = 0; i < targets.size(); i++) {
-            targ.add((Damageable) targets.get(i));
+            Embrace x = new Embrace(2);
+            x.apply(targets.get(i));
+            targets.get(i).getAppliedEffects().add(x);
 
-            for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++){
-                if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF)
-                    targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));}
-            targ.add((Damageable) targets.get(i));
-        }
-        y.execute(targ);
-    }
+            for(int j=0;j<targets.get(i).getAppliedEffects().size();j++){
+
+                if(targets.get(i).getAppliedEffects().get(j).getType()==EffectType.DEBUFF){
+                    targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));
+                    j=-1;
+                }
+            }
+
+    }}
 
 
     @Override

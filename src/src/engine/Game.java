@@ -431,6 +431,10 @@ public class Game {
             ArrayList<Champion> f = new ArrayList<Champion>();
             while (!turnOrder.isEmpty())
                 f.add((Champion) turnOrder.remove());
+            if(firstPlayer.getTeam().contains(c))
+                firstPlayer.getTeam().remove(c);
+            if(secondPlayer.getTeam().contains(c))
+                secondPlayer.getTeam().remove(c);
             for (int i = 0; i < f.size(); i++) {
                 if (!f.get(i).getName().equals(c.getName()))
                     turnOrder.insert(f.get(i));
@@ -776,8 +780,7 @@ public class Game {
         if (getCurrentChampion().getCurrentActionPoints() < a.getRequiredActionPoints()) {
             throw new NotEnoughResourcesException("NO");
         }
-        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
-        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
+
         ArrayList targets = new ArrayList();
         if (a instanceof HealingAbility) {
 
@@ -787,11 +790,19 @@ public class Game {
             if (a.getCastArea() == AreaOfEffect.TEAMTARGET) {
                 if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                     for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                        targets.add(firstPlayer.getTeam().get(i));
+                        Point fj = firstPlayer.getTeam().get(i).getLocation();
+                        Point z = getCurrentChampion().getLocation();
+                        int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                        if (kf<=a.getCastRange())
+                            targets.add(firstPlayer.getTeam().get(i));
                     }
                 } else {
                     for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                        targets.add(secondPlayer.getTeam().get(i));
+                        Point fj = secondPlayer.getTeam().get(i).getLocation();
+                        Point z = getCurrentChampion().getLocation();
+                        int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                        if (kf<=a.getCastRange())
+                            targets.add(secondPlayer.getTeam().get(i));
                     }
                 }
             }
@@ -802,7 +813,7 @@ public class Game {
                         if (i < 0 || i > 4 || j < 0 || j > 4) {
                             continue;
                         }
-                        if (z != new Point(j, i))
+                        if (!z.equals(new Point(j, i)))
                             if (board[j][i] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
                                     targets.add((Champion) board[j][i]);
@@ -833,6 +844,10 @@ public class Game {
                             }
                         }
                         if (c == 0) {
+                            Point fj = secondPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
                             targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
@@ -846,7 +861,11 @@ public class Game {
                             }
                         }
                         if (c == 0) {
-                            targets.add(firstPlayer.getTeam().get(i));
+                            Point fj = firstPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
+                                targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
                 }
@@ -859,7 +878,7 @@ public class Game {
                             continue;
                         }
 
-                        if (z != new Point(j, i))
+                        if (!z.equals(new Point(j, i)))
                             if (board[j][i] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
                                     int c = 0;
@@ -887,8 +906,8 @@ public class Game {
                             } else if (board[j][i] == null) {
                                 continue;
                             } else {
-                                ((Cover) board[j][i]).setCurrentHP(((Cover) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                targets.add((Champion) board[j][i]);
+
+                                    targets.add((Cover) board[j][i]);
                             }
 
                     }
@@ -905,22 +924,38 @@ public class Game {
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
                     if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                            targets.add(secondPlayer.getTeam().get(i));
+                            Point fj = secondPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
+                                targets.add(secondPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                            targets.add(firstPlayer.getTeam().get(i));
+                            Point fj = firstPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
+                                targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
                 }
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
                     if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                            targets.add(firstPlayer.getTeam().get(i));
+                            Point fj = firstPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
+                                targets.add(firstPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                            targets.add(secondPlayer.getTeam().get(i));
+                            Point fj = secondPlayer.getTeam().get(i).getLocation();
+                            Point z = getCurrentChampion().getLocation();
+                            int kf=Math.abs(fj.x-z.x)+Math.abs(fj.y-z.y);
+                            if (kf<=a.getCastRange())
+                                targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
                 }
@@ -934,7 +969,7 @@ public class Game {
                             if (i < 0 || i > 4 || j < 0 || j > 4) {
                                 continue;
                             }
-                            if (z != new Point(j, i))
+                            if (!z.equals(new Point(j, i)))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
                                         targets.add((Champion) board[j][i]);
@@ -956,7 +991,7 @@ public class Game {
                             if (i < 0 || i > 4 || j < 0 || j > 4) {
                                 continue;
                             }
-                            if (z != new Point(j, i))
+                            if (!z.equals(new Point(j, i)))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
                                         targets.add((Champion) board[j][i]);
@@ -979,6 +1014,8 @@ public class Game {
             if (targets.get(i) instanceof Cover)
                 die((Cover) targets.get(i));
         }
+        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
     }
 
 
@@ -997,8 +1034,7 @@ public class Game {
                 throw new AbilityUseException("SILENCED");
             }
         }
-        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
-        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
+
         a.setCurrentCooldown(a.getBaseCooldown());
 
         ArrayList targets = new ArrayList();
@@ -1312,23 +1348,37 @@ public class Game {
             if (targets.get(i) instanceof Cover)
                 die((Cover) targets.get(i));
         }
+        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
     }
 
     ////////////////////////////END
     public void castAbility(Ability a, int x, int y) throws
             NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException, CloneNotSupportedException {
 
+            if (a.getCurrentCooldown() > 0) {
+                throw new AbilityUseException("NO");
+            }
+
+
+
         if (getCurrentChampion().getMana() < a.getManaCost()) {
             throw new NotEnoughResourcesException("No");
         }
+
         if (getCurrentChampion().getCurrentActionPoints() < a.getRequiredActionPoints()) {
             throw new NotEnoughResourcesException("No");
         }
+
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             if (getCurrentChampion().getAppliedEffects().get(i).getName().equals("Silence")) {
                 throw new AbilityUseException("NO");
             }
         }
+        if(board[x][y]==null){
+            throw new InvalidTargetException("NO");
+        }
+
         getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
 
@@ -1344,7 +1394,7 @@ public class Game {
                 target.add((Champion) board[x][y]);
             } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[x][y])) {
                 target.add((Champion) board[x][y]);
-            } else {
+            } else if (board[x][y] instanceof Cover){
                 throw new InvalidTargetException("NO");
             }
         }
@@ -1354,7 +1404,10 @@ public class Game {
             } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[x][y])) {
                 target.add((Champion) board[x][y]);
             } else if (board[x][y] instanceof Cover) {
-                target.add((Champion) board[x][y]);
+                target.add((Cover) board[x][y]);
+            }
+            else{
+                throw new InvalidTargetException("NO");
             }
         }
         if (a instanceof CrowdControlAbility) {
@@ -1411,7 +1464,7 @@ public class Game {
             }
             for (int k = 0; k < getSecondPlayer().getTeam().size(); k++) {
                 if (!getSecondPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
-                    a.add(getFirstPlayer().getTeam().get(k));
+                    a.add(getSecondPlayer().getTeam().get(k));
             }
 
         }
@@ -1432,6 +1485,7 @@ public class Game {
             throw new LeaderNotCurrentException();
         boolean which = getFirstPlayer().getTeam().contains(getCurrentChampion()) ? true : false;
         if (which) {
+
             getCurrentChampion().useLeaderAbility(checkl(getCurrentChampion(), getFirstPlayer(), 1));
             firstLeaderAbilityUsed = true;
         } else {
@@ -1443,21 +1497,27 @@ public class Game {
 
     public void endTurn() throws IOException {
         turnOrder.remove();
-        if (turnOrder.size() == 0)
+        if (turnOrder.isEmpty())
             prepareChampionTurns();
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
+
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
             if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
                 getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
         }
+
         for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
             getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
         }
-        while (getCurrentChampion().getCondition() == Condition.INACTIVE) {
-            turnOrder.remove();
-        }
 
+        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE) ) {
+            if(!turnOrder.isEmpty())
+                turnOrder.remove();
+            else{
+                prepareChampionTurns();
+            }
+        }
     }
 
     public void prepareChampionTurns() {

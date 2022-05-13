@@ -8667,11 +8667,13 @@ public class M2PublicTests {
 			int expectedCurrentHp = (int) (randomHp + 0.2 * returnMaxHp(champ));
 			m = ability.getClass().getMethod("getManaCost");
 			int updatedMana = (int) (randomMana * (1 + 0.2));
+			Method m1 = champ.getClass().getMethod("getMana");
 			int expectedCurrentMana = (int) (randomMana * (1 + 0.2)) - (int) (m.invoke(ability));
 			int expectedCurrentSpeed = (int) (randomSpeed * (1 + 0.2));
 			int expectedCurrentAttack = (int) (randomAttackDamage * (1 + 0.2));
 
 			Method m2 = game.getClass().getMethod("castAbility", Class.forName(abilitiesPath));
+
 			m2.invoke(game, ability);
 
 			m = champ.getClass().getMethod("getCurrentHP");
