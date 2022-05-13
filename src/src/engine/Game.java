@@ -754,7 +754,7 @@ public class Game {
 
 
     public void castAbility(Ability a) throws
-            NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException {
+            NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException, CloneNotSupportedException {
         if (this == null) {
             return;
         }
@@ -775,20 +775,20 @@ public class Game {
         if (getCurrentChampion().getCurrentActionPoints() < a.getRequiredActionPoints()) {
             throw new NotEnoughResourcesException("NO");
         }
+        ArrayList targets = new ArrayList();
         if (a instanceof HealingAbility) {
 
             if (a.getCastArea() == AreaOfEffect.SELFTARGET) {
-                getCurrentChampion().setCurrentHP(getCurrentChampion().getCurrentHP() + ((HealingAbility) a).getHealAmount());
-
+                targets.add(getCurrentChampion());
             }
             if (a.getCastArea() == AreaOfEffect.TEAMTARGET) {
                 if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                     for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                        firstPlayer.getTeam().get(i).setCurrentHP(firstPlayer.getTeam().get(i).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                        targets.add(firstPlayer.getTeam().get(i));
                     }
                 } else {
                     for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                        secondPlayer.getTeam().get(i).setCurrentHP(secondPlayer.getTeam().get(i).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                        targets.add(secondPlayer.getTeam().get(i));
                     }
                 }
             }
@@ -802,9 +802,9 @@ public class Game {
                         if (z != new Point(j, i))
                             if (board[j][i] instanceof Champion) {
                                 if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
-                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                                    targets.add((Champion) board[j][i]);
                                 } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
-                                    ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() + ((HealingAbility) a).getHealAmount());
+                                    targets.add((Champion) board[j][i]);
                                 } else if (board[j][i] == null) {
                                     continue;
                                 }
@@ -830,12 +830,7 @@ public class Game {
                             }
                         }
                         if (c == 0) {
-                            secondPlayer.getTeam().get(i).setCurrentHP(secondPlayer.getTeam().get(i).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                            if (secondPlayer.getTeam().get(i).getCurrentHP() == 0) {
-                                secondPlayer.getTeam().get(i).setCondition(Condition.KNOCKEDOUT);
-                                Point z = secondPlayer.getTeam().get(i).getLocation();
-                                board[z.x][z.y] = null;
-                            }
+                            targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
                 } else {
@@ -848,12 +843,7 @@ public class Game {
                             }
                         }
                         if (c == 0) {
-                            firstPlayer.getTeam().get(i).setCurrentHP(firstPlayer.getTeam().get(i).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                            if (secondPlayer.getTeam().get(i).getCurrentHP() == 0) {
-                                secondPlayer.getTeam().get(i).setCondition(Condition.KNOCKEDOUT);
-                                Point z = secondPlayer.getTeam().get(i).getLocation();
-                                board[z.x][z.y] = null;
-                            }
+                            targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
                 }
@@ -877,12 +867,7 @@ public class Game {
                                         }
                                     }
                                     if (c == 0) {
-                                        ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                        if (((Champion) board[j][i]).getCurrentHP() == 0) {
-                                            ((Champion) board[j][i]).setCondition(Condition.KNOCKEDOUT);
-                                            Point u = ((Champion) board[j][i]).getLocation();
-                                            board[u.x][u.y] = null;
-                                        }
+                                        targets.add((Champion) board[j][i]);
                                     }
                                 } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
                                     int c = 0;
@@ -893,21 +878,14 @@ public class Game {
                                         }
                                     }
                                     if (c == 0) {
-                                        ((Champion) board[j][i]).setCurrentHP(((Champion) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                        if (((Champion) board[j][i]).getCurrentHP() == 0) {
-                                            ((Champion) board[j][i]).setCondition(Condition.KNOCKEDOUT);
-                                            Point u = ((Champion) board[j][i]).getLocation();
-                                            board[u.x][u.y] = null;
-                                        }
+                                        targets.add((Champion) board[j][i]);
                                     }
                                 }
                             } else if (board[j][i] == null) {
                                 continue;
                             } else {
                                 ((Cover) board[j][i]).setCurrentHP(((Cover) board[j][i]).getCurrentHP() - ((DamagingAbility) a).getDamageAmount());
-                                if ((int) ((Cover) getBoard()[j][i]).getCurrentHP() == 0)
-                                    getBoard()[j][i] = null;
-
+                                targets.add((Champion) board[j][i]);
                             }
 
                     }
@@ -918,28 +896,28 @@ public class Game {
             if (a.getCastArea() == AreaOfEffect.SELFTARGET && ((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
                 throw new InvalidTargetException("NO");
             } else if (a.getCastArea() == AreaOfEffect.SELFTARGET && ((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
-                ((CrowdControlAbility) a).getEffect().apply(getCurrentChampion());
+                targets.add(getCurrentChampion());
             }
             if (a.getCastArea() == AreaOfEffect.TEAMTARGET) {
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.DEBUFF) {
                     if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                            ((CrowdControlAbility) a).getEffect().apply(secondPlayer.getTeam().get(i));
+                            targets.add(secondPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                            ((CrowdControlAbility) a).getEffect().apply(firstPlayer.getTeam().get(i));
+                            targets.add(firstPlayer.getTeam().get(i));
                         }
                     }
                 }
                 if (((CrowdControlAbility) a).getEffect().getType() == EffectType.BUFF) {
                     if (firstPlayer.getTeam().contains(getCurrentChampion())) {
                         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-                            ((CrowdControlAbility) a).getEffect().apply(firstPlayer.getTeam().get(i));
+                            targets.add(firstPlayer.getTeam().get(i));
                         }
                     } else {
                         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-                            ((CrowdControlAbility) a).getEffect().apply(secondPlayer.getTeam().get(i));
+                            targets.add(secondPlayer.getTeam().get(i));
                         }
                     }
                 }
@@ -956,9 +934,9 @@ public class Game {
                             if (z != new Point(j, i))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
-                                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
+                                        targets.add((Champion) board[j][i]);
                                     } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
-                                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
+                                        targets.add((Champion) board[j][i]);
                                     } else if (board[j][i] == null) {
                                         continue;
                                     }
@@ -978,15 +956,14 @@ public class Game {
                             if (z != new Point(j, i))
                                 if (board[j][i] instanceof Champion) {
                                     if (firstPlayer.getTeam().contains(getCurrentChampion()) && firstPlayer.getTeam().contains(board[j][i])) {
-                                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
+                                        targets.add((Champion) board[j][i]);
                                     } else if (secondPlayer.getTeam().contains(getCurrentChampion()) && secondPlayer.getTeam().contains(board[j][i])) {
-                                        ((CrowdControlAbility) a).getEffect().apply((Champion) board[j][i]);
+                                        targets.add((Champion) board[j][i]);
                                     } else if (board[j][i] == null) {
                                         continue;
                                     }
                                 }
                         }
-
                     }
                 }
             }
@@ -994,6 +971,13 @@ public class Game {
         getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
         a.setCurrentCooldown(a.getBaseCooldown());
+        a.execute(targets);
+        for (int i = 0; i < targets.size(); i++) {
+            if (targets.get(i) instanceof Champion)
+                die((Champion) targets.get(i));
+            if (targets.get(i) instanceof Cover)
+                die((Cover) targets.get(i));
+        }
     }
 
 
@@ -1419,16 +1403,19 @@ public class Game {
                 return firstPlayer.getTeam();
             }
         } else {
+
             for (int k = 0; k < getFirstPlayer().getTeam().size(); k++) {
                 if (!getFirstPlayer().getTeam().get(k).getName().equals(firstPlayer.getLeader().getName()))
+
                     a.add(getFirstPlayer().getTeam().get(k));
             }
             for (int k = 0; k < getSecondPlayer().getTeam().size(); k++) {
-                if (!getFirstPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
+                if (!getSecondPlayer().getTeam().get(k).getName().equals(secondPlayer.getLeader().getName()))
                     a.add(getFirstPlayer().getTeam().get(k));
             }
-            return a;
+
         }
+        return a;
 
     }
 

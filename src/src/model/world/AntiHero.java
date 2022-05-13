@@ -16,7 +16,7 @@ public class AntiHero extends Champion {
 
     }
 
-    @Override
+
     public void useLeaderAbility(ArrayList<Champion> targets) throws IOException, CloneNotSupportedException {
         Stun x = new Stun(2);
         CrowdControlAbility y = new CrowdControlAbility("test",1,1,1, AreaOfEffect.DIRECTIONAL,1,x);
