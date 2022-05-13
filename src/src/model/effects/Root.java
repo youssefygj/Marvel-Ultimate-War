@@ -13,7 +13,7 @@ public class Root extends Effect {
     @Override
     public void apply(Champion c) throws IOException {
 
-        if (c.getCondition() == Condition.ACTIVE) {
+        if (c.getCondition() != Condition.INACTIVE) {
             c.setCondition(Condition.ROOTED);
         }
     }
