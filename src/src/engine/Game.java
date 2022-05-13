@@ -1504,7 +1504,13 @@ public class Game {
         if (turnOrder.isEmpty())
             prepareChampionTurns();
         getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
-
+        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE) ) {
+            if(!turnOrder.isEmpty())
+                turnOrder.remove();
+            else{
+                prepareChampionTurns();
+            }
+        }
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
             if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
@@ -1515,13 +1521,7 @@ public class Game {
             getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
         }
 
-        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE) ) {
-            if(!turnOrder.isEmpty())
-                turnOrder.remove();
-            else{
-                prepareChampionTurns();
-            }
-        }
+
     }
 
     public void prepareChampionTurns() {
