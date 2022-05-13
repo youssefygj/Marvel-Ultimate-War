@@ -1,5 +1,8 @@
 package model.world;
 
+import model.abilities.CrowdControlAbility;
+import model.abilities.DamagingAbility;
+import model.effects.Effect;
 import model.effects.Stun;
 
 import java.io.IOException;

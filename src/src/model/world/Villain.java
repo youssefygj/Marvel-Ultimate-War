@@ -19,6 +19,7 @@ public class Villain extends Champion {
                     (targets.get(i)).setCondition(Condition.KNOCKEDOUT);}
             }
         }
+    }
 
 
     @Override
