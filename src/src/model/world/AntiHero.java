@@ -1,5 +1,6 @@
 package model.world;
 
+import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.effects.Effect;
@@ -16,17 +17,16 @@ public class AntiHero extends Champion {
     }
 
     @Override
-    public void useLeaderAbility(ArrayList<Champion> targets) throws IOException {
+    public void useLeaderAbility(ArrayList<Champion> targets) throws IOException, CloneNotSupportedException {
         Stun x = new Stun(2);
-
+        CrowdControlAbility y = new CrowdControlAbility("test",1,1,1, AreaOfEffect.DIRECTIONAL,1,x);
         ArrayList<Damageable> targ= new ArrayList<Damageable>();
         for(int i=0;i<targets.size();i++){
             targ.add((Damageable) targets.get(i));
         }
-
+        y.execute(targ);
 
     }
-
 
     @Override
     public int compareTo(Object o) {

@@ -600,6 +600,7 @@ public class Game {
 
                     } else {
                         ((Cover) board[i][z.y]).setCurrentHP((((Cover) board[i][z.y]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                        die((Cover) board[i][z.y]);
                         return;
                     }
                 } else {
@@ -668,6 +669,7 @@ public class Game {
                         }
                     } else {
                         ((Cover) board[z.x][i]).setCurrentHP((((Cover) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                        die((Cover) board[z.x][i]);
                         return;
                     }
 
@@ -738,6 +740,7 @@ public class Game {
                         }
                     } else {
                         ((Cover) board[z.x][i]).setCurrentHP((((Cover) board[z.x][i]).getCurrentHP() - (int) (getCurrentChampion().getAttackDamage() * 1)));
+                        die((Cover) board[z.x][i]);
                         return;
                     }
 
@@ -1429,7 +1432,7 @@ public class Game {
 
     }
 
-    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException, LeaderNotCurrentException {
+    public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, IOException, LeaderNotCurrentException, CloneNotSupportedException {
 
         if (isFirstLeaderAbilityUsed()) {
             throw new LeaderAbilityAlreadyUsedException("u already used leader ability");
