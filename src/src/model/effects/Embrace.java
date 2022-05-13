@@ -12,10 +12,9 @@ public class Embrace extends Effect{
 
         int twentyPercent_HP = (c.getMaxHP() * 20) / 100;
         c.setCurrentHP(c.getCurrentHP() + twentyPercent_HP);
-        int twentyPercent_Mana = (c.getMana() * 20) / 100;
-        c.setMana(c.getMana() + twentyPercent_Mana);
-        c.setSpeed((int) (c.getSpeed() * 1.2));
-        c.setAttackDamage((int) (c.getAttackDamage() * 1.2));
+        c.setMana((int)(c.getMana()*1.20));
+        c.setSpeed((int) (c.getSpeed() * 1.20));
+        c.setAttackDamage((int) (c.getAttackDamage() * 1.20));
 
     }
 

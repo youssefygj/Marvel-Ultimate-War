@@ -25,7 +25,6 @@ public class AntiHero extends Champion {
             targ.add((Damageable) targets.get(i));
         }
         y.execute(targ);
-
     }
 
     @Override
