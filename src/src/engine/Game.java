@@ -1515,8 +1515,16 @@ public class Game {
         turnOrder.remove();
         if (turnOrder.isEmpty())
             prepareChampionTurns();
-        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
 
+        while ((getCurrentChampion().getCondition() == (Condition.INACTIVE))) {
+            Champion c;
+            if (!turnOrder.isEmpty()) {
+                turnOrder.remove();
+            } else {
+                prepareChampionTurns();
+            }
+        }
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
         for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
             getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
             if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
@@ -1526,19 +1534,13 @@ public class Game {
         for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
             getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
         }
-        while (getCurrentChampion().getCondition().equals(Condition.INACTIVE)) {
-            if (!turnOrder.isEmpty())
-                turnOrder.remove();
-            else {
-                prepareChampionTurns();
-            }
-        }
 
     }
 
     public void prepareChampionTurns() {
         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
             if (firstPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT) {
+
                 turnOrder.insert(firstPlayer.getTeam().get(i));
             }
         }
