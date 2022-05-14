@@ -20,13 +20,17 @@ public class Root extends Effect {
 
     @Override
     public void remove(Champion c) throws IOException {
-        if(c.getCondition()!=Condition.INACTIVE){
-            c.setCondition(Condition.ACTIVE);
-        }
+
         c.getAppliedEffects().remove(this);
         for (int i = 0; i < c.getAppliedEffects().size(); i++) {
             if (c.getAppliedEffects().get(i) instanceof Root) {
                 c.setCondition(Condition.ROOTED);
+
+            }
+        }
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i) instanceof Stun) {
+                c.setCondition(Condition.INACTIVE);
 
             }
         }
