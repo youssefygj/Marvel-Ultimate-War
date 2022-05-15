@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.channels.Channel;
+import java.sql.Array;
 import java.util.ArrayList;
 
 
@@ -1510,50 +1511,55 @@ public class Game {
         }
     }
 
+    public void update(Champion c) throws IOException {
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+
+            c.getAppliedEffects().get(i).setDuration(c.getAppliedEffects().get(i).getDuration() - 1);
+
+            if (c.getAppliedEffects().get(i).getDuration() == 0) {
+                c.getAppliedEffects().get(i).remove(c);
+
+            }
+        }
+        for (int i = 0; i < c.getAbilities().size(); i++) {
+            c.getAbilities().get(i).setCurrentCooldown(c.getAbilities().get(i).getCurrentCooldown() - 1);
+        }
+    }
 
     public void endTurn() throws IOException {
         turnOrder.remove();
         if (turnOrder.isEmpty())
             prepareChampionTurns();
-
-
-        for (int i = 0; i < getCurrentChampion().getAppliedEffects().size(); i++) {
-            getCurrentChampion().getAppliedEffects().get(i).setDuration(getCurrentChampion().getAppliedEffects().get(i).getDuration() - 1);
-            if (getCurrentChampion().getAppliedEffects().get(i).getDuration() == 0)
-                getCurrentChampion().getAppliedEffects().get(i).remove(getCurrentChampion());
+        ArrayList<Champion> a = new ArrayList();
+        while (!turnOrder.isEmpty() && (getCurrentChampion().getCondition() == (Condition.INACTIVE))) {
+            a.add(getCurrentChampion());
+            turnOrder.remove();
         }
 
-        for (int i = 0; i < getCurrentChampion().getAbilities().size(); i++) {
-            getCurrentChampion().getAbilities().get(i).setCurrentCooldown(getCurrentChampion().getAbilities().get(i).getCurrentCooldown() - 1);
+
+        for (int i = 0; i < a.size(); i++) {
+            update(a.get(i));
         }
-
-        while ((getCurrentChampion().getCondition() == (Condition.INACTIVE))) {
-
-            Champion c;
-            if (!turnOrder.isEmpty()) {
-                turnOrder.remove();
-            } else {
-                prepareChampionTurns();
-            }
-
-        }
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getMaxActionPointsPerTurn());
+        update(getCurrentChampion());
     }
+
 
     public void prepareChampionTurns() {
         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
-            if (firstPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT) {
+            if ((firstPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT)) {
 
                 turnOrder.insert(firstPlayer.getTeam().get(i));
             }
         }
         for (int i = 0; i < secondPlayer.getTeam().size(); i++) {
-            if (secondPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT) {
+            if ((secondPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT)) {
                 turnOrder.insert(secondPlayer.getTeam().get(i));
             }
         }
     }
 
-
 }
+
 
 
