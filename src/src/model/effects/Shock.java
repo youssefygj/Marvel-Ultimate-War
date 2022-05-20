@@ -22,8 +22,8 @@ public class  Shock extends Effect{
     @Override
     public void remove(Champion c) throws IOException {
         c.getAppliedEffects().remove(this);
-        c.setSpeed((int) (Math.ceil(c.getSpeed() *1.1)));
-        c.setAttackDamage((int) (Math.ceil(c.getAttackDamage() * 1.1)));
+        c.setSpeed((int) ((c.getSpeed() /0.9)));
+        c.setAttackDamage((int) ((c.getAttackDamage() /0.9)));
         c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() + 1);
         c.setCurrentActionPoints(c.getCurrentActionPoints() + 1);
 

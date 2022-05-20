@@ -25,7 +25,11 @@ public class Stun extends Effect {
                 c.setCondition(Condition.ROOTED);
             }
         }
-
+        for (int i = 0; i < c.getAppliedEffects().size(); i++) {
+            if (c.getAppliedEffects().get(i).getName().equals("Stun")) {
+                c.setCondition(Condition.INACTIVE);
+            }
+        }
     }
 
 
