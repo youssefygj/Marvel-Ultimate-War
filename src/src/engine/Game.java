@@ -243,6 +243,11 @@ public class Game {
     public Player checkGameOver() {
         boolean first = true;
         boolean second = true;
+        if (firstPlayer.getTeam().size() == 0)
+            return secondPlayer;
+        if (secondPlayer.getTeam().size() == 0)
+            return firstPlayer;
+
         for (int i = 0; i < firstPlayer.getTeam().size(); i++) {
             if (firstPlayer.getTeam().get(i).getCondition() != Condition.KNOCKEDOUT)
                 first = false;
@@ -765,6 +770,8 @@ public class Game {
 
     public void castAbility(Ability a) throws
             NotEnoughResourcesException, InvalidTargetException, IOException, AbilityUseException, CloneNotSupportedException {
+        if (a.getCastArea() == AreaOfEffect.DIRECTIONAL || a.getCastArea() == AreaOfEffect.SINGLETARGET)
+            return;
         if (this == null) {
             return;
         }
@@ -1026,7 +1033,8 @@ public class Game {
 
     public void castAbility(Ability a, Direction d) throws
             NotEnoughResourcesException, InvalidTargetException, UnallowedMovementException, IOException, AbilityUseException, CloneNotSupportedException {
-
+        if (a.getCastArea() != AreaOfEffect.DIRECTIONAL)
+            return;
         if (getCurrentChampion().getMana() < a.getManaCost())
             throw new NotEnoughResourcesException("NO MANA!");
         else if (getCurrentChampion().getCurrentActionPoints() < a.getRequiredActionPoints())
@@ -1364,7 +1372,9 @@ public class Game {
         if (a.getCurrentCooldown() > 0) {
             throw new AbilityUseException("NO");
         }
-
+        if (a.getCastArea() != AreaOfEffect.SINGLETARGET) {
+            return;
+        }
 
         if (getCurrentChampion().getMana() < a.getManaCost()) {
             throw new NotEnoughResourcesException("No");
@@ -1382,10 +1392,6 @@ public class Game {
         if (board[x][y] == null) {
             throw new InvalidTargetException("NO");
         }
-
-        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
-        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
-
         if (Math.abs(x - getCurrentChampion().getLocation().x) + Math.abs(y - getCurrentChampion().getLocation().y) > a.getCastRange()) {
             throw new AbilityUseException("NO");
         }
@@ -1400,6 +1406,8 @@ public class Game {
                 target.add((Champion) board[x][y]);
             } else if (board[x][y] instanceof Cover) {
                 throw new InvalidTargetException("NO");
+            } else {
+                throw new InvalidTargetException("NO");
             }
         }
         if (a instanceof DamagingAbility) {
@@ -1412,6 +1420,7 @@ public class Game {
             } else {
                 throw new InvalidTargetException("NO");
             }
+
         }
         if (a instanceof CrowdControlAbility) {
             if (board[x][y] instanceof Cover) {
@@ -1445,6 +1454,9 @@ public class Game {
             if (target.get(i) instanceof Cover)
                 die((Cover) target.get(i));
         }
+        getCurrentChampion().setMana(getCurrentChampion().getMana() - a.getManaCost());
+        getCurrentChampion().setCurrentActionPoints(getCurrentChampion().getCurrentActionPoints() - a.getRequiredActionPoints());
+
     }
 
     public ArrayList checkl(Champion x, Player y, int i) {
@@ -1558,7 +1570,6 @@ public class Game {
             }
         }
     }
-
 }
 
 
