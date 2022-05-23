@@ -1,37 +1,34 @@
 package model.abilities;
 
+import java.util.ArrayList;
+
 import model.effects.Effect;
 import model.world.Champion;
 import model.world.Damageable;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class CrowdControlAbility extends Ability {
+	private Effect effect;
 
-    private Effect effect;
+	public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRadius, AreaOfEffect area, int required,
+			Effect effect) {
+		super(name, cost, baseCoolDown, castRadius, area, required);
+		this.effect = effect;
 
-    public CrowdControlAbility(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required, Effect effect) throws IOException {
-        super(name, cost, baseCoolDown, castRange, area, required);
-        this.effect = effect;
-    }
+	}
 
-    public Effect getEffect() {
+	public Effect getEffect() {
+		return effect;
+	}
 
-        return this.effect;
+	@Override
+	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
+		for(Damageable d: targets)
+		{
+			Champion c =(Champion) d;
+			c.getAppliedEffects().add((Effect) effect.clone());
+			effect.apply(c);
+		}
+		
+	}
 
-    }
-
-    public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException, IOException {
-
-
-
-        for (int i = 0; i < targets.size(); i++) {
-            Effect c = (Effect) effect.clone();
-            if(targets.get(i) instanceof Champion)
-            c.apply((Champion) targets.get(i));
-            ((Champion) targets.get(i)).getAppliedEffects().add(c);
-        }
-
-    }
 }

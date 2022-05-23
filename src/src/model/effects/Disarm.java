@@ -1,33 +1,29 @@
 package model.effects;
 
+import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
 import model.abilities.DamagingAbility;
 import model.world.Champion;
 
-import java.io.IOException;
-
 public class Disarm extends Effect {
-    public Disarm(int duration) {
-        super("Disarm", duration, EffectType.DEBUFF);
-    }
 
-    @Override
-    public void apply(Champion c) throws IOException {
+	public Disarm(int duration) {
+		super("Disarm", duration, EffectType.DEBUFF);
 
-        DamagingAbility punch = new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50);
-        c.getAbilities().add(punch);
+	}
 
-    }
+	public void apply(Champion c) {
+		c.getAbilities().add(new DamagingAbility("Punch", 0, 1, 1, AreaOfEffect.SINGLETARGET, 1, 50));
+	}
 
-    @Override
-    public void remove(Champion c) throws IOException {
-        c.getAppliedEffects().remove(this);
+	public void remove(Champion c) {
+		for (Ability a : c.getAbilities()) {
+			if (a.getName().equals("Punch"))
+			{
+				c.getAbilities().remove(a);
+				break;
+			}
+		}
+	}
 
-        for (int i = 0; i < c.getAbilities().size(); i++) {
-            if (c.getAbilities().get(i).getName().equals("Punch")) {
-                c.getAbilities().remove(i);
-                break;
-            }
-        }
-    }
 }

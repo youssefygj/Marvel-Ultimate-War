@@ -2,34 +2,34 @@ package model.world;
 
 import java.awt.Point;
 
-public class Cover implements Damageable{
-    private int currentHP;
+public class Cover implements Damageable {
+	private int currentHP;
 
-    private Point location;
+	private Point location;
 
-    public Cover(int x, int y) {
-        this.currentHP = (int)(( Math.random() * 900) + 100);
-        location = new Point(x, y);
-    }
+	public Cover(int x, int y) {
+		this.currentHP = (int)(( Math.random() * 900) + 100);
+		location = new Point(x, y);
+	}
 
-    public int getCurrentHP() {
-        return this.currentHP;
-    }
+	public int getCurrentHP() {
+		return this.currentHP;
+	}
 
-    public void setCurrentHP(int newHp) {
-        if (newHp < 0) {
-            this.currentHP = 0;
+	public void setCurrentHP(int newHp) {
+		if (newHp < 0) {
+			currentHP = 0;
+		
+		} else
+			currentHP = newHp;
+	}
 
-        } else
-            this.currentHP = newHp;
-    }
+	public Point getLocation() {
+		return location;
+	}
 
-    public Point getLocation() {
-        return location;
-    }
+	
 
-
-
-
+	
 
 }

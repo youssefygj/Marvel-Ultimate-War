@@ -1,41 +1,39 @@
 package model.effects;
 
+import model.abilities.Ability;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
 import model.world.Champion;
 
-import java.io.IOException;
+public class PowerUp extends Effect {
 
-public class PowerUp extends Effect{
-    public PowerUp(int duration){
-        super("PowerUp",duration,EffectType.BUFF);
-    }
+	public PowerUp(int duration) {
+		super("PowerUp", duration, EffectType.BUFF);
 
-    @Override
-    public void apply(Champion c) throws IOException {
+	}
 
-        for (int i = 0; i < c.getAbilities().size(); i++) {
-            if (c.getAbilities().get(i) instanceof DamagingAbility) {
-                double dam = ((DamagingAbility) (c.getAbilities().get(i))).getDamageAmount() * 1.2;
-                ((DamagingAbility) c.getAbilities().get(i)).setDamageAmount((int) dam);
-            } else if (c.getAbilities().get(i) instanceof HealingAbility) {
-                double hel = ((HealingAbility) (c.getAbilities().get(i))).getHealAmount() * 1.2;
-                ((HealingAbility) c.getAbilities().get(i)).setHealAmount((int) hel);
-            }
+	@Override
+	public void apply(Champion c) {
+		for (Ability a : c.getAbilities())
 
-        }}
+		{
+			if (a instanceof HealingAbility)
+				((HealingAbility) a).setHealAmount((int) (((HealingAbility) a).getHealAmount() * 1.2));
+			else if (a instanceof DamagingAbility)
+				((DamagingAbility) a).setDamageAmount((int) (((DamagingAbility) a).getDamageAmount() * 1.2));
+		}
 
-    @Override
-    public void remove(Champion c) throws IOException {
-            c.getAppliedEffects().remove(this);
-            for (int i = 0; i < c.getAbilities().size(); i++) {
-                if (c.getAbilities().get(i) instanceof DamagingAbility) {
-                    double dam = ((DamagingAbility) (c.getAbilities().get(i))).getDamageAmount() / 1.2;
-                    ((DamagingAbility) c.getAbilities().get(i)).setDamageAmount((int) dam);
-                } else if (c.getAbilities().get(i) instanceof HealingAbility) {
-                    double hel = ((HealingAbility) (c.getAbilities().get(i))).getHealAmount() / 1.2;
-                    ((HealingAbility) c.getAbilities().get(i)).setHealAmount((int) hel);
-                }
-            }
-    }}
+	}
 
+	@Override
+	public void remove(Champion c) {
+		for (Ability a : c.getAbilities()) {
+			if (a instanceof HealingAbility)
+				((HealingAbility) a).setHealAmount((int) (((HealingAbility) a).getHealAmount() / 1.2));
+			else if (a instanceof DamagingAbility)
+				((DamagingAbility) a).setDamageAmount((int) (((DamagingAbility) a).getDamageAmount() / 1.2));
+		}
+
+	}
+
+}

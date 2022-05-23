@@ -1,12 +1,17 @@
 package exceptions;
 
+
+@SuppressWarnings("serial")
 public class AbilityUseException extends GameActionException {
 
-    public AbilityUseException() {
-        super();
-    }
+	public AbilityUseException() {
+		super();
 
-    public AbilityUseException(String s) {
-        super(s);
-    }
+	}
+
+	public AbilityUseException(String s) {
+		super(s);
+
+	}
+
 }

@@ -1,37 +1,33 @@
 package model.abilities;
 
-import model.world.Champion;
-import model.world.Damageable;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class HealingAbility extends Ability {
-    private int healAmount;
+import model.world.Damageable;
 
-    public HealingAbility(String name, int cost, int baseCoolDown, int castRange, AreaOfEffect area, int required, int healAmount) throws IOException {
-        super(name, cost, baseCoolDown, castRange, area, required);
-        this.healAmount = healAmount;
-    }
+public  class HealingAbility extends Ability {
+	private int healAmount;
 
-    public int getHealAmount() {
+	public HealingAbility(String name,int cost, int baseCoolDown, int castRadius, AreaOfEffect area,int required, int healingAmount) {
+		super(name,cost, baseCoolDown, castRadius, area,required);
+		this.healAmount = healingAmount;
+	}
 
-        return this.healAmount;
+	public int getHealAmount() {
+		return healAmount;
+	}
 
-    }
+	public void setHealAmount(int healAmount) {
+		this.healAmount = healAmount;
+	}
 
-    public void setHealAmount(int damageAmount) {
-        if (damageAmount < 0)
-            damageAmount = 0;
-        this.healAmount = damageAmount;
+	
+	@Override
+	public void execute(ArrayList<Damageable> targets) {
+		for (Damageable d : targets)
 
-    }
-    public void execute(ArrayList<Damageable> targets){
+			d.setCurrentHP(d.getCurrentHP() + healAmount);
 
-        for(int i=0;i<targets.size();i++){
-            if(targets.get(i) instanceof Champion){
-            targets.get(i).setCurrentHP(targets.get(i).getCurrentHP()+this.getHealAmount());
+	}
+	
 
-        }}
-
-}}
+}

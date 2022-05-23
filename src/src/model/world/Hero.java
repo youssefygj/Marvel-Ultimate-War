@@ -1,53 +1,38 @@
 package model.world;
 
-import model.abilities.AreaOfEffect;
-import model.abilities.CrowdControlAbility;
+import java.util.ArrayList;
+
+import model.effects.Effect;
 import model.effects.EffectType;
 import model.effects.Embrace;
-import model.effects.Stun;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Hero extends Champion {
 
-    public Hero(String name, int maxHP, int mana, int maxActionsPerTurn, int speed, int attackRange, int attackDamage) {
-        super(name, maxHP, mana, maxActionsPerTurn, speed, attackRange, attackDamage);
-    }
+	public Hero(String name, int maxHP, int maxMana, int actions, int speed, int attackRange, int attackDamage) {
+		super(name, maxHP, maxMana, actions, speed, attackRange, attackDamage);
 
-    @Override
+	}
 
+	@Override
+	public void useLeaderAbility(ArrayList<Champion> targets) {
+		for (Champion c : targets) {
+			int i = 0;
+			while (i < c.getAppliedEffects().size()) {
+				Effect e = c.getAppliedEffects().get(i);
+				if (e.getType() == EffectType.DEBUFF) {
+					e.remove(c);
+					c.getAppliedEffects().remove(e);
 
-    public void useLeaderAbility(ArrayList<Champion> targets) throws IOException, CloneNotSupportedException {
+				} else
+					i++;
+			}
+				Embrace em = new Embrace(2);
+				
+				em.apply(c);
+				c.getAppliedEffects().add(em);
+				
+			}
+		}
 
-        for (int i = 0; i < targets.size(); i++) {
+	}
 
-
-            for (int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
-
-                if (targets.get(i).getAppliedEffects().get(j).getType() == EffectType.DEBUFF) {
-                    targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));
-                    j--;
-                }
-            }
-
-            Embrace x = new Embrace(2);
-            x.apply(targets.get(i));
-            targets.get(i).getAppliedEffects().add(x);
-        }
-    }
-
-
-    @Override
-    public int compareTo(Object o) {
-        int x = ((Champion) o).getSpeed();
-        if (this.getSpeed() > x) {
-            return -1;
-        } else if (this.getSpeed() < x) {
-            return 1;
-        } else {
-            Champion z = ((Champion) o);
-            return (this.getName().compareTo(z.getName()));
-        }
-    }
-}
