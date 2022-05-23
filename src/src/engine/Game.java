@@ -52,7 +52,6 @@ public class Game {
 
 	public Game(Player first, Player second) {
 		firstPlayer = first;
-
 		secondPlayer = second;
 		availableChampions = new ArrayList<Champion>();
 		availableAbilities = new ArrayList<Ability>();
@@ -143,7 +142,7 @@ public class Game {
 		br.close();
 	}
 
-	public static void loadChampions(String filePath) throws IOException {
+	pu																																																		blic static void loadChampions(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
 		while (line != null) {
