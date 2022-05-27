@@ -208,6 +208,7 @@ public class startController implements ActionListener, MouseListener {
         Champion current = game.getAvailableChampions().get(i);
         z.remove(lmao);
         stats=new JTextArea(current.toString());
+        stats.setEditable(false);
         z.add(stats,BorderLayout.SOUTH);
         z.revalidate();
         z.repaint();
@@ -221,7 +222,9 @@ public class startController implements ActionListener, MouseListener {
         else{
             lmao=new JTextArea("Second Player Hover over the buttons to see the stats of each champion"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n");
         }
+        lmao.setEditable(false);
         z.add(lmao,BorderLayout.SOUTH);
+
         z.revalidate();
         z.repaint();
     }
