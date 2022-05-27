@@ -141,8 +141,7 @@ public class Game {
 		}
 		br.close();
 	}
-
-	pu																																																		blic static void loadChampions(String filePath) throws IOException {
+	public static void loadChampions(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String line = br.readLine();
 		while (line != null) {

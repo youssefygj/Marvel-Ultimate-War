@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 
 import model.abilities.Ability;
+import model.abilities.CrowdControlAbility;
+import model.abilities.DamagingAbility;
+import model.abilities.HealingAbility;
 import model.effects.Effect;
 
 @SuppressWarnings("rawtypes")
@@ -41,15 +44,25 @@ public abstract class Champion implements Damageable, Comparable {
 
     public String toString() {
         String r = "";
-        r += "Name: " + name + " Health = " + maxHP + " Mana = " + mana + "\n"
-                + "Points per turn = " + maxActionPointsPerTurn + " speed = " + speed + " Range = " + attackRange + "Damage = " + attackDamage + "\n";
+        r += "Name: " + name + "\n"+ " Health = " + maxHP +  "\n"+  " Mana = " + mana + "\n"
+                + "Points per turn = " + maxActionPointsPerTurn + "\n"+ " speed = " + speed + "\n"+ " Range = " + attackRange + "\n"+  "Damage = " + attackDamage + "\n"+ "\n"+ "\n";
         for (int i = 0; i < this.getAbilities().size(); i++) {
-            r += "Ability name: " + this.getAbilities().get(i).getName() + " Cast area: " + this.getAbilities().get(i).getCastArea()
-                    + " Cool down = " + this.getAbilities().get(i).getBaseCooldown() + "\n" +
-                    " Range = " + this.getAbilities().get(i).getCastRange() + " Mana cost = " + this.getAbilities().get(i).getManaCost()
-                    + " Type: " + this.getAbilities().get(i).getClass() + "\n" +
-                    " Required Action Points = " + this.getAbilities().get(i).getRequiredActionPoints();
+            r += "Ability name: " + this.getAbilities().get(i).getName() + "\n"+ "          Cast area: " + this.getAbilities().get(i).getCastArea()
+                    +"\n"+  "          Cool down = " + this.getAbilities().get(i).getBaseCooldown() + "\n" +
+                    "          Range = " + this.getAbilities().get(i).getCastRange() +"\n"+  "          Mana cost = " + this.getAbilities().get(i).getManaCost()
+                    + "\n"+
+                    "          Required Action Points = " + this.getAbilities().get(i).getRequiredActionPoints()+"\n";
+            if(this.getAbilities().get(i) instanceof DamagingAbility){
+                r+="          Type = Damaging Ability"+"\n"+"          Damage Amount = " +((DamagingAbility) this.getAbilities().get(i)).getDamageAmount()+"\n"+"\n"+"\n";
+            }
+            else if(this.getAbilities().get(i) instanceof HealingAbility){
+                r+="          Type = Healing Ability"+"\n"+"          Heal Amount = " +((HealingAbility) this.getAbilities().get(i)).getHealAmount()+"\n"+"\n"+"\n";
+            }
+            else{
+                r+="          Type = Crowd Control Ability"+"\n"+"           Effect = " +((CrowdControlAbility)this.getAbilities().get(i)).getEffect().getName() +"\n"+"\n"+"\n";
+            }
         }
+
         return r;
     }
 
