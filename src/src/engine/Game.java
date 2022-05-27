@@ -676,4 +676,9 @@ public class Game {
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
 	}
+
+	public static void main(String[] args){
+		int[][] a = new int[5][6];
+		System.out.println(a.length);
+	}
 }

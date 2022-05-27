@@ -7,32 +7,33 @@ import model.world.Champion;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class startController implements ActionListener, MouseListener {
-    JTextField field1;
-    JTextField field2;
-    JFrame z;
-    JPanel x;
-    JPanel y;
-    JPanel leaderselection= new JPanel();
-    JPanel sleaderselection= new JPanel();
-    Game game;
-    JTextArea lmao= new JTextArea();
-    JTextArea stats;
-    JFrame l = new JFrame();
-    int c=0;
+    private JTextField field1;
+    private JTextField field2;
+    private JFrame z;
+    private JPanel x;
+    private JPanel y;
+    private JPanel leaderselection = new JPanel();
+    private JPanel sleaderselection = new JPanel();
+    private Game game;
+    private JTextArea lmao = new JTextArea();
+    private JTextArea stats;
+    private JFrame l = new JFrame();
+    private int c = 0;
     private ArrayList<JButton> buttons = new ArrayList<>();
     private ArrayList<JButton> buttons1 = new ArrayList<>();
+
     public startController() {
         z = new JFrame();
 
@@ -66,27 +67,33 @@ public class startController implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(((JButton)e.getSource()).getName().equals("test")){
-            String name1=field1.getText();
-            String name2=field2.getText();
-            JButton testnew= new JButton("Test");
-            y= new JPanel();
+        if (((JButton) e.getSource()).getName().equals("test")) {
+            String name1 = field1.getText();
+            String name2 = field2.getText();
+            JButton testnew = new JButton("Test");
+            y = new JPanel();
             y.setLayout(new GridLayout(5, 3));
             Player first = new Player(name1);
             Player second = new Player(name2);
             game = new Game(first, second);
             try {
-                game.loadAbilities("C:\\Users\\asus\\IdeaProjects\\Marvel-Ultimate-War\\src\\Abilities.csv");
-                game.loadChampions("C:\\Users\\asus\\IdeaProjects\\Marvel-Ultimate-War\\src\\Champions.csv");
+                game.loadAbilities("Abilities.csv");
+                game.loadChampions("Champions.csv");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
             for (int i = 0; i < game.getAvailableChampions().size(); i++) {
-
-                JButton b = new JButton(game.getAvailableChampions().get(i).getName());
-
+                String s = ((Champion)game.getAvailableChampions().get(i)).getName();
+                ImageIcon icon = new ImageIcon(s+".png");
+                Image img = icon.getImage() ;
+                Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                icon = new ImageIcon(newimg);
+                JButton b = new JButton(icon);
+                b.setFocusPainted(false);
                 b.setName(game.getAvailableChampions().get(i).getName());
-
+                b.setBorderPainted(true);
+                b.setBorder(new LineBorder(Color.BLACK));
                 b.addActionListener(this);
                 b.setVisible(true);
                 b.addMouseListener(this);
@@ -95,82 +102,96 @@ public class startController implements ActionListener, MouseListener {
                 y.add(b);
             }
             z.remove(x);
-            z.add(y,BorderLayout.CENTER);
-            z.setBounds(0,0,1920,1080);
+            z.add(y, BorderLayout.CENTER);
+            z.setBounds(0, 0, 1920, 1080);
+            JOptionPane.showMessageDialog(null, "FirstPlayer select", null, JOptionPane.PLAIN_MESSAGE);
 
             z.revalidate();
             z.repaint();
 
-        }
-        else if(((JButton)e.getSource()).getName().equals("fpossibleleaders")){
-            for(int i=0;i<game.getFirstPlayer().getTeam().size();i++){
-                if(game.getFirstPlayer().getTeam().get(i).getName().equals(((JButton)e.getSource()).getText())){
+
+        } else if (((JButton) e.getSource()).getName().equals("fpossibleleaders")) {
+            for (int i = 0; i < game.getFirstPlayer().getTeam().size(); i++) {
+                if (game.getFirstPlayer().getTeam().get(i).getName().equals(((JButton) e.getSource()).getText())) {
                     game.getFirstPlayer().setLeader(game.getFirstPlayer().getTeam().get(i));
                     sleaderselection.setLayout(null);
-                    int loc=660;
-                    for(int j=0;j<game.getSecondPlayer().getTeam().size();j++){
-
+                    int loc = 660;
+                    for (int j = 0; j < game.getSecondPlayer().getTeam().size(); j++) {
+                        String s = ((Champion)game.getSecondPlayer().getTeam().get(j)).getName();
+                        ImageIcon icon = new ImageIcon(s+".png");
+                        Image img = icon.getImage() ;
+                        Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                        icon = new ImageIcon(newimg);
                         JButton b = new JButton(game.getSecondPlayer().getTeam().get(j).getName());
-                        b.setBounds(loc,440,150,150);
+                        b.setIcon(icon);
+                        b.setBounds(loc, 440, 150, 150);
                         b.setName("spossibleleaders");
+                        b.setBorderPainted(true);
+                        b.setBorder(new LineBorder(Color.BLACK));
                         b.addActionListener(this);
-                        loc=loc+200;
+                        loc = loc + 200;
                         sleaderselection.add(b);
 
                     }
-                    JTextArea selectiontext= new JTextArea(game.getSecondPlayer().getName()+" please select your leader");
+                    JTextArea selectiontext = new JTextArea(game.getSecondPlayer().getName() + " please select your leader");
                     selectiontext.setEditable(false);
-                    selectiontext.setBounds(800,340,10000,10000);
+                    selectiontext.setBounds(800, 340, 10000, 10000);
                     selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
-                    Color color = new Color(152,251,152, 0);
+                    Color color = new Color(152, 251, 152, 0);
                     selectiontext.setBackground(color);
-                    sleaderselection.add(selectiontext,new GridLayout());
-
+                    sleaderselection.add(selectiontext, new GridLayout());
                     z.remove(leaderselection);
                     z.add(sleaderselection);
                     z.revalidate();
                     z.repaint();
                 }
             }
-        }
-        else if(((JButton)e.getSource()).getName().equals("spossibleleaders")) {
+        } else if (((JButton) e.getSource()).getName().equals("spossibleleaders")) {
             for (int i = 0; i < game.getSecondPlayer().getTeam().size(); i++) {
                 if (game.getSecondPlayer().getTeam().get(i).getName().equals(((JButton) e.getSource()).getText())) {
                     game.getSecondPlayer().setLeader(game.getSecondPlayer().getTeam().get(i));
                 }
             }
-            gameController x=new gameController(game,z,sleaderselection);
+            gameController x = new gameController(game, z, sleaderselection);
 
-        }
-        else{
+        } else {
             JButton a = (JButton) e.getSource();
             int i = buttons.indexOf(a);
             Champion current = game.getAvailableChampions().get(i);
-            if(c<3) {
+            if (c < 3) {
                 game.getFirstPlayer().getTeam().add(current);
                 c++;
-            }
-            else if(c<6){
+            } else if (c < 6) {
                 game.getSecondPlayer().getTeam().add(current);
                 c++;
             }
-            if(c==6){
+            a.setEnabled(false);
+            if (c == 3)
+                JOptionPane.showMessageDialog(null, "SecondPlayer select", null, JOptionPane.PLAIN_MESSAGE);
+            if (c == 6) {
                 leaderselection.setLayout(null);
-                int loc=660;
-                for(int j=0;j<game.getFirstPlayer().getTeam().size();j++){
-
+                int loc = 660;
+                for (int j = 0; j < game.getFirstPlayer().getTeam().size(); j++) {
+                    String s = ((Champion)game.getFirstPlayer().getTeam().get(j)).getName();
+                    ImageIcon icon = new ImageIcon(s+".png");
+                    Image img = icon.getImage() ;
+                    Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                    icon = new ImageIcon(newimg);
                     JButton b = new JButton(game.getFirstPlayer().getTeam().get(j).getName());
-                    b.setBounds(loc,440,150,150);
+                    b.setIcon(icon);
+                    b.setBounds(loc, 440, 150, 150);
                     b.setName("fpossibleleaders");
+                    b.setBorderPainted(true);
+                    b.setBorder(new LineBorder(Color.BLACK));
                     b.addActionListener(this);
-                    loc=loc+200;
+                    loc = loc + 200;
                     leaderselection.add(b);
                 }
-                JTextArea selectiontext= new JTextArea(game.getFirstPlayer().getName()+" please select your leader");
+                JTextArea selectiontext = new JTextArea(game.getFirstPlayer().getName() + " please select your leader");
                 selectiontext.setEditable(false);
-                selectiontext.setBounds(800,340,1000,100);
+                selectiontext.setBounds(800, 340, 1000, 100);
                 selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
-                Color color = new Color(152,251,152, 0);
+                Color color = new Color(152, 251, 152, 0);
                 selectiontext.setBackground(color);
                 leaderselection.add(selectiontext);
                 z.remove(y);
@@ -181,7 +202,6 @@ public class startController implements ActionListener, MouseListener {
                 z.repaint();
             }
 
-            a.setEnabled(false);
 
         }
     }
@@ -207,9 +227,9 @@ public class startController implements ActionListener, MouseListener {
         int i = buttons.indexOf(a);
         Champion current = game.getAvailableChampions().get(i);
         z.remove(lmao);
-        stats=new JTextArea(current.toString());
+        stats = new JTextArea(current.toString());
         stats.setEditable(false);
-        z.add(stats,BorderLayout.SOUTH);
+        z.add(stats, BorderLayout.SOUTH);
         z.revalidate();
         z.repaint();
     }
@@ -217,13 +237,12 @@ public class startController implements ActionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         z.remove(stats);
-        if(c<3)
-        lmao=new JTextArea("First Player Hover over the buttons to see the stats of each champion"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n");
-        else{
-            lmao=new JTextArea("Second Player Hover over the buttons to see the stats of each champion"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n"+"\n");
-        }
+        if (c < 3)
+            lmao = new JTextArea("First Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+        else
+            lmao = new JTextArea("Second Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
         lmao.setEditable(false);
-        z.add(lmao,BorderLayout.SOUTH);
+        z.add(lmao, BorderLayout.SOUTH);
 
         z.revalidate();
         z.repaint();

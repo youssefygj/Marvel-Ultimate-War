@@ -44,8 +44,16 @@ public abstract class Champion implements Damageable, Comparable {
 
     public String toString() {
         String r = "";
-        r += "Name: " + name + "\n"+ "Health = " + maxHP +  "\n"+  "Mana = " + mana + "\n"
+        if(this instanceof Hero)
+            r += "Name: " + name + "\n"+ "Type: Hero\n" + "Health = " + maxHP +  "\n"+  "Mana = " + mana + "\n"
                 + "Points per turn = " + maxActionPointsPerTurn + "\n"+ "Speed = " + speed + "\n"+ "Range = " + attackRange + "\n"+  "Damage = " + attackDamage + "\n"+ "\n"+ "\n";
+        else if(this instanceof AntiHero)
+            r += "Name: " + name + "\n"+ "Type: Anti Hero\n" + "Health = " + maxHP +  "\n"+  "Mana = " + mana + "\n"
+                    + "Points per turn = " + maxActionPointsPerTurn + "\n"+ "Speed = " + speed + "\n"+ "Range = " + attackRange + "\n"+  "Damage = " + attackDamage + "\n"+ "\n"+ "\n";
+        else
+            r += "Name: " + name + "\n"+ "Type: Villain\n" + "Health = " + maxHP +  "\n"+  "Mana = " + mana + "\n"
+                    + "Points per turn = " + maxActionPointsPerTurn + "\n"+ "Speed = " + speed + "\n"+ "Range = " + attackRange + "\n"+  "Damage = " + attackDamage + "\n"+ "\n"+ "\n";
+
         for (int i = 0; i < this.getAbilities().size(); i++) {
             r += "Ability name: " + this.getAbilities().get(i).getName() + "\n"+ "          Cast area: " + this.getAbilities().get(i).getCastArea()
                     +"\n"+  "          Cool down = " + this.getAbilities().get(i).getBaseCooldown() + "\n" +
