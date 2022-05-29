@@ -1,5 +1,7 @@
 package engine;
 
+import model.world.Champion;
+
 public class PriorityQueue {
 
 	@SuppressWarnings("rawtypes")
@@ -45,5 +47,14 @@ public class PriorityQueue {
 
 	public int size() {
 		return nItems;
+	}
+	public String toString(){
+		String r="";
+		for(int i=0;i< elements.length;i++){
+			if(elements[i]!=null)
+			r=r+((Champion)elements[i]).getName();
+			r=r+", ";
+		}
+		return r;
 	}
 }
