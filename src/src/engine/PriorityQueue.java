@@ -50,7 +50,7 @@ public class PriorityQueue {
 	}
 	public String toString(){
 		String r="";
-		for(int i=0;i< elements.length;i++){
+		for(int i=nItems-1;i>=0;i--){
 			if(elements[i]!=null)
 			r=r+((Champion)elements[i]).getName();
 			r=r+", ";
