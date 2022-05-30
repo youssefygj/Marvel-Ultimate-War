@@ -24,48 +24,50 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     private JTextArea info = new JTextArea();
     private JTextArea title = new JTextArea();
     private JButton attack;
-    private JTextArea turnorder=new JTextArea();
+    private JTextArea turnorder = new JTextArea();
     private JButton move;
-    private JButton endturn=new JButton("End your turn");
-    private JButton cast= new JButton("Cast your ability");
-    private JPanel selections= new JPanel(new GridLayout(4,1));
-    private Ability temp=null;
+    private JButton endturn = new JButton("End your turn");
+    private JButton cast = new JButton("Cast your ability");
+    private JPanel selections = new JPanel(new GridLayout(4, 1));
+    private Ability temp = null;
     private int firstcoordinate;
     private int secondcoordinate;
-    private boolean choosing=false;
+    private boolean choosing = false;
     private boolean pressed;
     private boolean pressedmove;
+    private boolean chooseDirection = false;
+
     public gameController(Game game, JFrame frame, JPanel removal) {
         this.game = new Game(game.getFirstPlayer(), game.getSecondPlayer());
         this.frame = frame;
         this.frame.remove(removal);
         board.setLayout(new GridLayout(5, 5));
-        attack=new JButton("Attack");
+        attack = new JButton("Attack");
         actions.setLayout(new BorderLayout());
         attack.setName("attack");
         attack.addActionListener(this);
-        actions.add(attack,BorderLayout.CENTER);
+        actions.add(attack, BorderLayout.CENTER);
 
-        move=new JButton("move");
+        move = new JButton("move");
         move.setName("move");
         move.addActionListener(this);
         move.addKeyListener(this);
-        actions.add(move,BorderLayout.NORTH);
+        actions.add(move, BorderLayout.NORTH);
 
         endturn.addActionListener(this);
         endturn.setName("endturn");
-        actions.add(endturn,BorderLayout.SOUTH);
+        actions.add(endturn, BorderLayout.SOUTH);
 
         cast.addActionListener(this);
         cast.setName("cast");
-        actions.add(cast,BorderLayout.EAST);
+        actions.add(cast, BorderLayout.EAST);
 
-        this.frame.add(actions,BorderLayout.EAST);
+        this.frame.add(actions, BorderLayout.EAST);
         this.frame.addKeyListener(this);
         this.frame.setFocusable(true);
         turnorder.setEditable(false);
         turnorder.setFont(new Font("Arial", Font.BOLD, 18));
-        this.frame.add(turnorder,BorderLayout.SOUTH);
+        this.frame.add(turnorder, BorderLayout.SOUTH);
         attack.addKeyListener(this);
         actions.addKeyListener(this);
         this.game.placeChampions();
@@ -128,25 +130,25 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         }
 
         if (((JButton) e.getSource()).getName().equals("cover")) {
-            if(choosing){
-                firstcoordinate=x;
-                secondcoordinate=y;
-                choosing=false;
+            if (choosing) {
+                firstcoordinate = x;
+                secondcoordinate = y;
+                choosing = false;
             }
             Cover s = (Cover) game.getBoard()[x][y];
             JOptionPane.showMessageDialog(null, "Health = " + s.getCurrentHP(), null, JOptionPane.PLAIN_MESSAGE);
         }
         if (((JButton) e.getSource()).getName().equals("Champion")) {
-            if(choosing){
-                firstcoordinate=x;
-                secondcoordinate=y;
-                choosing=false;
+            if (choosing) {
+                firstcoordinate = x;
+                secondcoordinate = y;
+                choosing = false;
             }
             champions.remove(info);
             this.frame.remove(champions);
             title.setText("Champion Stats");
             title.setFont(new Font("Arial", Font.BOLD, 18));
-            champions.add(title,BorderLayout.NORTH);
+            champions.add(title, BorderLayout.NORTH);
             String r = ((Champion) (game.getBoard()[x][y])).toString();
             for (int i = 0; i < ((Champion) (game.getBoard()[x][y])).getAppliedEffects().size(); i++) {
                 r += "Name: " + ((Champion) (game.getBoard()[x][y])).getAppliedEffects().get(i).getName() + "\n"
@@ -159,74 +161,227 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             this.frame.revalidate();
             this.frame.repaint();
         }
-        if (((JButton) e.getSource()).getName().equals("null")){
-            if(choosing){
-                firstcoordinate=x;
-                secondcoordinate=y;
-                choosing=false;
+        if (((JButton) e.getSource()).getName().equals("null")) {
+            if (choosing) {
+                firstcoordinate = x;
+                secondcoordinate = y;
+                choosing = false;
             }
         }
-        if (((JButton) e.getSource()).getName().equals("attack")){
-            pressed=true;
-            pressedmove=false;
+        if (((JButton) e.getSource()).getName().equals("attack")) {
+            pressed = true;
+            pressedmove = false;
+            chooseDirection = false;
+            choosing = false;
         }
-        if (((JButton) e.getSource()).getName().equals("move")){
-            pressedmove=true;
-            pressed=false;
+        if (((JButton) e.getSource()).getName().equals("move")) {
+            chooseDirection = false;
+            choosing = false;
+            pressedmove = true;
+            pressed = false;
         }
-        if (((JButton) e.getSource()).getName().equals("endturn")){
+        if (((JButton) e.getSource()).getName().equals("endturn")) {
 
             this.game.endTurn();
             turnorder.setText(this.game.getTurnOrder().toString());
             frame.repaint();
             frame.revalidate();
         }
-        if (((JButton) e.getSource()).getName().equals("cast")){
+        if (((JButton) e.getSource()).getName().equals("cast")) {
             selections.removeAll();
-            for(int i=0;i<game.getCurrentChampion().getAbilities().size();i++){
-                JButton ability= new JButton(game.getCurrentChampion().getAbilities().get(i).getName());
+            for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
+                JButton ability = new JButton(game.getCurrentChampion().getAbilities().get(i).getName());
                 ability.addActionListener(this);
-                ability.setName(game.getCurrentChampion().getAbilities().get(i).getCastArea()+"");
+                ability.setName(game.getCurrentChampion().getAbilities().get(i).getCastArea() + "");
                 selections.add(ability);
             }
-            JButton back= new JButton("back");
+            JButton back = new JButton("back");
             back.setName("back");
             back.addActionListener(this);
             selections.add(back);
             frame.remove(actions);
 
-            frame.add(selections,BorderLayout.EAST);
+            frame.add(selections, BorderLayout.EAST);
             frame.repaint();
             frame.revalidate();
         }
-        if(((JButton) e.getSource()).getName().equals("back")){
+        if (((JButton) e.getSource()).getName().equals("back")) {
             frame.remove(selections);
 
-            frame.add(actions,BorderLayout.EAST);
+            frame.add(actions, BorderLayout.EAST);
             frame.repaint();
             frame.revalidate();
         }
-        if(((JButton) e.getSource()).getName().equals("SINGLETARGET")){
-           choosing=true;
-           String name= ((JButton) e.getSource()).getText();
-           for(int i=0;i<game.getCurrentChampion().getAbilities().size();i++){
-               if(game.getCurrentChampion().getAbilities().get(i).getName().equals(name)){
-                   temp=game.getCurrentChampion().getAbilities().get(i);
-               }
-           }
+        if (((JButton) e.getSource()).getName().equals("SINGLETARGET")) {
+            choosing = true;
+            String name = ((JButton) e.getSource()).getText();
+            for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
+                if (game.getCurrentChampion().getAbilities().get(i).getName().equals(name)) {
+                    temp = game.getCurrentChampion().getAbilities().get(i);
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Choose your target", null, JOptionPane.PLAIN_MESSAGE);
+
 
         }
-        if(((JButton) e.getSource()).getName().equals("DIRECTIONAL")){
-
+        if (((JButton) e.getSource()).getName().equals("DIRECTIONAL")) {
+            choosing = false;
+            pressedmove = false;
+            pressed = false;
+            chooseDirection = true;
+            JOptionPane.showMessageDialog(null, "Choose a direction using W A S D", null, JOptionPane.PLAIN_MESSAGE);
+            String name = ((JButton) e.getSource()).getText();
+            for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
+                if (game.getCurrentChampion().getAbilities().get(i).getName().equals(name)) {
+                    temp = game.getCurrentChampion().getAbilities().get(i);
+                }
+            }
         }
-        if(((JButton) e.getSource()).getName().equals("SURROUND")||((JButton) e.getSource()).getName().equals("TEAMTARGET")||((JButton) e.getSource()).getName().equals("SELFTARGET")){
+        if (((JButton) e.getSource()).getName().equals("SURROUND") || ((JButton) e.getSource()).getName().equals("TEAMTARGET") || ((JButton) e.getSource()).getName().equals("SELFTARGET")) {
 
         }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar()=='s' &&pressed){
+        if (e.getKeyChar() == 's' && chooseDirection) {
+
+            try {
+                this.game.castAbility(temp, Direction.UP);
+            } catch (NotEnoughResourcesException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (AbilityUseException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (CloneNotSupportedException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            board.removeAll();
+
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        board.remove(buttons[i][j]);
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+        }
+        if (e.getKeyChar() == 'w' && chooseDirection) {
+            try {
+                this.game.castAbility(temp, Direction.DOWN);
+            } catch (NotEnoughResourcesException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (AbilityUseException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (CloneNotSupportedException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            board.removeAll();
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+        }
+        if (e.getKeyChar() == 'a' && chooseDirection) {
+            try {
+                this.game.castAbility(temp, Direction.LEFT);
+            } catch (NotEnoughResourcesException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (AbilityUseException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (CloneNotSupportedException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            board.removeAll();
+
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+        }
+        if (e.getKeyChar() == 'd' && chooseDirection) {
+            try {
+                this.game.castAbility(temp, Direction.RIGHT);
+            } catch (NotEnoughResourcesException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (AbilityUseException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (CloneNotSupportedException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            board.removeAll();
+
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+        }
+        if (e.getKeyChar() == 's' && pressed) {
 
             try {
                 this.game.attack(Direction.UP);
@@ -241,26 +396,30 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
             }
-                    board.removeAll();
+            board.removeAll();
 
 
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
-                    if(game.getBoard()[i][j]!=null){
-                        board.add(buttons[i][j]);}
-                    else{
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
                         board.remove(buttons[i][j]);
-                        JButton pl=new JButton();
+                        JButton pl = new JButton();
                         pl.addActionListener(this);
                         pl.addMouseListener(this);
                         pl.setName("null");
                         board.add(pl);
-                        buttons[i][j]=pl;
+                        buttons[i][j] = pl;
                     }
                 }
             }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
         }
-        if (e.getKeyChar()=='w' &&pressed){
+        if (e.getKeyChar() == 'w' && pressed) {
             try {
                 this.game.attack(Direction.DOWN);
 
@@ -277,22 +436,22 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
-                    if(game.getBoard()[i][j]!=null){
-                        board.add(buttons[i][j]);}
-                    else{
-                        JButton pl=new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
                         pl.addActionListener(this);
                         pl.addMouseListener(this);
                         pl.setName("null");
                         board.add(pl);
-                        buttons[i][j]=pl;
+                        buttons[i][j] = pl;
                     }
                 }
             }
         }
-        if (e.getKeyChar()=='a' &&pressed){
+        if (e.getKeyChar() == 'a' && pressed) {
             try {
                 this.game.attack(Direction.LEFT);
             } catch (NotEnoughResourcesException ex) {
@@ -308,22 +467,22 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
-                    if(game.getBoard()[i][j]!=null){
-                        board.add(buttons[i][j]);}
-                    else{
-                        JButton pl=new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
                         pl.addActionListener(this);
                         pl.addMouseListener(this);
                         pl.setName("null");
                         board.add(pl);
-                        buttons[i][j]=pl;
+                        buttons[i][j] = pl;
                     }
                 }
             }
         }
-        if (e.getKeyChar()=='d' &&pressed){
+        if (e.getKeyChar() == 'd' && pressed) {
             try {
                 this.game.attack(Direction.RIGHT);
             } catch (NotEnoughResourcesException ex) {
@@ -339,129 +498,117 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
-                    if(game.getBoard()[i][j]!=null){
-                        board.add(buttons[i][j]);}
-                    else{
-                        JButton pl=new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
                         pl.addActionListener(this);
                         pl.addMouseListener(this);
                         pl.setName("null");
                         board.add(pl);
-                        buttons[i][j]=pl;
+                        buttons[i][j] = pl;
                     }
                 }
             }
         }
-        if (e.getKeyChar()=='s' &&pressedmove){
+        if (e.getKeyChar() == 's' && pressedmove) {
             System.out.println(this.game.getCurrentChampion().getLocation());
             JButton temp;
-            Point test=this.game.getCurrentChampion().getLocation();
-            temp=buttons[test.x][test.y];
+            Point test = this.game.getCurrentChampion().getLocation();
+            temp = buttons[test.x][test.y];
             try {
                 this.game.move(Direction.UP);
-                System.out.println("LOL");
             } catch (NotEnoughResourcesException ex) {
                 JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
-            }
-             catch (UnallowedMovementException ex) {
-                 JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
-                 return;
+            } catch (UnallowedMovementException ex) {
+                JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
             }
             board.removeAll();
-            buttons[test.x+1][test.y]=temp;
-            buttons[test.x][test.y]=new JButton();
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
+            buttons[test.x + 1][test.y] = temp;
+            buttons[test.x][test.y] = new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
             System.out.println(this.game.getCurrentChampion().getLocation());
         }
-        if (e.getKeyChar()=='w' &&pressedmove){
+        if (e.getKeyChar() == 'w' && pressedmove) {
             System.out.println(this.game.getCurrentChampion().getLocation());
             JButton temp;
-            Point test=this.game.getCurrentChampion().getLocation();
-            temp=buttons[test.x][test.y];
+            Point test = this.game.getCurrentChampion().getLocation();
+            temp = buttons[test.x][test.y];
             try {
                 this.game.move(Direction.DOWN);
 
             } catch (NotEnoughResourcesException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
-            }
-            catch (UnallowedMovementException ex) {
+            } catch (UnallowedMovementException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
             }
 
             board.removeAll();
-            buttons[test.x-1][test.y]=temp;
-            buttons[test.x][test.y]=new JButton();
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
+            buttons[test.x - 1][test.y] = temp;
+            buttons[test.x][test.y] = new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
-            System.out.println(this.game.getCurrentChampion().getLocation());
         }
-        if (e.getKeyChar()=='a' &&pressedmove){
-            System.out.println(this.game.getCurrentChampion().getLocation());
+        if (e.getKeyChar() == 'a' && pressedmove) {
             JButton temp;
-            Point test=this.game.getCurrentChampion().getLocation();
-            temp=buttons[test.x][test.y];
+            Point test = this.game.getCurrentChampion().getLocation();
+            temp = buttons[test.x][test.y];
             try {
                 this.game.move(Direction.LEFT);
-                System.out.println("LOL");
             } catch (NotEnoughResourcesException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
-            }
-            catch (UnallowedMovementException ex) {
+            } catch (UnallowedMovementException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
             }
 
             board.removeAll();
-            buttons[test.x][test.y-1]=temp;
-            buttons[test.x][test.y]=new JButton();
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
+            buttons[test.x][test.y - 1] = temp;
+            buttons[test.x][test.y] = new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
 
-            System.out.println(this.game.getCurrentChampion().getLocation());
         }
-        if (e.getKeyChar()=='d' &&pressedmove){
-            System.out.println(this.game.getCurrentChampion().getLocation());
+        if (e.getKeyChar() == 'd' && pressedmove) {
             JButton temp;
-            Point test=this.game.getCurrentChampion().getLocation();
-            temp=buttons[test.x][test.y];
+            Point test = this.game.getCurrentChampion().getLocation();
+            temp = buttons[test.x][test.y];
             try {
                 this.game.move(Direction.RIGHT);
-                System.out.println("LOL");
             } catch (NotEnoughResourcesException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
-            }
-            catch (UnallowedMovementException ex) {
+            } catch (UnallowedMovementException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
             }
 
             board.removeAll();
-            buttons[test.x][test.y+1]=temp;
-            buttons[test.x][test.y]=new JButton();
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
+            buttons[test.x][test.y + 1] = temp;
+            buttons[test.x][test.y] = new JButton();
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
 
-            System.out.println(this.game.getCurrentChampion().getLocation());
         }
         game.checkGameOver();
         frame.repaint();
@@ -479,8 +626,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void keyReleased(KeyEvent e) {
-        pressed=false;
-        pressedmove=false;
+        pressed = false;
+        pressedmove = false;
+        chooseDirection = false;
     }
 
     @Override
@@ -491,7 +639,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(choosing){
+        if (choosing) {
             System.out.println("test");
             int x = 0;
             int y = 0;
@@ -504,8 +652,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 }
             }
             try {
-                game.castAbility(temp,x,y);
-                System.out.println("sus");
+                game.castAbility(temp, x, y);
             } catch (NotEnoughResourcesException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
                 return;
@@ -522,24 +669,24 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for(int i=0;i< buttons.length;i++){
-                for(int j=0;j<buttons.length;j++){
-                    if(game.getBoard()[i][j]!=null){
-                        board.add(buttons[i][j]);}
-                    else{
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
                         board.remove(buttons[i][j]);
-                        JButton pl=new JButton();
+                        JButton pl = new JButton();
                         pl.addActionListener(this);
                         pl.addMouseListener(this);
                         pl.setName("null");
                         board.add(pl);
-                        buttons[i][j]=pl;
+                        buttons[i][j] = pl;
                     }
                 }
             }
             frame.repaint();
             frame.revalidate();
-            choosing=false;
+            choosing = false;
         }
     }
 
