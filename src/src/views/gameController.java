@@ -70,6 +70,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.frame.add(turnorder, BorderLayout.SOUTH);
         attack.addKeyListener(this);
         actions.addKeyListener(this);
+        selections.addKeyListener(this);
+
         this.game.placeChampions();
 
         this.frame.setVisible(true);
@@ -193,6 +195,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 JButton ability = new JButton(game.getCurrentChampion().getAbilities().get(i).getName());
                 ability.addActionListener(this);
                 ability.setName(game.getCurrentChampion().getAbilities().get(i).getCastArea() + "");
+                ability.addKeyListener(this);
                 selections.add(ability);
             }
             JButton back = new JButton("back");
