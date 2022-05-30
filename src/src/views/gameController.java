@@ -188,6 +188,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             turnorder.setText(this.game.getTurnOrder().toString());
             frame.repaint();
             frame.revalidate();
+            if(game.checkGameOver()!=null){
+                JOptionPane.showMessageDialog(null, "SHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESH", null, JOptionPane.PLAIN_MESSAGE);
+                frame.dispose();
+            }
         }
         if (((JButton) e.getSource()).getName().equals("cast")) {
             selections.removeAll();
@@ -240,7 +244,51 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             }
         }
         if (((JButton) e.getSource()).getName().equals("SURROUND") || ((JButton) e.getSource()).getName().equals("TEAMTARGET") || ((JButton) e.getSource()).getName().equals("SELFTARGET")) {
+            String name = ((JButton) e.getSource()).getText();
+            for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
+                if (game.getCurrentChampion().getAbilities().get(i).getName().equals(name)) {
+                    temp = game.getCurrentChampion().getAbilities().get(i);
+                }
+            }
+            try {
+                game.castAbility(temp);
+            } catch (NotEnoughResourcesException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (AbilityUseException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            } catch (CloneNotSupportedException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            board.removeAll();
 
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        board.add(buttons[i][j]);
+                    } else {
+                        board.remove(buttons[i][j]);
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+            if(game.checkGameOver()!=null){
+                JOptionPane.showMessageDialog(null, "SHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESH", null, JOptionPane.PLAIN_MESSAGE);
+                frame.dispose();
+            }
         }
     }
 
@@ -612,7 +660,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             }
 
         }
-        game.checkGameOver();
+        if(game.checkGameOver()!=null){
+            JOptionPane.showMessageDialog(null, "SHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESH", null, JOptionPane.PLAIN_MESSAGE);
+            frame.dispose();
+        }
         frame.repaint();
         frame.revalidate();
         board.repaint();
@@ -631,6 +682,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         pressed = false;
         pressedmove = false;
         chooseDirection = false;
+        if(game.checkGameOver()!=null){
+            JOptionPane.showMessageDialog(null, "SHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESH", null, JOptionPane.PLAIN_MESSAGE);
+            frame.dispose();
+        }
     }
 
     @Override
@@ -689,6 +744,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.repaint();
             frame.revalidate();
             choosing = false;
+            if(game.checkGameOver()!=null){
+                JOptionPane.showMessageDialog(null, "SHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESH", null, JOptionPane.PLAIN_MESSAGE);
+                frame.dispose();
+            }
         }
     }
 
