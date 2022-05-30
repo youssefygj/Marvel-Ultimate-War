@@ -232,7 +232,6 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             pressedmove = false;
             pressed = false;
             chooseDirection = true;
-            JOptionPane.showMessageDialog(null, "Choose a direction using W A S D", null, JOptionPane.PLAIN_MESSAGE);
             String name = ((JButton) e.getSource()).getText();
             for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
                 if (game.getCurrentChampion().getAbilities().get(i).getName().equals(name)) {
