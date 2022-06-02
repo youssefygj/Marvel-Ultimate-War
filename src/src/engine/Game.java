@@ -598,6 +598,7 @@ public class Game {
 	}
 
 	public void endTurn() {
+
 		turnOrder.remove();
 		if (turnOrder.isEmpty())
 			prepareChampionTurns();
@@ -605,6 +606,9 @@ public class Game {
 			Champion current = (Champion) turnOrder.peekMin();
 			updateTimers(current);
 			turnOrder.remove();
+			if(turnOrder.isEmpty()){
+				prepareChampionTurns();
+			}
 		}
 		Champion current = (Champion) turnOrder.peekMin();
 		updateTimers(current);
