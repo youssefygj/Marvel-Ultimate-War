@@ -17,7 +17,9 @@ import java.awt.event.*;
 
 public class gameController implements ActionListener, KeyListener, MouseListener {
     private Game game;
+    private JFrame tutorial;
     private JFrame frame;
+    private JLabel background;
     private JPanel removal;
     private JPanel board = new JPanel();
     private JPanel covers = new JPanel();
@@ -48,6 +50,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.game = new Game(game.getFirstPlayer(), game.getSecondPlayer());
         this.frame = frame;
         this.frame.remove(removal);
+
         board.setLayout(new GridLayout(5, 5));
         attack = new JButton("Attack");
         actions.setLayout(new GridLayout(5, 1));
@@ -152,6 +155,11 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         }
         this.frame.revalidate();
         this.frame.repaint();
+        tutorial = new JFrame();
+        tutorial.setVisible(true);
+        tutorial.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        background = new JLabel(new ImageIcon("tutorial.png"));
+        tutorial.add(background);
 
     }
 
