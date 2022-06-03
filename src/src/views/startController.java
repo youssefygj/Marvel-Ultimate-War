@@ -36,7 +36,6 @@ public class startController implements ActionListener, MouseListener {
 
     public startController() {
         z = new JFrame();
-
         x = new JPanel();
         z.setDefaultCloseOperation(EXIT_ON_CLOSE);
         x.setLayout(new FlowLayout());
@@ -70,6 +69,10 @@ public class startController implements ActionListener, MouseListener {
         if (((JButton) e.getSource()).getName().equals("test")) {
             String name1 = field1.getText();
             String name2 = field2.getText();
+            if (name1.equals("") || name2.equals("")) {
+                JOptionPane.showMessageDialog(null, "Enter a valid name", null, JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             JButton testnew = new JButton("Test");
             y = new JPanel();
             y.setLayout(new GridLayout(5, 3));
@@ -84,10 +87,10 @@ public class startController implements ActionListener, MouseListener {
             }
 
             for (int i = 0; i < game.getAvailableChampions().size(); i++) {
-                String s = ((Champion)game.getAvailableChampions().get(i)).getName();
-                ImageIcon icon = new ImageIcon(s+".png");
-                Image img = icon.getImage() ;
-                Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                String s = ((Champion) game.getAvailableChampions().get(i)).getName();
+                ImageIcon icon = new ImageIcon(s + ".png");
+                Image img = icon.getImage();
+                Image newimg = img.getScaledInstance(100, 80, java.awt.Image.SCALE_SMOOTH);
                 icon = new ImageIcon(newimg);
                 JButton b = new JButton(icon);
                 b.setFocusPainted(false);
@@ -117,10 +120,10 @@ public class startController implements ActionListener, MouseListener {
                     sleaderselection.setLayout(null);
                     int loc = 660;
                     for (int j = 0; j < game.getSecondPlayer().getTeam().size(); j++) {
-                        String s = ((Champion)game.getSecondPlayer().getTeam().get(j)).getName();
-                        ImageIcon icon = new ImageIcon(s+".png");
-                        Image img = icon.getImage() ;
-                        Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                        String s = ((Champion) game.getSecondPlayer().getTeam().get(j)).getName();
+                        ImageIcon icon = new ImageIcon(s + ".png");
+                        Image img = icon.getImage();
+                        Image newimg = img.getScaledInstance(100, 80, java.awt.Image.SCALE_SMOOTH);
                         icon = new ImageIcon(newimg);
                         JButton b = new JButton(game.getSecondPlayer().getTeam().get(j).getName());
                         b.setIcon(icon);
@@ -172,10 +175,10 @@ public class startController implements ActionListener, MouseListener {
                 leaderselection.setLayout(null);
                 int loc = 660;
                 for (int j = 0; j < game.getFirstPlayer().getTeam().size(); j++) {
-                    String s = ((Champion)game.getFirstPlayer().getTeam().get(j)).getName();
-                    ImageIcon icon = new ImageIcon(s+".png");
-                    Image img = icon.getImage() ;
-                    Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH );
+                    String s = ((Champion) game.getFirstPlayer().getTeam().get(j)).getName();
+                    ImageIcon icon = new ImageIcon(s + ".png");
+                    Image img = icon.getImage();
+                    Image newimg = img.getScaledInstance(100, 80, java.awt.Image.SCALE_SMOOTH);
                     icon = new ImageIcon(newimg);
                     JButton b = new JButton(game.getFirstPlayer().getTeam().get(j).getName());
                     b.setIcon(icon);
@@ -239,9 +242,9 @@ public class startController implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
         z.remove(stats);
         if (c < 3)
-            lmao = new JTextArea("First Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" +"\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+            lmao = new JTextArea("First Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
         else
-            lmao = new JTextArea("Second Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n"+"\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+            lmao = new JTextArea("Second Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
         lmao.setEditable(false);
         z.add(lmao, BorderLayout.SOUTH);
 
