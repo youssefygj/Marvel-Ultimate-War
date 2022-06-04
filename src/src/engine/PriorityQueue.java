@@ -4,57 +4,63 @@ import model.world.Champion;
 
 public class PriorityQueue {
 
-	@SuppressWarnings("rawtypes")
-	private Comparable[] elements;
-	private int nItems;
-	private int maxSize;
+    @SuppressWarnings("rawtypes")
+    private Comparable[] elements;
+    private int nItems;
+    private int maxSize;
 
-	public PriorityQueue(int size) {
-		maxSize = size;
-		elements = new Comparable[maxSize];
-		nItems = 0;
-	}
+    public PriorityQueue(int size) {
+        maxSize = size;
+        elements = new Comparable[maxSize];
+        nItems = 0;
+    }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void insert(Comparable item) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void insert(Comparable item) {
 
-		int i;
-		for (i = nItems - 1; i >= 0 && item.compareTo(elements[i]) > 0; i--)
-			elements[i + 1] = elements[i];
+        int i;
+        for (i = nItems - 1; i >= 0 && item.compareTo(elements[i]) > 0; i--)
+            elements[i + 1] = elements[i];
 
-		elements[i + 1] = item;
-		nItems++;
-	}
+        elements[i + 1] = item;
+        nItems++;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Comparable remove() {
-		nItems--;
-		return elements[nItems];
-	}
+    @SuppressWarnings("rawtypes")
+    public Comparable remove() {
+        nItems--;
+        return elements[nItems];
+    }
 
-	public boolean isEmpty() {
-		return (nItems == 0);
-	}
+    public boolean isEmpty() {
+        return (nItems == 0);
+    }
 
-	public boolean isFull() {
-		return (nItems == maxSize);
-	}
+    public boolean isFull() {
+        return (nItems == maxSize);
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Comparable peekMin() {
-		return elements[nItems - 1];
-	}
+    @SuppressWarnings("rawtypes")
+    public Comparable peekMin() {
+        return elements[nItems - 1];
+    }
 
-	public int size() {
-		return nItems;
-	}
-	public String toString(){
-		String r="";
-		for(int i=nItems-1;i>=0;i--){
-			if(elements[i]!=null)
-			r=r+((Champion)elements[i]).getName();
-			r=r+", ";
-		}
-		return r;
-	}
+    public int size() {
+        return nItems;
+    }
+
+    public String toString() {
+        String r = "";
+        for (int i = nItems - 1; i >= 0; i--) {
+            if (elements[i] != null) {
+                if (i == nItems - 1) {
+                    r = "Current champion is " + ((Champion) elements[i]).getName() + " Rest: ";
+                } else {
+                    r = r + ((Champion) elements[i]).getName();
+                    r = r + ", ";
+                }
+            }
+        }
+        return r;
+    }
 }
