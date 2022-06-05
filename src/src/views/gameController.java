@@ -3,6 +3,7 @@ package views;
 import engine.Game;
 import exceptions.*;
 import model.abilities.Ability;
+import model.abilities.AreaOfEffect;
 import model.world.Champion;
 import model.world.Cover;
 import model.world.Damageable;
@@ -14,6 +15,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class gameController implements ActionListener, KeyListener, MouseListener {
     private Game game;
@@ -45,12 +48,14 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     private boolean pressed;
     private boolean pressedmove;
     private boolean chooseDirection = false;
+    private boolean VSCOMP=false;
+    private int waiter;
 
-    public gameController(Game game, JFrame frame, JPanel removal) {
+    public gameController(Game game, JFrame frame, JPanel removal,boolean isCOMP) {
         this.game = new Game(game.getFirstPlayer(), game.getSecondPlayer());
         this.frame = frame;
         this.frame.remove(removal);
-
+        VSCOMP=isCOMP;
         board.setLayout(new GridLayout(5, 5));
         attack = new JButton("Attack");
         actions.setLayout(new GridLayout(5, 1));
@@ -160,7 +165,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         tutorial.setExtendedState(JFrame.MAXIMIZED_BOTH);
         background = new JLabel(new ImageIcon("tutorial.png"));
         tutorial.add(background);
-
+        if(this.game.getSecondPlayer().getTeam().contains(this.game.getCurrentChampion())){
+            computerturn();
+        }
     }
 
     @Override
@@ -300,7 +307,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             if (game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())) {
                 firstloc.setForeground(Color.BLUE);
                 secondloc.setForeground(Color.BLACK);
-            } else {
+            } else if(VSCOMP){
+               computerturn();
+            }
+            else {
                 secondloc.setForeground(Color.RED);
                 firstloc.setForeground(Color.black);
             }
@@ -342,6 +352,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             if (game.checkGameOver() != null) {
                 JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
                 frame.dispose();
+                System.exit(0);
             }
         }
         if (((JButton) e.getSource()).getName().equals("cast")) {
@@ -439,6 +450,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             if (game.checkGameOver() != null) {
                 JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
                 frame.dispose();
+                System.exit(0);
             }
         }
     }
@@ -811,7 +823,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             }
         }
         if (e.getKeyChar() == 's' && pressedmove) {
-            System.out.println(this.game.getCurrentChampion().getLocation());
+
             JButton temp;
             Point test = this.game.getCurrentChampion().getLocation();
             temp = buttons[test.x][test.y];
@@ -832,10 +844,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     board.add(buttons[i][j]);
                 }
             }
-            System.out.println(this.game.getCurrentChampion().getLocation());
+
         }
         if (e.getKeyChar() == 'w' && pressedmove) {
-            System.out.println(this.game.getCurrentChampion().getLocation());
+
             JButton temp;
             Point test = this.game.getCurrentChampion().getLocation();
             temp = buttons[test.x][test.y];
@@ -910,6 +922,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         if (game.checkGameOver() != null) {
             JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
             frame.dispose();
+            System.exit(0);
         }
         frame.repaint();
         frame.revalidate();
@@ -932,6 +945,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         if (game.checkGameOver() != null) {
             JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
             frame.dispose();
+            System.exit(0);
         }
     }
 
@@ -944,7 +958,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     @Override
     public void mousePressed(MouseEvent e) {
         if (choosing) {
-            System.out.println("test");
+
             int x = 0;
             int y = 0;
             for (int i = 0; i < buttons.length; i++) {
@@ -1006,10 +1020,429 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             if (game.checkGameOver() != null) {
                 JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
                 frame.dispose();
+                System.exit(0);
             }
         }
     }
+public void computerturn(){
+    waiter=0;
+    while(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
+        waiter++;
+        JButton temp;
+        Point test = this.game.getCurrentChampion().getLocation();
+        temp = buttons[test.x][test.y];
+        Random random = new Random();
+        int randomindex = random.nextInt(4);
 
+        if (randomindex == 0) {
+            randomindex = random.nextInt(4);
+            if (randomindex == 0) {
+                try {
+                    game.move(Direction.UP);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (UnallowedMovementException ex) {
+                    continue;
+                }
+
+                board.removeAll();
+                buttons[test.x + 1][test.y] = temp;
+                buttons[test.x][test.y] = new JButton();
+                for (int i = 0; i < buttons.length; i++) {
+                    for (int j = 0; j < buttons.length; j++) {
+                        board.add(buttons[i][j]);
+                    }
+                }
+
+            } else if (randomindex == 1) {
+
+                try {
+                    game.move(Direction.DOWN);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (UnallowedMovementException ex) {
+                    continue;
+                }
+                board.removeAll();
+                buttons[test.x - 1][test.y] = temp;
+                buttons[test.x][test.y] = new JButton();
+                for (int i = 0; i < buttons.length; i++) {
+                    for (int j = 0; j < buttons.length; j++) {
+                        board.add(buttons[i][j]);
+                    }
+                }
+
+            } else if (randomindex == 2) {
+
+                try {
+                    game.move(Direction.LEFT);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (UnallowedMovementException ex) {
+                    continue;
+                }
+                board.removeAll();
+                buttons[test.x][test.y - 1] = temp;
+                buttons[test.x][test.y] = new JButton();
+                for (int i = 0; i < buttons.length; i++) {
+                    for (int j = 0; j < buttons.length; j++) {
+                        board.add(buttons[i][j]);
+                    }
+                }
+
+            } else if (randomindex == 3) {
+
+                try {
+                    game.move(Direction.RIGHT);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (UnallowedMovementException ex) {
+                    continue;
+                }
+                board.removeAll();
+                buttons[test.x][test.y + 1] = temp;
+                buttons[test.x][test.y] = new JButton();
+                for (int i = 0; i < buttons.length; i++) {
+                    for (int j = 0; j < buttons.length; j++) {
+                        board.add(buttons[i][j]);
+                    }
+                }
+
+            }
+
+        } else if (randomindex == 1) {
+            randomindex = random.nextInt(4);
+            if (randomindex == 0) {
+                try {
+                    game.attack(Direction.UP);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (InvalidTargetException ex) {
+                    continue;
+                } catch (ChampionDisarmedException ex) {
+                    continue;
+                }
+            } else if (randomindex == 1) {
+
+                try {
+                    game.attack(Direction.DOWN);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (ChampionDisarmedException | InvalidTargetException ex) {
+                    continue;
+                }
+            } else if (randomindex == 2) {
+
+                try {
+                    game.attack(Direction.LEFT);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (ChampionDisarmedException | InvalidTargetException ex) {
+                    continue;
+                }
+            } else if (randomindex == 3) {
+
+                try {
+                    game.attack(Direction.RIGHT);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (InvalidTargetException ex) {
+                    continue;
+                } catch (ChampionDisarmedException ex) {
+                    continue;
+                }
+            }
+            board.removeAll();
+
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        if ((this.game.getBoard()[i][j] instanceof Champion)) {
+                            if (((Champion) this.game.getTurnOrder().peekMin()).getName().equals(((Champion) this.game.getBoard()[i][j]).getName())) {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.YELLOW, 3));
+                            } else if (game.getFirstPlayer().getTeam().contains((Champion) this.game.getBoard()[i][j])) {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.BLUE, 3));
+                            } else {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.RED, 3));
+                            }
+                        }
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+        }
+        else if(randomindex==2){
+            randomindex = random.nextInt(3);
+
+            if(game.getCurrentChampion().getAbilities().get(randomindex).getCastArea()== AreaOfEffect.DIRECTIONAL){
+                int randomdir = random.nextInt(4);
+                if (randomdir == 0) {
+                    try {
+                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.UP);
+                    } catch (NotEnoughResourcesException ex) {
+                        game.endTurn();
+                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            continue;
+                        }
+                        else{
+                            break;
+                        }
+                    }catch (AbilityUseException ex) {
+                        continue;
+                    } catch (CloneNotSupportedException ex) {
+                        continue;
+                    }
+                } else if (randomdir == 1) {
+
+                    try {
+                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.DOWN);
+                    } catch (NotEnoughResourcesException ex) {
+                        game.endTurn();
+                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            continue;
+                        }
+                        else{
+                            break;
+                        }
+                    }catch (AbilityUseException ex) {
+                        continue;
+                    } catch (CloneNotSupportedException ex) {
+                        continue;
+                    }
+                } else if (randomdir == 2) {
+
+                    try {
+                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.LEFT);
+                    } catch (NotEnoughResourcesException ex) {
+                        game.endTurn();
+                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            continue;
+                        }
+                        else{
+                            break;
+                        }
+                    }catch (AbilityUseException ex) {
+                        continue;
+                    } catch (CloneNotSupportedException ex) {
+                        continue;
+                    }
+                } else if (randomdir == 3) {
+
+                    try {
+                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.RIGHT);
+                    } catch (NotEnoughResourcesException ex) {
+                        game.endTurn();
+                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            continue;
+                        }
+                        else{
+                            break;
+                        }
+                    }catch (AbilityUseException ex) {
+                        continue;
+                    } catch (CloneNotSupportedException ex) {
+                        continue;
+                    }
+                }
+            }
+            else if (game.getCurrentChampion().getAbilities().get(randomindex).getCastArea()== AreaOfEffect.SINGLETARGET){
+                int xaxis= random.nextInt(5);
+                int yaxis= random.nextInt(5);
+                while(game.getBoard()[xaxis][yaxis] ==null){
+                    xaxis= random.nextInt(5);
+                    yaxis= random.nextInt(5);
+                }
+                try {
+                    game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),xaxis,yaxis);
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (AbilityUseException ex) {
+                    continue;
+                } catch (InvalidTargetException ex) {
+                    continue;
+                } catch (CloneNotSupportedException ex) {
+                    continue;
+                }
+            }
+            else{
+                try {
+                    game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex));
+                } catch (NotEnoughResourcesException ex) {
+                    game.endTurn();
+                    if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        continue;
+                    }
+                    else{
+                        break;
+                    }
+                } catch (AbilityUseException ex) {
+                    continue;
+                } catch (CloneNotSupportedException ex) {
+                    continue;
+                }
+            }
+            board.removeAll();
+
+
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons.length; j++) {
+                    if (game.getBoard()[i][j] != null) {
+                        if ((this.game.getBoard()[i][j] instanceof Champion)) {
+                            if (((Champion) this.game.getTurnOrder().peekMin()).getName().equals(((Champion) this.game.getBoard()[i][j]).getName())) {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.YELLOW, 3));
+                            } else if (game.getFirstPlayer().getTeam().contains((Champion) this.game.getBoard()[i][j])) {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.BLUE, 3));
+                            } else {
+                                buttons[i][j].setBorderPainted(true);
+                                buttons[i][j].setBorder(new LineBorder(Color.RED, 3));
+                            }
+                        }
+                        board.add(buttons[i][j]);
+                    } else {
+                        JButton pl = new JButton();
+                        pl.addActionListener(this);
+                        pl.addMouseListener(this);
+                        pl.setName("null");
+                        board.add(pl);
+                        buttons[i][j] = pl;
+                    }
+                }
+            }
+            board.repaint();
+            board.revalidate();
+            frame.repaint();
+            frame.revalidate();
+        }
+        else{
+            try {
+                game.useLeaderAbility();
+            } catch (LeaderNotCurrentException ex) {
+                continue;
+            } catch (LeaderAbilityAlreadyUsedException ex) {
+                continue;
+            }
+        }
+
+        if(waiter>100){
+            game.endTurn();
+            break;
+        }
+
+
+    }
+    board.removeAll();
+
+
+    for (int i = 0; i < buttons.length; i++) {
+        for (int j = 0; j < buttons.length; j++) {
+            if (game.getBoard()[i][j] != null) {
+                if ((this.game.getBoard()[i][j] instanceof Champion)) {
+                    if (((Champion) this.game.getTurnOrder().peekMin()).getName().equals(((Champion) this.game.getBoard()[i][j]).getName())) {
+                        buttons[i][j].setBorderPainted(true);
+                        buttons[i][j].setBorder(new LineBorder(Color.YELLOW, 3));
+                    } else if (game.getFirstPlayer().getTeam().contains((Champion) this.game.getBoard()[i][j])) {
+                        buttons[i][j].setBorderPainted(true);
+                        buttons[i][j].setBorder(new LineBorder(Color.BLUE, 3));
+                    } else {
+                        buttons[i][j].setBorderPainted(true);
+                        buttons[i][j].setBorder(new LineBorder(Color.RED, 3));
+                    }
+                }
+                board.add(buttons[i][j]);
+            } else {
+                board.remove(buttons[i][j]);
+                JButton pl = new JButton();
+                pl.addActionListener(this);
+                pl.addMouseListener(this);
+                pl.setName("null");
+                board.add(pl);
+                buttons[i][j] = pl;
+            }
+        }
+    }
+    firstloc.setText(this.game.getFirstPlayer().getName() + " Leader Ability Used " + this.game.isFirstLeaderAbilityUsed() + "     ");
+    secondloc.setText("     " + this.game.getSecondPlayer().getName() + " Leader Ability Used " + this.game.isSecondLeaderAbilityUsed());
+    turnorder.setText(this.game.getTurnOrder().toString());
+    frame.repaint();
+    frame.revalidate();
+    if (game.checkGameOver() != null) {
+        JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+        System.exit(0);
+    }
+    secondloc.setForeground(Color.black);
+    firstloc.setForeground(Color.BLUE);
+}
     @Override
     public void mouseReleased(MouseEvent e) {
 
