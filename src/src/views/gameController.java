@@ -164,6 +164,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         tutorial.setVisible(true);
         tutorial.setExtendedState(JFrame.MAXIMIZED_BOTH);
         background = new JLabel(new ImageIcon("tutorial.png"));
+
         tutorial.add(background);
         if(this.game.getSecondPlayer().getTeam().contains(this.game.getCurrentChampion())){
             computerturn();

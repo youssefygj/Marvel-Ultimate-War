@@ -36,6 +36,8 @@ public class VSCOMP implements ActionListener, MouseListener {
     public VSCOMP() {
         z = new JFrame();
         x = new JPanel();
+
+
         z.setDefaultCloseOperation(EXIT_ON_CLOSE);
         x.setLayout(new FlowLayout());
         JLabel enter1 = new JLabel("First Player:");
