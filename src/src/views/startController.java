@@ -30,34 +30,59 @@ public class startController implements ActionListener, MouseListener {
     private JTextArea lmao = new JTextArea();
     private JTextArea stats;
     private JFrame l = new JFrame();
+    private JFrame f = new JFrame();
     private int c = 0;
+    private JLabel background;
+    JButton play;
     private ArrayList<JButton> buttons = new ArrayList<>();
     private ArrayList<JButton> buttons1 = new ArrayList<>();
-
+    JLabel enter1;
+    JLabel enter2;
+    JPanel w;
     public startController() {
+
         z = new JFrame();
+        z.setVisible(true);
         x = new JPanel();
+        z.setTitle("MARVEL");
+        z.setIconImage(new ImageIcon("c.jpg").getImage());
         z.setDefaultCloseOperation(EXIT_ON_CLOSE);
         x.setLayout(new FlowLayout());
-        JLabel enter1 = new JLabel("First Player:");
-        JLabel enter2 = new JLabel("Second Player:");
+        enter1 = new JLabel("First Player:");
+        enter2 = new JLabel("Second Player:");
         field1 = new JTextField(35);
         field2 = new JTextField(35);
-        z.setBounds(500, 500, 500, 200);
-        x.add(enter1);
+        z.setBounds(500, 500, 500, 200);    x.add(enter1);
         x.add(field1);
         x.add(enter2);
         x.add(field2);
         z.add(x, BorderLayout.CENTER);
-        z.setVisible(true);
+
         z.setResizable(false);
         x.setBorder(new EmptyBorder(10, 10, 10, 10));
         JButton test = new JButton("DONE!");
         test.setName("test");
         test.addActionListener(this);
         x.add(test, BorderLayout.SOUTH);
+        z.revalidate();
+        z.repaint();
         x.revalidate();
         x.repaint();
+//w.setLayout(null);
+//w.add(play);
+
+//        play=new JButton();
+//play.setIcon(new ImageIcon("pl.png"));
+//        play.addActionListener(this);
+//        play.setSize(50,80);
+//
+//        play.setBounds(510,1000,300,200);
+//        f.add(play,BorderLayout.CENTER);
+//f.pack();
+
+
+
+
     }
 
     public static void main(String[] args) {
@@ -66,6 +91,7 @@ public class startController implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if (((JButton) e.getSource()).getName().equals("test")) {
             String name1 = field1.getText();
             String name2 = field2.getText();
@@ -211,7 +237,36 @@ public class startController implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+if(e.getSource()==f){   f.dispose();
+//    z = new JFrame();
+//    z.setVisible(true);
+//    x = new JPanel();
+//
+//    z.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//    x.setLayout(new FlowLayout());
+//    enter1 = new JLabel("First Player:");
+//    enter2 = new JLabel("Second Player:");
+//    field1 = new JTextField(35);
+//    field2 = new JTextField(35);
+//    z.setBounds(500, 500, 500, 200);    x.add(enter1);
+//    x.add(field1);
+//    x.add(enter2);
+//    x.add(field2);
+//    z.add(x, BorderLayout.CENTER);
+//
+//    z.setResizable(false);
+//    x.setBorder(new EmptyBorder(10, 10, 10, 10));
+//    JButton test = new JButton("DONE!");
+//    test.setName("test");
+//    test.addActionListener(this);
+//    x.add(test, BorderLayout.SOUTH);
+    z.setVisible(true);
+    z.revalidate();
+    z.repaint();
+    x.revalidate();
+    x.repaint();
 
+}
     }
 
     @Override

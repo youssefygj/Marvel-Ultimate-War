@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.ImageObserver;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +56,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.game = new Game(game.getFirstPlayer(), game.getSecondPlayer());
         this.frame = frame;
         this.frame.remove(removal);
+        this.frame.setTitle("MARVEL");
+        this.frame.setIconImage(new ImageIcon("c.jpg").getImage());
         VSCOMP=isCOMP;
         board.setLayout(new GridLayout(5, 5));
         attack = new JButton("Attack");
@@ -162,10 +165,15 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.frame.repaint();
         tutorial = new JFrame();
         tutorial.setVisible(true);
-        tutorial.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        tutorial.setSize(1922,1058);
         background = new JLabel(new ImageIcon("tutorial.png"));
 
         tutorial.add(background);
+   tutorial.setResizable(false);
+   tutorial.pack();
+
+       tutorial.revalidate();
+        tutorial.repaint();
         if(this.game.getSecondPlayer().getTeam().contains(this.game.getCurrentChampion())){
             computerturn();
         }
