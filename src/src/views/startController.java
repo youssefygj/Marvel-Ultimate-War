@@ -30,34 +30,52 @@ public class startController implements ActionListener, MouseListener {
     private JTextArea lmao = new JTextArea();
     private JTextArea stats;
     private JFrame l = new JFrame();
+    private JFrame f = new JFrame();
     private int c = 0;
+    private JLabel background;
+    JButton play;
     private ArrayList<JButton> buttons = new ArrayList<>();
     private ArrayList<JButton> buttons1 = new ArrayList<>();
-
+    JLabel enter1;
+    JLabel enter2;
+    JPanel w;
     public startController() {
+
         z = new JFrame();
+        z.setVisible(true);
         x = new JPanel();
+        z.setTitle("MARVEL");
+        z.setIconImage(new ImageIcon("c.jpg").getImage());
         z.setDefaultCloseOperation(EXIT_ON_CLOSE);
         x.setLayout(new FlowLayout());
-        JLabel enter1 = new JLabel("First Player:");
-        JLabel enter2 = new JLabel("Second Player:");
+        enter1 = new JLabel("First Player:");
+        enter1.setForeground(Color.blue);
+        enter2 = new JLabel("Second Player:");
+        enter2.setForeground(Color.RED);
         field1 = new JTextField(35);
+
         field2 = new JTextField(35);
-        z.setBounds(500, 500, 500, 200);
-        x.add(enter1);
+
+
+        z.setBounds(500, 500, 500, 200);    x.add(enter1);
         x.add(field1);
         x.add(enter2);
         x.add(field2);
         z.add(x, BorderLayout.CENTER);
-        z.setVisible(true);
+
         z.setResizable(false);
         x.setBorder(new EmptyBorder(10, 10, 10, 10));
         JButton test = new JButton("DONE!");
         test.setName("test");
         test.addActionListener(this);
         x.add(test, BorderLayout.SOUTH);
+        z.revalidate();
+        z.repaint();
         x.revalidate();
         x.repaint();
+
+
+
     }
 
     public static void main(String[] args) {
@@ -66,6 +84,7 @@ public class startController implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if (((JButton) e.getSource()).getName().equals("test")) {
             String name1 = field1.getText();
             String name2 = field2.getText();
@@ -136,7 +155,8 @@ public class startController implements ActionListener, MouseListener {
                         sleaderselection.add(b);
 
                     }
-                    JTextArea selectiontext = new JTextArea(game.getSecondPlayer().getName() + " please select your leader");
+                    JTextArea selectiontext = new JTextArea(game.getSecondPlayer().getName() + ", please select your leader");
+                    selectiontext.setForeground(Color.RED);
                     selectiontext.setEditable(false);
                     selectiontext.setBounds(800, 340, 10000, 10000);
                     selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
@@ -190,16 +210,21 @@ public class startController implements ActionListener, MouseListener {
                     loc = loc + 200;
                     leaderselection.add(b);
                 }
-                JTextArea selectiontext = new JTextArea(game.getFirstPlayer().getName() + " please select your leader");
+                JTextArea selectiontext = new JTextArea(game.getFirstPlayer().getName() +", please select your leader");
+                selectiontext.setForeground(Color.BLUE);
                 selectiontext.setEditable(false);
                 selectiontext.setBounds(800, 340, 1000, 100);
                 selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
                 Color color = new Color(152, 251, 152, 0);
                 selectiontext.setBackground(color);
+                lmao.setBorder(new EmptyBorder(2, 15, 0, 0));
+                stats.setBorder(new EmptyBorder(2, 15, 0, 0));
+
                 leaderselection.add(selectiontext);
                 z.remove(y);
                 z.remove(stats);
                 z.remove(lmao);
+
                 z.add(leaderselection);
                 z.revalidate();
                 z.repaint();
@@ -212,7 +237,9 @@ public class startController implements ActionListener, MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
+
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
