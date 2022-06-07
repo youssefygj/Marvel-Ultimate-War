@@ -83,6 +83,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         leader.addActionListener(this);
         actions.add(leader);
         actions.add(endturn);
+        actions.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(6, 8, 6, 8)));
         this.frame.add(actions, BorderLayout.EAST);
         this.frame.addKeyListener(this);
         this.frame.setFocusable(true);
@@ -424,13 +426,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 game.castAbility(temp);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -471,13 +473,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.castAbility(temp, Direction.UP);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -515,13 +517,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.castAbility(temp, Direction.DOWN);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -561,13 +563,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.castAbility(temp, Direction.LEFT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -608,13 +610,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.castAbility(temp, Direction.RIGHT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -657,13 +659,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 this.game.attack(Direction.UP);
 
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ChampionDisarmedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidTargetException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -706,13 +708,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 this.game.attack(Direction.DOWN);
 
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ChampionDisarmedException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidTargetException ex) {
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -749,13 +751,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.attack(Direction.LEFT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ChampionDisarmedException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidTargetException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -792,13 +794,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.attack(Direction.RIGHT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (ChampionDisarmedException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidTargetException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -839,10 +841,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.move(Direction.UP);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (UnallowedMovementException ex) {
-                JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(board, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -864,10 +866,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 this.game.move(Direction.DOWN);
 
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (UnallowedMovementException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -887,10 +889,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.move(Direction.LEFT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (UnallowedMovementException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -911,10 +913,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 this.game.move(Direction.RIGHT);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (UnallowedMovementException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -929,7 +931,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
         }
         if (game.checkGameOver() != null) {
-            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
             System.exit(0);
         }
@@ -952,7 +954,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         pressedmove = false;
         chooseDirection = false;
         if (game.checkGameOver() != null) {
-            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
             System.exit(0);
         }
@@ -981,16 +983,16 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             try {
                 game.castAbility(temp, x, y);
             } catch (NotEnoughResourcesException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (AbilityUseException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (InvalidTargetException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             } catch (CloneNotSupportedException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);
                 return;
             }
             board.removeAll();
@@ -1027,7 +1029,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.revalidate();
             choosing = false;
             if (game.checkGameOver() != null) {
-                JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose();
                 System.exit(0);
             }
@@ -1446,7 +1448,7 @@ public void computerturn(){
     frame.repaint();
     frame.revalidate();
     if (game.checkGameOver() != null) {
-        JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
     secondloc.setForeground(Color.black);

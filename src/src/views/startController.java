@@ -49,9 +49,14 @@ public class startController implements ActionListener, MouseListener {
         z.setDefaultCloseOperation(EXIT_ON_CLOSE);
         x.setLayout(new FlowLayout());
         enter1 = new JLabel("First Player:");
+        enter1.setForeground(Color.blue);
         enter2 = new JLabel("Second Player:");
+        enter2.setForeground(Color.RED);
         field1 = new JTextField(35);
+
         field2 = new JTextField(35);
+
+
         z.setBounds(500, 500, 500, 200);    x.add(enter1);
         x.add(field1);
         x.add(enter2);
@@ -68,18 +73,6 @@ public class startController implements ActionListener, MouseListener {
         z.repaint();
         x.revalidate();
         x.repaint();
-//w.setLayout(null);
-//w.add(play);
-
-//        play=new JButton();
-//play.setIcon(new ImageIcon("pl.png"));
-//        play.addActionListener(this);
-//        play.setSize(50,80);
-//
-//        play.setBounds(510,1000,300,200);
-//        f.add(play,BorderLayout.CENTER);
-//f.pack();
-
 
 
 
@@ -162,7 +155,8 @@ public class startController implements ActionListener, MouseListener {
                         sleaderselection.add(b);
 
                     }
-                    JTextArea selectiontext = new JTextArea(game.getSecondPlayer().getName() + " please select your leader");
+                    JTextArea selectiontext = new JTextArea(game.getSecondPlayer().getName() + ", please select your leader");
+                    selectiontext.setForeground(Color.RED);
                     selectiontext.setEditable(false);
                     selectiontext.setBounds(800, 340, 10000, 10000);
                     selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
@@ -216,16 +210,21 @@ public class startController implements ActionListener, MouseListener {
                     loc = loc + 200;
                     leaderselection.add(b);
                 }
-                JTextArea selectiontext = new JTextArea(game.getFirstPlayer().getName() + " please select your leader");
+                JTextArea selectiontext = new JTextArea(game.getFirstPlayer().getName() +", please select your leader");
+                selectiontext.setForeground(Color.BLUE);
                 selectiontext.setEditable(false);
                 selectiontext.setBounds(800, 340, 1000, 100);
                 selectiontext.setFont(new Font("Arial", Font.BOLD, 18));
                 Color color = new Color(152, 251, 152, 0);
                 selectiontext.setBackground(color);
+                lmao.setBorder(new EmptyBorder(2, 15, 0, 0));
+                stats.setBorder(new EmptyBorder(2, 15, 0, 0));
+
                 leaderselection.add(selectiontext);
                 z.remove(y);
                 z.remove(stats);
                 z.remove(lmao);
+
                 z.add(leaderselection);
                 z.revalidate();
                 z.repaint();
@@ -237,37 +236,10 @@ public class startController implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-if(e.getSource()==f){   f.dispose();
-//    z = new JFrame();
-//    z.setVisible(true);
-//    x = new JPanel();
-//
-//    z.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//    x.setLayout(new FlowLayout());
-//    enter1 = new JLabel("First Player:");
-//    enter2 = new JLabel("Second Player:");
-//    field1 = new JTextField(35);
-//    field2 = new JTextField(35);
-//    z.setBounds(500, 500, 500, 200);    x.add(enter1);
-//    x.add(field1);
-//    x.add(enter2);
-//    x.add(field2);
-//    z.add(x, BorderLayout.CENTER);
-//
-//    z.setResizable(false);
-//    x.setBorder(new EmptyBorder(10, 10, 10, 10));
-//    JButton test = new JButton("DONE!");
-//    test.setName("test");
-//    test.addActionListener(this);
-//    x.add(test, BorderLayout.SOUTH);
-    z.setVisible(true);
-    z.revalidate();
-    z.repaint();
-    x.revalidate();
-    x.repaint();
+
 
 }
-    }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
