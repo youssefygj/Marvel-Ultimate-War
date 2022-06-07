@@ -39,7 +39,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     private JButton move;
     private JButton endturn = new JButton("End your turn");
     private JButton cast = new JButton("Cast your ability");
-    private JPanel selections = new JPanel(new GridLayout(4, 1));
+    private JPanel selections = new JPanel(new GridLayout(1, 1));
     private Ability temp = null;
     private JButton leader = new JButton("Use Leader Ability");
     private int firstcoordinate;
@@ -358,6 +358,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         }
         if (((JButton) e.getSource()).getName().equals("cast")) {
             selections.removeAll();
+            selections = new JPanel(new GridLayout(game.getCurrentChampion().getAbilities().size()+1, 1));
             for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
                 JButton ability = new JButton(game.getCurrentChampion().getAbilities().get(i).getName());
                 ability.addActionListener(this);
