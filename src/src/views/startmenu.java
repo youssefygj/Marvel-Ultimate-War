@@ -21,6 +21,7 @@ public class startmenu implements ActionListener {
         JButton VSCOMP = new JButton(icon);
         JLabel test = new JLabel("        PVP");
         test.setForeground(Color.GRAY);
+
         test.setFont(new Font("Arial", Font.BOLD, 18));
         JLabel test2 = new JLabel("        PVE");
         test2.setForeground(Color.GRAY);
@@ -30,10 +31,10 @@ public class startmenu implements ActionListener {
         VSCOMP.add(test2);
         VSPlayer.addActionListener(this);
         VSCOMP.addActionListener(this);
-        VSPlayer.setBounds(400,400,150,50);
+        VSPlayer.setBounds(100,400,150,50);
        VSPlayer.setName("player");
         VSCOMP.setName("comp");
-        VSCOMP.setBounds(400,600,150,50);
+        VSCOMP.setBounds(100,500,150,50);
 
         x.setExtendedState(JFrame.MAXIMIZED_BOTH);
         x.setUndecorated(false);
