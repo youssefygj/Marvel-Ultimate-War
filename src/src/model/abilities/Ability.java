@@ -59,5 +59,22 @@ public abstract class Ability {
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}
+	public String toString(){
+		String r="";
+	r += "Ability name: " + this.getName() + "\n"+ "          Cast area: " + this.getCastArea()
+                    +"\n"+  "          Cool down = " + this.getBaseCooldown() + "\n" +
+			"          Range = " + this.getCastRange() +"\n"+  "          Mana cost = " + this.getManaCost()
+                    + "\n"+
+							"          Required Action Points = " + this.getRequiredActionPoints()+"\n";
+            if(this instanceof DamagingAbility){
+		r+="          Type = Damaging Ability"+"\n"+"          Damage Amount = " +((DamagingAbility) this).getDamageAmount()+"\n"+"\n"+"\n";
+	}
+            else if(this instanceof HealingAbility){
+		r+="          Type = Healing Ability"+"\n"+"          Heal Amount = " +((HealingAbility) this).getHealAmount()+"\n"+"\n"+"\n";
+	}
+            else{
+		r+="          Type = Crowd Control Ability"+"\n"+"           Effect = " +((CrowdControlAbility)this).getEffect().getName() +"\n"+"\n"+"\n";
+	}return r;
+}
 
 }

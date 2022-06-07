@@ -83,8 +83,10 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         leader.addActionListener(this);
         actions.add(leader);
         actions.add(endturn);
-        actions.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
+        actions.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+        firstloc.setEditable(false);
+       secondloc.setEditable(false);
         this.frame.add(actions, BorderLayout.EAST);
         this.frame.addKeyListener(this);
         this.frame.setFocusable(true);
