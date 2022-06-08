@@ -33,6 +33,7 @@ public class VSCOMP implements ActionListener, MouseListener {
     private int c = 0;
     private ArrayList<JButton> buttons = new ArrayList<>();
     private ArrayList<JButton> buttons1 = new ArrayList<>();
+
     public VSCOMP() {
         z = new JFrame();
         x = new JPanel();
@@ -75,7 +76,7 @@ public class VSCOMP implements ActionListener, MouseListener {
             y.setLayout(new GridLayout(5, 3));
             Player first = new Player(name1);
             Player second = new Player("COMP");
-            game = new Game(first,second );
+            game = new Game(first, second);
             try {
                 game.loadAbilities("Abilities.csv");
                 game.loadChampions("Champions.csv");
@@ -110,22 +111,20 @@ public class VSCOMP implements ActionListener, MouseListener {
             z.repaint();
 
 
-        }
-        else if (((JButton) e.getSource()).getName().equals("fpossibleleaders")) {
+        } else if (((JButton) e.getSource()).getName().equals("fpossibleleaders")) {
             for (int i = 0; i < game.getFirstPlayer().getTeam().size(); i++) {
                 if (game.getFirstPlayer().getTeam().get(i).getName().equals(((JButton) e.getSource()).getText())) {
                     game.getFirstPlayer().setLeader(game.getFirstPlayer().getTeam().get(i));
                     sleaderselection.setLayout(null);
                     int loc = 660;
                     Random random = new Random();
-                    int randomindex= random.nextInt(2);
+                    int randomindex = random.nextInt(2);
                     game.getSecondPlayer().setLeader(game.getSecondPlayer().getTeam().get(randomindex));
                     z.remove(leaderselection);
-                    gameController x = new gameController(game, z, sleaderselection,true);
+                    gameController x = new gameController(game, z, sleaderselection, true);
                 }
             }
-        }
-        else {
+        } else {
             JButton a = (JButton) e.getSource();
             int i = buttons.indexOf(a);
             Champion current = game.getAvailableChampions().get(i);
@@ -133,18 +132,19 @@ public class VSCOMP implements ActionListener, MouseListener {
                 game.getFirstPlayer().getTeam().add(current);
                 c++;
             }
-            buttons.remove(a);
             a.setEnabled(false);
-            game.getAvailableChampions().remove(current);
-            if (c == 3){
-                for(int l=0;l<3;l++){
+            if (c == 3) {
+                for (int l = 0; l < 3; l++) {
                     Random random = new Random();
-                    int randomindex= random.nextInt(game.getAvailableChampions().size()-1 );
+                    int randomindex = random.nextInt(game.getAvailableChampions().size() - 1);
+                    Champion temp = game.getAvailableChampions().get(randomindex);
+                    while (game.getFirstPlayer().getTeam().contains(temp)) {
+                        randomindex = random.nextInt(game.getAvailableChampions().size() - 1);
+                        temp = game.getAvailableChampions().get(randomindex);
+                    }
                     game.getSecondPlayer().getTeam().add(game.getAvailableChampions().get(randomindex));
-                    game.getAvailableChampions().remove(randomindex);
                     c++;
                 }
-
             }
 
 

@@ -49,16 +49,16 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     private boolean pressed;
     private boolean pressedmove;
     private boolean chooseDirection = false;
-    private boolean VSCOMP=false;
+    private boolean VSCOMP = false;
     private int waiter;
 
-    public gameController(Game game, JFrame frame, JPanel removal,boolean isCOMP) {
+    public gameController(Game game, JFrame frame, JPanel removal, boolean isCOMP) {
         this.game = new Game(game.getFirstPlayer(), game.getSecondPlayer());
         this.frame = frame;
         this.frame.remove(removal);
         this.frame.setTitle("MARVEL");
         this.frame.setIconImage(new ImageIcon("c.jpg").getImage());
-        VSCOMP=isCOMP;
+        VSCOMP = isCOMP;
         board.setLayout(new GridLayout(5, 5));
         attack = new JButton("Attack");
         actions.setLayout(new GridLayout(5, 1));
@@ -106,8 +106,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.game.placeChampions();
 
         this.frame.setVisible(true);
-        for (int i = 0; i < this.game.getBoard().length; i++) {
-            for (int j = 0; j < this.game.getBoard().length; j++) {
+        for (int i = 4; i >= 0; i--) {
+            for (int j = 0; j < game.getBoard().length; j++) {
                 if (this.game.getBoard()[i][j] == null) {
                     JButton bt = new JButton();
                     bt.setName("null");
@@ -169,7 +169,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         this.frame.repaint();
         tutorial = new JFrame();
         tutorial.setVisible(true);
-        tutorial.setSize(1922,1058);
+        tutorial.setSize(1922, 1058);
         background = new JLabel(new ImageIcon("tutorial.png"));
 
         tutorial.add(background);
@@ -178,7 +178,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
         tutorial.revalidate();
         tutorial.repaint();
-        if(this.game.getSecondPlayer().getTeam().contains(this.game.getCurrentChampion())){
+        if (this.game.getSecondPlayer().getTeam().contains(this.game.getCurrentChampion()) && VSCOMP) {
             computerturn();
         }
     }
@@ -187,7 +187,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
     public void actionPerformed(ActionEvent e) {
         int x = 0;
         int y = 0;
-        for (int i = 0; i < buttons.length; i++) {
+        for (int i = 4; i >= 0; i--) {
             for (int j = 0; j < buttons.length; j++) {
                 if (buttons[i][j] == (JButton) e.getSource()) {
                     x = i;
@@ -207,7 +207,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             }
             board.removeAll();
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null && ((game.getBoard()[i][j] instanceof Champion) && ((Champion) game.getBoard()[i][j]).getCurrentHP() != 0) || game.getBoard()[i][j] instanceof Cover && ((Cover) game.getBoard()[i][j]).getCurrentHP() != 0) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -320,17 +320,16 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             if (game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())) {
                 firstloc.setForeground(Color.BLUE);
                 secondloc.setForeground(Color.BLACK);
-            } else if(VSCOMP){
+            } else if (VSCOMP) {
                 computerturn();
-            }
-            else {
+            } else {
                 secondloc.setForeground(Color.RED);
                 firstloc.setForeground(Color.black);
             }
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -363,14 +362,14 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.repaint();
             frame.revalidate();
             if (game.checkGameOver() != null) {
-                JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.PLAIN_MESSAGE);
                 frame.dispose();
                 System.exit(0);
             }
         }
         if (((JButton) e.getSource()).getName().equals("cast")) {
             selections.removeAll();
-            selections = new JPanel(new GridLayout(game.getCurrentChampion().getAbilities().size()+1, 1));
+            selections = new JPanel(new GridLayout(game.getCurrentChampion().getAbilities().size() + 1, 1));
             for (int i = 0; i < game.getCurrentChampion().getAbilities().size(); i++) {
                 JButton ability = new JButton(game.getCurrentChampion().getAbilities().get(i).getName());
                 ability.addActionListener(this);
@@ -441,7 +440,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         board.add(buttons[i][j]);
@@ -462,7 +461,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.repaint();
             frame.revalidate();
             if (game.checkGameOver() != null) {
-                JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.PLAIN_MESSAGE);
                 frame.dispose();
                 System.exit(0);
             }
@@ -471,7 +470,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() == 's' && chooseDirection) {
+        if (e.getKeyChar() == 'w' && chooseDirection) {
 
             try {
                 this.game.castAbility(temp, Direction.UP);
@@ -488,7 +487,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -516,7 +515,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 }
             }
         }
-        if (e.getKeyChar() == 'w' && chooseDirection) {
+        if (e.getKeyChar() == 's' && chooseDirection) {
             try {
                 this.game.castAbility(temp, Direction.DOWN);
             } catch (NotEnoughResourcesException ex) {
@@ -531,7 +530,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             }
             board.removeAll();
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -578,7 +577,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -625,7 +624,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -656,7 +655,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.repaint();
             frame.revalidate();
         }
-        if (e.getKeyChar() == 's' && pressed) {
+        if (e.getKeyChar() == 'w' && pressed) {
 
             try {
                 this.game.attack(Direction.UP);
@@ -674,7 +673,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -706,7 +705,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.repaint();
             frame.revalidate();
         }
-        if (e.getKeyChar() == 'w' && pressed) {
+        if (e.getKeyChar() == 's' && pressed) {
             try {
                 this.game.attack(Direction.DOWN);
 
@@ -723,7 +722,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -766,7 +765,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -809,7 +808,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -836,7 +835,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 }
             }
         }
-        if (e.getKeyChar() == 's' && pressedmove) {
+        if (e.getKeyChar() == 'w' && pressedmove) {
 
             JButton temp;
             Point test = this.game.getCurrentChampion().getLocation();
@@ -853,14 +852,14 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
             buttons[test.x + 1][test.y] = temp;
             buttons[test.x][test.y] = new JButton();
-            for (int i = 0; i < buttons.length; i++) {
-                for (int j = 0; j < buttons.length; j++) {
+            for (int i = 4; i >= 0; i--) {
+                for (int j = 0; j < game.getBoard().length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
 
         }
-        if (e.getKeyChar() == 'w' && pressedmove) {
+        if (e.getKeyChar() == 's' && pressedmove) {
 
             JButton temp;
             Point test = this.game.getCurrentChampion().getLocation();
@@ -879,8 +878,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
             buttons[test.x - 1][test.y] = temp;
             buttons[test.x][test.y] = new JButton();
-            for (int i = 0; i < buttons.length; i++) {
-                for (int j = 0; j < buttons.length; j++) {
+            for (int i = 4; i >= 0; i--) {
+                for (int j = 0; j < game.getBoard().length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
@@ -902,8 +901,8 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
             buttons[test.x][test.y - 1] = temp;
             buttons[test.x][test.y] = new JButton();
-            for (int i = 0; i < buttons.length; i++) {
-                for (int j = 0; j < buttons.length; j++) {
+            for (int i = 4; i >= 0; i--) {
+                for (int j = 0; j < game.getBoard().length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
@@ -926,15 +925,15 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
             buttons[test.x][test.y + 1] = temp;
             buttons[test.x][test.y] = new JButton();
-            for (int i = 0; i < buttons.length; i++) {
-                for (int j = 0; j < buttons.length; j++) {
+            for (int i = 4; i >= 0; i--) {
+                for (int j = 0; j < game.getBoard().length; j++) {
                     board.add(buttons[i][j]);
                 }
             }
 
         }
         if (game.checkGameOver() != null) {
-            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
             System.exit(0);
         }
@@ -957,7 +956,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         pressedmove = false;
         chooseDirection = false;
         if (game.checkGameOver() != null) {
-            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
             System.exit(0);
         }
@@ -975,7 +974,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
 
             int x = 0;
             int y = 0;
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (buttons[i][j] == (JButton) e.getSource()) {
                         x = i;
@@ -1001,7 +1000,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             board.removeAll();
 
 
-            for (int i = 0; i < buttons.length; i++) {
+            for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < buttons.length; j++) {
                     if (game.getBoard()[i][j] != null) {
                         if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -1032,15 +1031,16 @@ public class gameController implements ActionListener, KeyListener, MouseListene
             frame.revalidate();
             choosing = false;
             if (game.checkGameOver() != null) {
-                JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose();
                 System.exit(0);
             }
         }
     }
-    public void computerturn(){
-        waiter=0;
-        while(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
+
+    public void computerturn() {
+        waiter = 0;
+        while (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
             waiter++;
             JButton temp;
             Point test = this.game.getCurrentChampion().getLocation();
@@ -1055,10 +1055,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.move(Direction.UP);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (UnallowedMovementException ex) {
@@ -1068,7 +1067,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     board.removeAll();
                     buttons[test.x + 1][test.y] = temp;
                     buttons[test.x][test.y] = new JButton();
-                    for (int i = 0; i < buttons.length; i++) {
+                    for (int i = 4; i >= 0; i--) {
                         for (int j = 0; j < buttons.length; j++) {
                             board.add(buttons[i][j]);
                         }
@@ -1080,10 +1079,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.move(Direction.DOWN);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (UnallowedMovementException ex) {
@@ -1092,7 +1090,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     board.removeAll();
                     buttons[test.x - 1][test.y] = temp;
                     buttons[test.x][test.y] = new JButton();
-                    for (int i = 0; i < buttons.length; i++) {
+                    for (int i = 4; i >= 0; i--) {
                         for (int j = 0; j < buttons.length; j++) {
                             board.add(buttons[i][j]);
                         }
@@ -1104,10 +1102,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.move(Direction.LEFT);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (UnallowedMovementException ex) {
@@ -1116,7 +1113,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     board.removeAll();
                     buttons[test.x][test.y - 1] = temp;
                     buttons[test.x][test.y] = new JButton();
-                    for (int i = 0; i < buttons.length; i++) {
+                    for (int i = 4; i >= 0; i--) {
                         for (int j = 0; j < buttons.length; j++) {
                             board.add(buttons[i][j]);
                         }
@@ -1128,10 +1125,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.move(Direction.RIGHT);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (UnallowedMovementException ex) {
@@ -1140,7 +1136,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     board.removeAll();
                     buttons[test.x][test.y + 1] = temp;
                     buttons[test.x][test.y] = new JButton();
-                    for (int i = 0; i < buttons.length; i++) {
+                    for (int i = 4; i >= 0; i--) {
                         for (int j = 0; j < buttons.length; j++) {
                             board.add(buttons[i][j]);
                         }
@@ -1155,10 +1151,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.attack(Direction.UP);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (InvalidTargetException ex) {
@@ -1172,10 +1167,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.attack(Direction.DOWN);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (ChampionDisarmedException | InvalidTargetException ex) {
@@ -1187,10 +1181,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.attack(Direction.LEFT);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (ChampionDisarmedException | InvalidTargetException ex) {
@@ -1202,10 +1195,9 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                         game.attack(Direction.RIGHT);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (InvalidTargetException ex) {
@@ -1217,7 +1209,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 board.removeAll();
 
 
-                for (int i = 0; i < buttons.length; i++) {
+                for (int i = 4; i >= 0; i--) {
                     for (int j = 0; j < buttons.length; j++) {
                         if (game.getBoard()[i][j] != null) {
                             if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -1247,24 +1239,22 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 board.revalidate();
                 frame.repaint();
                 frame.revalidate();
-            }
-            else if(randomindex==2){
+            } else if (randomindex == 2) {
                 randomindex = random.nextInt(3);
 
-                if(game.getCurrentChampion().getAbilities().get(randomindex).getCastArea()== AreaOfEffect.DIRECTIONAL){
+                if (game.getCurrentChampion().getAbilities().get(randomindex).getCastArea() == AreaOfEffect.DIRECTIONAL) {
                     int randomdir = random.nextInt(4);
                     if (randomdir == 0) {
                         try {
-                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.UP);
+                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex), Direction.UP);
                         } catch (NotEnoughResourcesException ex) {
                             game.endTurn();
-                            if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                                 continue;
-                            }
-                            else{
+                            } else {
                                 break;
                             }
-                        }catch (AbilityUseException ex) {
+                        } catch (AbilityUseException ex) {
                             continue;
                         } catch (CloneNotSupportedException ex) {
                             continue;
@@ -1272,16 +1262,15 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     } else if (randomdir == 1) {
 
                         try {
-                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.DOWN);
+                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex), Direction.DOWN);
                         } catch (NotEnoughResourcesException ex) {
                             game.endTurn();
-                            if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                                 continue;
-                            }
-                            else{
+                            } else {
                                 break;
                             }
-                        }catch (AbilityUseException ex) {
+                        } catch (AbilityUseException ex) {
                             continue;
                         } catch (CloneNotSupportedException ex) {
                             continue;
@@ -1289,16 +1278,15 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     } else if (randomdir == 2) {
 
                         try {
-                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.LEFT);
+                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex), Direction.LEFT);
                         } catch (NotEnoughResourcesException ex) {
                             game.endTurn();
-                            if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                                 continue;
-                            }
-                            else{
+                            } else {
                                 break;
                             }
-                        }catch (AbilityUseException ex) {
+                        } catch (AbilityUseException ex) {
                             continue;
                         } catch (CloneNotSupportedException ex) {
                             continue;
@@ -1306,37 +1294,34 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     } else if (randomdir == 3) {
 
                         try {
-                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),Direction.RIGHT);
+                            game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex), Direction.RIGHT);
                         } catch (NotEnoughResourcesException ex) {
                             game.endTurn();
-                            if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                            if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                                 continue;
-                            }
-                            else{
+                            } else {
                                 break;
                             }
-                        }catch (AbilityUseException ex) {
+                        } catch (AbilityUseException ex) {
                             continue;
                         } catch (CloneNotSupportedException ex) {
                             continue;
                         }
                     }
-                }
-                else if (game.getCurrentChampion().getAbilities().get(randomindex).getCastArea()== AreaOfEffect.SINGLETARGET){
-                    int xaxis= random.nextInt(5);
-                    int yaxis= random.nextInt(5);
-                    while(game.getBoard()[xaxis][yaxis] ==null){
-                        xaxis= random.nextInt(5);
-                        yaxis= random.nextInt(5);
+                } else if (game.getCurrentChampion().getAbilities().get(randomindex).getCastArea() == AreaOfEffect.SINGLETARGET) {
+                    int xaxis = random.nextInt(5);
+                    int yaxis = random.nextInt(5);
+                    while (game.getBoard()[xaxis][yaxis] == null) {
+                        xaxis = random.nextInt(5);
+                        yaxis = random.nextInt(5);
                     }
                     try {
-                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex),xaxis,yaxis);
+                        game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex), xaxis, yaxis);
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (AbilityUseException ex) {
@@ -1346,16 +1331,14 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                     } catch (CloneNotSupportedException ex) {
                         continue;
                     }
-                }
-                else{
+                } else {
                     try {
                         game.castAbility(game.getCurrentChampion().getAbilities().get(randomindex));
                     } catch (NotEnoughResourcesException ex) {
                         game.endTurn();
-                        if(game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())){
+                        if (game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
                             continue;
-                        }
-                        else{
+                        } else {
                             break;
                         }
                     } catch (AbilityUseException ex) {
@@ -1367,7 +1350,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 board.removeAll();
 
 
-                for (int i = 0; i < buttons.length; i++) {
+                for (int i = 4; i >= 0; i--) {
                     for (int j = 0; j < buttons.length; j++) {
                         if (game.getBoard()[i][j] != null) {
                             if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -1397,8 +1380,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 board.revalidate();
                 frame.repaint();
                 frame.revalidate();
-            }
-            else{
+            } else {
                 try {
                     game.useLeaderAbility();
                 } catch (LeaderNotCurrentException ex) {
@@ -1408,7 +1390,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
                 }
             }
 
-            if(waiter>100){
+            if (waiter > 100) {
                 game.endTurn();
                 break;
             }
@@ -1418,7 +1400,7 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         board.removeAll();
 
 
-        for (int i = 0; i < buttons.length; i++) {
+        for (int i = 4; i >= 0; i--) {
             for (int j = 0; j < buttons.length; j++) {
                 if (game.getBoard()[i][j] != null) {
                     if ((this.game.getBoard()[i][j] instanceof Champion)) {
@@ -1451,12 +1433,13 @@ public class gameController implements ActionListener, KeyListener, MouseListene
         frame.repaint();
         frame.revalidate();
         if (game.checkGameOver() != null) {
-            JOptionPane.showMessageDialog(null, game.checkGameOver().getName()+" Won!", null, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, game.checkGameOver().getName() + " Won!", null, JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         }
         secondloc.setForeground(Color.black);
         firstloc.setForeground(Color.BLUE);
     }
+
     @Override
     public void mouseReleased(MouseEvent e) {
 

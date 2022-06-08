@@ -21,7 +21,6 @@ public class startmenu implements ActionListener {
         JButton VSCOMP = new JButton(icon);
         JLabel test = new JLabel("        PVP");
         test.setForeground(Color.GRAY);
-
         test.setFont(new Font("Arial", Font.BOLD, 18));
         JLabel test2 = new JLabel("        PVE");
         test2.setForeground(Color.GRAY);
