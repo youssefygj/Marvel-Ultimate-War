@@ -217,6 +217,10 @@ public class VSCOMP implements ActionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         z.remove(stats);
+
+
+
+
         if (c < 3)
             lmao = new JTextArea("First Player Hover over the buttons to see the stats of each champion" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
         else
